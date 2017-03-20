@@ -1,0 +1,7 @@
+/.idea/
+/vendor/
+*.DS_Store
+.DS_Store
+/tests/data/
+composer.lock
+clover.xml

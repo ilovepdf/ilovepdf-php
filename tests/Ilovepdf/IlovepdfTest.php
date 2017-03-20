@@ -1,0 +1,129 @@
+<?php
+
+namespace Tests\Ilovepdf;
+
+use Ilovepdf\Ilovepdf;
+
+class IlovepdfTest extends \PHPUnit_Framework_TestCase
+{
+
+    public $ilovepdf;
+
+    public $publicKey = "public_key";
+    public $secretKey = "secret_key";
+
+    public function setUp()
+    {
+        $this->ilovepdf = new Ilovepdf();
+        $this->ilovepdf->setApiKeys($this->publicKey, $this->secretKey);
+    }
+
+    /**
+     * @test
+     */
+    public function testSholdHaveSecretKey()
+    {
+        $secretKey = $this->ilovepdf->getSecretKey();
+        $this->assertEquals($this->secretKey, $secretKey);
+    }
+
+    /**
+     * @test
+     */
+    public function testSholdHavePublictKey()
+    {
+        $publicKey = $this->ilovepdf->getPublicKey();
+        $this->assertEquals($this->publicKey, $publicKey);
+    }
+
+    /**
+     * @test
+     */
+    public function testCanSetApiKeys()
+    {
+        $public = "public";
+        $secret = "private";
+        $this->ilovepdf->setApiKeys($public, $secret);
+        $this->assertEquals($public, $this->ilovepdf->getPublicKey());
+        $this->assertEquals($secret, $this->ilovepdf->getSecretKey());
+    }
+
+    /**
+     * @test
+     */
+    public function testCanGetJwt()
+    {
+        $jwt = $this->ilovepdf->getJWT();
+        $this->assertNotNull($jwt, "jwt should not be null");
+    }
+
+    /**
+     * @test
+     * @expectedException \Exception
+     */
+    public function testEmptygTaskShouldTrowException()
+    {
+        $this->ilovepdf->newTask("");
+    }
+
+    /**
+     * @test
+     * @expectedException \InvalidArgumentException
+     */
+    public function testNotExistingTaskShouldTrowException()
+    {
+        $this->ilovepdf->newTask("tralara");
+    }
+
+    /**
+     * @test
+     */
+    public function testEncryptSetDefaultKey()
+    {
+        $this->ilovepdf->setFileEncryption(true);
+        $this->assertNotNull($this->ilovepdf->getEncrytKey());
+        $this->assertEquals(strlen($this->ilovepdf->getEncrytKey()), 32);
+    }
+
+
+    /**
+     * @test
+     */
+    public function testCanSetEncrypt()
+    {
+        $key = '1234123412341234';
+        $this->ilovepdf->setFileEncryption(true, $key );
+        $this->assertEquals($this->ilovepdf->getEncrytKey(), $key);
+    }
+
+    /**
+     * @test
+     */
+    public function testUnsetEncryptRemovesKey()
+    {
+        $key = '1234123412341234';
+        $this->ilovepdf->setFileEncryption(true, $key );
+        $this->ilovepdf->setFileEncryption(false);
+        $this->assertNull($this->ilovepdf->getEncrytKey());
+    }
+
+
+    /**
+     * @test
+     * @dataProvider invalidKeys
+     * @expectedException \InvalidArgumentException
+     */
+    public function testWrongEncryptKeyTrowsException($key)
+    {
+        $this->ilovepdf->setFileEncryption(true, $key );
+    }
+
+
+    public function invalidKeys()
+    {
+        return [
+            ['1234'],
+            ['asdfqwe'],
+        ];
+    }
+}

@@ -1,0 +1,13 @@
+<phpunit bootstrap="tests/bootstrap.php" colors="true">
+    <testsuites>
+        <testsuite name="Ilovepdf PHP Test Suite">
+            <directory suffix="Test.php">tests</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory>src</directory>
+            <exclude>./tests/TestCase.php</exclude>
+        </whitelist>
+    </filter>
+</phpunit>
