@@ -42,9 +42,9 @@ require_once('/path/to/ilovepdf-php/init.php');
 Simple usage looks like:
 
 ```php
-$ilovepdf = new Ilovepdf('YOUR_PUBLIC_KEY','YOUR_PRIVATE_KEY');
+$ilovepdf = new Ilovepdf('project_public_id','project_secret_key');
 $myTask = $ilovepdf->newTask('compress');
-$file1 = $myTask->addLocalFile('file1.pdf');
+$file1 = $myTask->addFile('file1.pdf');
 $myTask->execute();
 $myTask->download();
 ```
