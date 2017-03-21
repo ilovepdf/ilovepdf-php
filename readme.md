@@ -2,8 +2,10 @@ iLovePDF Api - Php Library
 --------------------------
 
 [![Build Status](https://travis-ci.org/ilovepdf/ilovepdf-php.svg?branch=master)](https://travis-ci.org/ilovepdf/ilovepdf-php)
+[![Latest Stable Version](https://poser.pugx.org/ilovepdf/ilovepdf-php/version)](https://packagist.org/packages/ilovepdf/ilovepdf-php)
+[![License](https://poser.pugx.org/ilovepdf/ilovepdf-php/license)](https://packagist.org/packages/ilovepdf/ilovepdf-php)
 
-A library in php for [iLovePDF Api] (https://developer.ilovepdf.com)
+A library in php for [iLovePDF Api](https://developer.ilovepdf.com)
 
 You can sign up for a iLovePDF account at https://developer.ilovepdf.com
 

@@ -156,7 +156,7 @@ class Ilovepdf
             $to_server = $this->workerServer;
         }
 
-        if ($endpoint == 'process') {
+        if ($endpoint == 'process'|| $endpoint == 'upload') {
             Request::timeout(null);
         } else {
             Request::timeout(10);
