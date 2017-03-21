@@ -43,6 +43,7 @@ class ImagepdfTask extends Task
     public function setOrientation($orientation)
     {
         $this->orientation = $orientation;
+        return $this;
     }
 
     /**
@@ -51,6 +52,7 @@ class ImagepdfTask extends Task
     public function setMargin($margin)
     {
         $this->margin = $margin;
+        return $this;
     }
 
     /**
@@ -59,5 +61,6 @@ class ImagepdfTask extends Task
     public function setPagesize($pagesize)
     {
         $this->pagesize = $pagesize;
+        return $this;
     }
 }

@@ -21,7 +21,7 @@ class IlovepdfTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testSholdHaveSecretKey()
+    public function testShouldHaveSecretKey()
     {
         $secretKey = $this->ilovepdf->getSecretKey();
         $this->assertEquals($this->secretKey, $secretKey);
@@ -30,7 +30,7 @@ class IlovepdfTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testSholdHavePublictKey()
+    public function testShouldHavePublictKey()
     {
         $publicKey = $this->ilovepdf->getPublicKey();
         $this->assertEquals($this->publicKey, $publicKey);
@@ -61,7 +61,7 @@ class IlovepdfTest extends \PHPUnit_Framework_TestCase
      * @test
      * @expectedException \Exception
      */
-    public function testEmptygTaskShouldTrowException()
+    public function testEmptyTaskShouldThrowException()
     {
         $this->ilovepdf->newTask("");
     }
@@ -70,7 +70,7 @@ class IlovepdfTest extends \PHPUnit_Framework_TestCase
      * @test
      * @expectedException \InvalidArgumentException
      */
-    public function testNotExistingTaskShouldTrowException()
+    public function testNotExistingTaskShouldThrowException()
     {
         $this->ilovepdf->newTask("tralara");
     }
@@ -113,7 +113,7 @@ class IlovepdfTest extends \PHPUnit_Framework_TestCase
      * @dataProvider invalidKeys
      * @expectedException \InvalidArgumentException
      */
-    public function testWrongEncryptKeyTrowsException($key)
+    public function testWrongEncryptKeyThrowsException($key)
     {
         $this->ilovepdf->setFileEncryption(true, $key );
     }

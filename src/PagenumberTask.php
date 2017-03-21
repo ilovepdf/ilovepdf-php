@@ -92,6 +92,7 @@ class PagenumberTask extends Task
     public function setFacingPages($facing_pages)
     {
         $this->facing_pages = $facing_pages;
+        return $this;
     }
 
     /**
@@ -100,6 +101,7 @@ class PagenumberTask extends Task
     public function setFirstCover($first_cover)
     {
         $this->first_cover = $first_cover;
+        return $this;
     }
 
     /**
@@ -108,6 +110,7 @@ class PagenumberTask extends Task
     public function setPages($pages)
     {
         $this->pages = $pages;
+        return $this;
     }
 
     /**
@@ -116,6 +119,7 @@ class PagenumberTask extends Task
     public function setStartingNumber($starting_number)
     {
         $this->starting_number = $starting_number;
+        return $this;
     }
 
     /**
@@ -124,6 +128,7 @@ class PagenumberTask extends Task
     public function setVerticalPosition($vertical_position)
     {
         $this->vertical_position = $vertical_position;
+        return $this;
     }
 
     /**
@@ -132,6 +137,7 @@ class PagenumberTask extends Task
     public function setHorizontalPosition($horizontal_position)
     {
         $this->horizontal_position = $horizontal_position;
+        return $this;
     }
 
     /**
@@ -140,6 +146,7 @@ class PagenumberTask extends Task
     public function setHorizontalPositionAdjustment($horizontal_position_adjustment)
     {
         $this->horizontal_position_adjustment = $horizontal_position_adjustment;
+        return $this;
     }
 
     /**
@@ -148,6 +155,7 @@ class PagenumberTask extends Task
     public function setVerticalPositionAdjustment($vertical_position_adjustment)
     {
         $this->vertical_position_adjustment = $vertical_position_adjustment;
+        return $this;
     }
 
     /**
@@ -156,6 +164,7 @@ class PagenumberTask extends Task
     public function setFontFamily($font_family)
     {
         $this->font_family = $font_family;
+        return $this;
     }
 
     /**
@@ -164,6 +173,7 @@ class PagenumberTask extends Task
     public function setFontStyle($font_style)
     {
         $this->font_style = $font_style;
+        return $this;
     }
 
     /**
@@ -172,6 +182,7 @@ class PagenumberTask extends Task
     public function setFontSize($font_size)
     {
         $this->font_size = $font_size;
+        return $this;
     }
 
     /**
@@ -180,6 +191,7 @@ class PagenumberTask extends Task
     public function setFontColor($font_color)
     {
         $this->font_color = $font_color;
+        return $this;
     }
 
     /**
@@ -188,5 +200,6 @@ class PagenumberTask extends Task
     public function setText($text)
     {
         $this->text = $text;
+        return $this;
     }
 }

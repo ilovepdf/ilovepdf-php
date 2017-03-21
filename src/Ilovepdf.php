@@ -174,6 +174,7 @@ class Ilovepdf
                 throw new UploadException($response->body->error->message, $response->code, null, $response);
             }
             if ($endpoint == 'process') {
+                var_dump($response);
                 throw new ProcessException($response->body->error->message, $response->code, null, $response);
             }
         }

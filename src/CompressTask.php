@@ -33,5 +33,7 @@ class CompressTask extends Task
     public function setCompressionLevel($level)
     {
         $this->compression_level = $level;
+
+        return $this;
     }
 }

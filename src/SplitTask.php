@@ -55,6 +55,7 @@ class SplitTask extends Task
     {
         $this->split_mode = 'fixed_range';
         $this->fixed_range = $range;
+        return $this;
     }
 
     /**
@@ -64,6 +65,7 @@ class SplitTask extends Task
     {
         $this->split_mode = 'remove_pages';
         $this->remove_pages = $pages;
+        return $this;
     }
 
     /**
@@ -73,6 +75,7 @@ class SplitTask extends Task
     {
         $this->split_mode = 'ranges';
         $this->ranges = $pages;
+        return $this;
     }
 
     /**
@@ -81,6 +84,7 @@ class SplitTask extends Task
     public function setMergeAfter($value)
     {
         $this->merge_after = $value;
+        return $this;
     }
 
     /**

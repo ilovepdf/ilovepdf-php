@@ -109,6 +109,7 @@ class WatermarkTask extends Task
     public function setMode($mode)
     {
         $this->mode = $mode;
+        return $this;
     }
 
     /**
@@ -117,6 +118,7 @@ class WatermarkTask extends Task
     public function setText($text)
     {
         $this->text = $text;
+        return $this;
     }
 
     /**
@@ -125,6 +127,7 @@ class WatermarkTask extends Task
     public function setImage($image)
     {
         $this->image = $image;
+        return $this;
     }
 
     /**
@@ -133,6 +136,7 @@ class WatermarkTask extends Task
     public function setPages($pages)
     {
         $this->pages = $pages;
+        return $this;
     }
 
     /**
@@ -141,6 +145,7 @@ class WatermarkTask extends Task
     public function setVerticalPosition($vertical_position)
     {
         $this->vertical_position = $vertical_position;
+        return $this;
     }
 
     /**
@@ -149,6 +154,7 @@ class WatermarkTask extends Task
     public function setHorizontalPosition($horizontal_position)
     {
         $this->horizontal_position = $horizontal_position;
+        return $this;
     }
 
     /**
@@ -157,6 +163,7 @@ class WatermarkTask extends Task
     public function setVerticalPositionAdjustment($vertical_position_adjustment)
     {
         $this->vertical_position_adjustment = $vertical_position_adjustment;
+        return $this;
     }
 
     /**
@@ -165,6 +172,7 @@ class WatermarkTask extends Task
     public function setHorizontalPositionAdjustment($horizontal_position_adjustment)
     {
         $this->horizontal_position_adjustment = $horizontal_position_adjustment;
+        return $this;
     }
 
     /**
@@ -173,6 +181,7 @@ class WatermarkTask extends Task
     public function setMosaic($mosaic)
     {
         $this->mosaic = $mosaic;
+        return $this;
     }
 
     /**
@@ -181,6 +190,7 @@ class WatermarkTask extends Task
     public function setRotation($rotation)
     {
         $this->rotation = $rotation;
+        return $this;
     }
 
     /**
@@ -189,6 +199,7 @@ class WatermarkTask extends Task
     public function setFontFamily($font_family)
     {
         $this->font_family = $font_family;
+        return $this;
     }
 
     /**
@@ -197,6 +208,7 @@ class WatermarkTask extends Task
     public function setFontStyle($font_style)
     {
         $this->font_style = $font_style;
+        return $this;
     }
 
     /**
@@ -205,6 +217,7 @@ class WatermarkTask extends Task
     public function setFontSize($font_size)
     {
         $this->font_size = $font_size;
+        return $this;
     }
 
     /**
@@ -213,6 +226,7 @@ class WatermarkTask extends Task
     public function setFontColor($font_color)
     {
         $this->font_color = $font_color;
+        return $this;
     }
 
     /**
@@ -221,6 +235,7 @@ class WatermarkTask extends Task
     public function setTransparency($transparency)
     {
         $this->transparency = $transparency;
+        return $this;
     }
 
     /**
@@ -229,5 +244,6 @@ class WatermarkTask extends Task
     public function setLayer($layer)
     {
         $this->layer = $layer;
+        return $this;
     }
 }
