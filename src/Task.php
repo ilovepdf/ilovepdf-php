@@ -41,7 +41,6 @@ class Task extends Ilovepdf
 
         $response = parent::sendRequest('get', 'start/' . $this->tool, null);
         if (empty($response->body->server)) {
-            var_dump($response);
             throw new StartException('no server assigned on start');
         };
         $this->setWorkerServer('https://' . $response->body->server);
@@ -53,7 +52,7 @@ class Task extends Ilovepdf
         $this->task = $task;
     }
 
-    public function getTask()
+    public function getTaskId()
     {
         return $this->task;
     }
@@ -73,11 +72,7 @@ class Task extends Ilovepdf
 
     public function getStatus()
     {
-        $response = Request::get('https://api.ilovepdf.com/v1/task/' . $this->task, array(
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . self::getJWT()
-        ));
-        return $response->body->status;
+        return parent::getStatus($this->getWorkerServer(), $this->getTaskId());
     }
 
     /**
@@ -123,6 +118,15 @@ class Task extends Ilovepdf
     }
 
     /**
+     * @return Task
+     */
+    public function delete()
+    {
+        $response = $this->sendRequest('delete', 'task/'.$this->getTaskId());
+        return $this;
+    }
+
+    /**
      * @param string $task
      * @param string $url
      *
@@ -162,9 +166,15 @@ class Task extends Ilovepdf
     public function downloadFile($task, $path = null)
     {
         $response = parent::sendRequest('get', 'download/' . $task, null);
-        preg_match('/ .*filename=\"([\W\w]+)\"/', $response->headers['Content-Disposition'], $matches);
 
-        $filename = str_replace('"', '', $matches[1]);
+
+        if(preg_match("/filename\*\=utf-8\'\'([\W\w]+)/", $response->headers['Content-Disposition'], $matchesUtf)){
+            $filename = urldecode(str_replace('"', '', $matchesUtf[1]));
+        }
+        else {
+            preg_match('/ .*filename=\"([\W\w]+)\"/', $response->headers['Content-Disposition'], $matches);
+            $filename = str_replace('"', '', $matches[1]);
+        }
         if (is_null($path)) $path = '.';
         $destination = $path . '/' . $filename;
         $file = fopen($destination, "w+");
@@ -198,10 +208,15 @@ class Task extends Ilovepdf
      */
     public function execute()
     {
+        if($this->task===null){
+            throw new \Exception('Current task not exists');
+        }
+
         $data = array_merge(
             get_object_vars($this),
             array('task' => $this->task, 'files' => $this->files));
         $body = Request\Body::multipart($data);
+
         $response = parent::sendRequest('post', 'process', urldecode(http_build_query($body)));
         return $response->body;
     }

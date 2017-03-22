@@ -149,7 +149,7 @@ class Ilovepdf
      * @throws ProcessException
      * @throws UploadException
      */
-    public function sendRequest($method, $endpoint, $body)
+    public function sendRequest($method, $endpoint, $body=null)
     {
         $to_server = self::$startServer;
         if (!is_null($this->getWorkerServer())) {
@@ -170,12 +170,19 @@ class Ilovepdf
             if ($response->code == 401) {
                 throw new AuthException($response->body->error->message, $response->code, null, $response);
             }
+            elseif ($response->code == 401) {
+                throw new \Exception($response->headers[0]);
+            }
+
             if ($endpoint == 'upload') {
                 throw new UploadException($response->body->error->message, $response->code, null, $response);
             }
-            if ($endpoint == 'process') {
-                var_dump($response);
+            elseif ($endpoint == 'process') {
                 throw new ProcessException($response->body->error->message, $response->code, null, $response);
+            }
+            else{
+                echo "\n".$method." ->url: ".$to_server . '/v1/' . $endpoint;
+                throw new \Exception($response->body->error->message);
             }
         }
         return $response;
@@ -260,5 +267,18 @@ class Ilovepdf
             throw new \InvalidArgumentException('Encrypt key shold have 16, 14 or 32 chars length');
         }
         $this->encryptKey = $encryptKey;
+    }
+
+    /**
+     * @return Task
+     */
+    public function getStatus($server, $taskId)
+    {
+        $workerServer = $this->getWorkerServer();
+        $this->setWorkerServer($server);
+        $response = $this->sendRequest('get', 'task/'.$taskId);
+        $this->setWorkerServer($workerServer);
+
+        return $response->body;
     }
 }
