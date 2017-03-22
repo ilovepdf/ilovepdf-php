@@ -181,7 +181,6 @@ class Ilovepdf
                 throw new ProcessException($response->body->error->message, $response->code, null, $response);
             }
             else{
-                echo "\n".$method." ->url: ".$to_server . '/v1/' . $endpoint;
                 throw new \Exception($response->body->error->message);
             }
         }

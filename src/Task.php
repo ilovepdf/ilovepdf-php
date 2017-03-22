@@ -31,7 +31,7 @@ class Task extends Ilovepdf
 
 
     /**
-     * Task constructor.
+     * Task constructor. 
      * @param null $publicKey
      * @param null $secretKey
      */
@@ -252,5 +252,13 @@ class Task extends Ilovepdf
     public function ignorePassword($value)
     {
         $this->ignore_password = $value;
+    }
+
+    public function deleteFile($file){
+        if (($key = array_search($file, $this->files)) !== false) {
+            $body = Request\Body::multipart(['task'=>$this->getTaskId(), 'server_filename'=>$file->server_filename]);
+            $this->sendRequest('post', 'upload/delete', $body);
+            unset($this->files[$key]);
+        }
     }
 }
