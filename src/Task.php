@@ -31,7 +31,7 @@ class Task extends Ilovepdf
 
 
     /**
-     * Task constructor. 
+     * Task constructor.
      * @param null $publicKey
      * @param null $secretKey
      */

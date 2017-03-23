@@ -11,67 +11,67 @@ class PagenumberTask extends Task
     /**
      * @var boolean
      */
-    private $facing_pages;
+    public $facing_pages;
 
     /**
      * @var boolean
      */
-    private $first_cover;
+    public $first_cover;
 
     /**
      * @var string
      */
-    private $pages;
+    public $pages;
 
     /**
      * @var integer
      */
-    private $starting_number;
+    public $starting_number;
 
     /**
      * @var string
      */
-    private $vertical_position;
+    public $vertical_position;
 
     /**
      * @var string
      */
-    private $horizontal_position;
+    public $horizontal_position;
 
     /**
      * @var integer
      */
-    private $vertical_position_adjustment;
+    public $vertical_position_adjustment;
 
     /**
      * @var integer
      */
-    private $horizontal_position_adjustment;
+    public $horizontal_position_adjustment;
 
     /**
      * @var string
      */
-    private $font_family;
+    public $font_family;
 
     /**
      * @var string
      */
-    private $font_style;
+    public $font_style;
 
     /**
      * @var integer
      */
-    private $font_size;
+    public $font_size;
 
     /**
      * @var string
      */
-    private $font_color;
+    public $font_color;
 
     /**
      * @var string
      */
-    private $text;
+    public $text;
 
     /**
      * AddnumbersTask constructor.
@@ -201,5 +201,15 @@ class PagenumberTask extends Task
     {
         $this->text = $text;
         return $this;
+    }
+
+
+    /**
+     * @param null $processData
+     * @return mixed
+     */
+    public function execute($processData = null)
+    {
+        return parent::execute(get_object_vars($this));
     }
 }

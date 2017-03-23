@@ -96,6 +96,4 @@ class SplitTask extends Task
         $this->tool = 'split';
         return parent::execute(get_object_vars($this));
     }
-
-
 }
