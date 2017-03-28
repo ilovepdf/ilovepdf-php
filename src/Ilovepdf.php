@@ -101,6 +101,7 @@ class Ilovepdf
 
         // Collect all the data
         $secret = $this->getSecretKey();
+
         $currentTime = time();
         $request = '';
         $hostInfo = '';
@@ -110,9 +111,9 @@ class Ilovepdf
         $token = array_merge([
             'iss' => $hostInfo,
             'aud' => $hostInfo,
-            'iat' => $currentTime,
-            'nbf' => $currentTime,
-            'exp' => $currentTime + 3600
+            'iat' => $currentTime - 600, //add some "delay"
+            'nbf' => $currentTime - 600, //add some "delay"
+            'exp' => $currentTime + 3600 + 600 ////add some "delay"
         ], []);
 
         // Set up id
@@ -168,6 +169,8 @@ class Ilovepdf
         ), $body);
         if ($response->code != '200' && $response->code != '201') {
             if ($response->code == 401) {
+                var_dump($to_server);
+                var_dump($response);
                 throw new AuthException($response->body->error->message, $response->code, null, $response);
             }
             elseif ($response->code == 401) {
