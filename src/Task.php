@@ -29,7 +29,6 @@ class Task extends Ilovepdf
     const STATUS_DELETED = 'TaskDeleted';
     const STATUS_NOTFOUND = 'TaskNotFound';
 
-
     /**
      * Task constructor.
      * @param null $publicKey
@@ -38,8 +37,9 @@ class Task extends Ilovepdf
     function __construct($publicKey, $secretKey)
     {
         parent::__construct($publicKey, $secretKey);
-
-        $response = parent::sendRequest('get', 'start/' . $this->tool, null);
+        $data = array('v'=> self::VERSION);
+        $body = Request\Body::Form($data);
+        $response = parent::sendRequest('get', 'start/' . $this->tool, $body);
         if (empty($response->body->server)) {
             throw new StartException('no server assigned on start');
         };
@@ -109,7 +109,7 @@ class Task extends Ilovepdf
      */
     public function uploadFile($task, $filepath)
     {
-        $data = array('task' => $task);
+        $data = array('task' => $task, 'v'=> self::VERSION);
         $files = array('file' => $filepath);
         $body = Request\Body::multipart($data, $files);
 
@@ -138,7 +138,7 @@ class Task extends Ilovepdf
      */
     public function uploadUrl($task, $url)
     {
-        $data = array('task' => $task, 'cloud_file' => $url);
+        $data = array('task' => $task, 'cloud_file' => $url, 'v'=> self::VERSION);
         $body = Request\Body::Form($data);
         $response = parent::sendRequest('post', 'upload', $body);
         return new File($response->body->server_filename, basename($url));
@@ -165,8 +165,9 @@ class Task extends Ilovepdf
      */
     public function downloadFile($task, $path = null)
     {
-        $response = parent::sendRequest('get', 'download/' . $task, null);
-
+        $data = array('v'=> self::VERSION);
+        $body = Request\Body::Form($data);
+        $response = parent::sendRequest('get', 'download/' . $task, $body);
 
         if(preg_match("/filename\*\=utf-8\'\'([\W\w]+)/", $response->headers['Content-Disposition'], $matchesUtf)){
             $filename = urldecode(str_replace('"', '', $matchesUtf[1]));
@@ -199,7 +200,6 @@ class Task extends Ilovepdf
         return self::$encrypted;
     }
 
-
     /**
      * @return mixed
      * @throws Exceptions\AuthException
@@ -214,7 +214,7 @@ class Task extends Ilovepdf
 
         $data = array_merge(
             get_object_vars($this),
-            array('task' => $this->task, 'files' => $this->files));
+            array('task' => $this->task, 'files' => $this->files, 'v'=> self::VERSION));
         $body = Request\Body::multipart($data);
 
         $response = parent::sendRequest('post', 'process', urldecode(http_build_query($body)));
@@ -256,7 +256,7 @@ class Task extends Ilovepdf
 
     public function deleteFile($file){
         if (($key = array_search($file, $this->files)) !== false) {
-            $body = Request\Body::multipart(['task'=>$this->getTaskId(), 'server_filename'=>$file->server_filename]);
+            $body = Request\Body::multipart(['task'=>$this->getTaskId(), 'server_filename'=>$file->server_filename, 'v'=> self::VERSION]);
             $this->sendRequest('post', 'upload/delete', $body);
             unset($this->files[$key]);
         }

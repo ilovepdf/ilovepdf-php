@@ -5,7 +5,7 @@ namespace Ilovepdf;
 /**
  * Class Ilovepdf
  *
- * @todo Add params as needed, beacuse we don't want this class extends Task. Currently not used
+ * @todo Add params as needed, because we don't want this class extends Task. Currently not used
  *
  * @package Ilovepdf
  */

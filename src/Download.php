@@ -60,8 +60,6 @@ class Download extends Task
         $fileInfoNew = pathinfo($filenameNew);
 
         if($fileInfo['extension']!=$fileInfoNew['extension']){
-            var_dump($fileInfo);
-            var_dump($fileInfoNew);
             throw new \InvalidArgumentException('Invalid file extension');
         }
         return $filenameNew;

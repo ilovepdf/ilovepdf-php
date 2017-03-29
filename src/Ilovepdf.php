@@ -32,7 +32,7 @@ class Ilovepdf
     // @var string|null Disable Exceptions if needed.
     public static $exceptions = true;
 
-    const VERSION = '0.0.1';
+    const VERSION = 'php.1.0.5';
 
     public $token = null;
 
@@ -169,8 +169,6 @@ class Ilovepdf
         ), $body);
         if ($response->code != '200' && $response->code != '201') {
             if ($response->code == 401) {
-                var_dump($to_server);
-                var_dump($response);
                 throw new AuthException($response->body->error->message, $response->code, null, $response);
             }
             elseif ($response->code == 401) {
