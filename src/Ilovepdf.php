@@ -205,6 +205,15 @@ class Ilovepdf
         return new $classname($this->getPublicKey(), $this->getSecretKey());
     }
 
+    public static function setStartServer($server){
+        self::$startServer = $server;
+    }
+
+
+    public static function getStartServer(){
+        return self::$startServer;
+    }
+
     /**
      * @return string Return url
      */
