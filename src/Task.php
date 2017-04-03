@@ -70,8 +70,11 @@ class Task extends Ilovepdf
         return $filesArray;
     }
 
-    public function getStatus()
+    public function getStatus($server=null, $taskId=null)
     {
+        if($server!=null && $taskId!=null){
+            return parent::getStatus(server, $taskId);
+        }
         return parent::getStatus($this->getWorkerServer(), $this->getTaskId());
     }
 
