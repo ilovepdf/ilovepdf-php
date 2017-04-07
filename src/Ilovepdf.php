@@ -163,6 +163,8 @@ class Ilovepdf
             Request::timeout(10);
         }
 
+        echo " -$method $to_server/v1/$endpoint - \n";
+
         $response = Request::$method($to_server . '/v1/' . $endpoint, array(
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $this->getJWT()
@@ -179,6 +181,7 @@ class Ilovepdf
                 throw new UploadException($response->body->error->message, $response->code, null, $response);
             }
             elseif ($endpoint == 'process') {
+                var_dump($response);
                 throw new ProcessException($response->body->error->message, $response->code, null, $response);
             }
             else{
