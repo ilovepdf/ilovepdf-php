@@ -171,9 +171,6 @@ class Ilovepdf
             if ($response->code == 401) {
                 throw new AuthException($response->body->error->message, $response->code, null, $response);
             }
-            elseif ($response->code != 401) {
-                throw new \Exception($response->headers[0]);
-            }
 
             if ($endpoint == 'upload') {
                 throw new UploadException($response->body->error->message, $response->code, null, $response);
