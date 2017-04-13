@@ -95,7 +95,7 @@ class WatermarkTask extends Task
      */
     public $layer;
 
-    private $layerValues = ['over', 'below'];
+    private $layerValues = ['above', 'below'];
 
 
     /**
