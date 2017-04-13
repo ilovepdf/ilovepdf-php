@@ -15,15 +15,20 @@ class ImagepdfTask extends Task
      */
     public $orientation;
 
+    private $orientationValues = ['portrait', 'landscape'];
+
     /**
      * @var integer
      */
     public $margin;
 
+
     /**
      * @var string
      */
     public $pagesize;
+
+    private $pagesizeValues = ['fit', 'A4', 'letter'];
 
 
     /**
@@ -42,12 +47,15 @@ class ImagepdfTask extends Task
      */
     public function setOrientation($orientation)
     {
+        $this->checkValues($orientation, $this->orientationValues);
+
         $this->orientation = $orientation;
         return $this;
     }
 
     /**
      * @param integer $margin
+     * @return Task
      */
     public function setMargin($margin)
     {
@@ -57,9 +65,11 @@ class ImagepdfTask extends Task
 
     /**
      * @param string $pagesize
+     * @return Task
      */
     public function setPagesize($pagesize)
     {
+        $this->checkValues($pagesize, $this->pagesizeValues);
         $this->pagesize = $pagesize;
         return $this;
     }

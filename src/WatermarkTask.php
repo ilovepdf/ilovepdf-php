@@ -34,10 +34,14 @@ class WatermarkTask extends Task
      * @var string
      */
     public $vertical_position;
+
+    private $verticalPositionValues = ['bottom', 'top'];
     /**
      * @var string
      */
     public $horizontal_position;
+
+    private $horizontalPositionValues = ['left', 'middle', 'right'];
 
     /**
      * @var integer
@@ -64,6 +68,8 @@ class WatermarkTask extends Task
      */
     public $font_family;
 
+    private $fontFamilyValues = ['Arial', 'Arial Unicode MS', 'Verdana', 'Courier', 'Times New Roman', 'Comic Sans MS', 'WenQuanYi Zen Hei', 'Lohit Marathi'];
+
     /**
      * @var string
      */
@@ -88,6 +94,8 @@ class WatermarkTask extends Task
      * @var string
      */
     public $layer;
+
+    private $layerValues = ['over', 'below'];
 
 
     /**
@@ -144,6 +152,8 @@ class WatermarkTask extends Task
      */
     public function setVerticalPosition($vertical_position)
     {
+        $this->checkValues($vertical_position, $this->verticalPositionValues);
+
         $this->vertical_position = $vertical_position;
         return $this;
     }
@@ -153,6 +163,8 @@ class WatermarkTask extends Task
      */
     public function setHorizontalPosition($horizontal_position)
     {
+        $this->checkValues($horizontal_position, $this->horizontalPositionValues);
+
         $this->horizontal_position = $horizontal_position;
         return $this;
     }
@@ -198,6 +210,8 @@ class WatermarkTask extends Task
      */
     public function setFontFamily($font_family)
     {
+        $this->checkValues($font_family, $this->fontFamilyValues);
+
         $this->font_family = $font_family;
         return $this;
     }
@@ -243,6 +257,8 @@ class WatermarkTask extends Task
      */
     public function setLayer($layer)
     {
+        $this->checkValues($layer, $this->layerValues);
+
         $this->layer = $layer;
         return $this;
     }

@@ -264,4 +264,14 @@ class Task extends Ilovepdf
             unset($this->files[$key]);
         }
     }
+
+    /**
+     * @param mixed $value
+     * @param array $allowed
+     */
+    public function checkValues($value, $allowedValues){
+        if(!in_array($value, $allowedValues)){
+            throw new \InvalidArgumentException('Invalid compress level value "'.$value.'". Must be one of: '.implode(',', $allowedValues));
+        }
+    }
 }

@@ -13,6 +13,8 @@ class CompressTask extends Task
      */
     public $compression_level;
 
+    private $compressionLevelValues = ["extreme", "recommended", "low"];
+
     /**
      * CompressTask constructor.
      * @param string $publicKey
@@ -27,11 +29,13 @@ class CompressTask extends Task
     /**
      * @param $level string
      *
-     * values: ["extreme"|"recommended"|"less"]
+     * values: ["extreme"|"recommended"|"low"]
      * default: "recommended"
      */
     public function setCompressionLevel($level)
     {
+        $this->checkValues($level, $this->compressionLevelValues);
+
         $this->compression_level = $level;
 
         return $this;

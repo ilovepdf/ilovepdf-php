@@ -33,10 +33,14 @@ class PagenumberTask extends Task
      */
     public $vertical_position;
 
+    private $verticalPositionValues = ['bottom', 'top'];
+
     /**
      * @var string
      */
     public $horizontal_position;
+
+    private $horizontalPositionValues = ['left', 'middle', 'right'];
 
     /**
      * @var integer
@@ -52,6 +56,8 @@ class PagenumberTask extends Task
      * @var string
      */
     public $font_family;
+
+    private $fontFamilyValues = ['Arial', 'Arial Unicode MS', 'Verdana', 'Courier', 'Times New Roman', 'Comic Sans MS', 'WenQuanYi Zen Hei', 'Lohit Marathi'];
 
     /**
      * @var string
@@ -115,6 +121,7 @@ class PagenumberTask extends Task
 
     /**
      * @param int $starting_number
+     * @return Task
      */
     public function setStartingNumber($starting_number)
     {
@@ -124,24 +131,31 @@ class PagenumberTask extends Task
 
     /**
      * @param string $vertical_position
+     * @return Task
      */
     public function setVerticalPosition($vertical_position)
     {
+        $this->checkValues($vertical_position, $this->verticalPositionValues);
+
         $this->vertical_position = $vertical_position;
         return $this;
     }
 
     /**
      * @param string $horizontal_position
+     * @return Task
      */
     public function setHorizontalPosition($horizontal_position)
     {
+        $this->checkValues($horizontal_position, $this->horizontalPositionValues);
+
         $this->horizontal_position = $horizontal_position;
         return $this;
     }
 
     /**
      * @param int $horizontal_position_adjustment
+     * @return Task
      */
     public function setHorizontalPositionAdjustment($horizontal_position_adjustment)
     {
@@ -163,6 +177,8 @@ class PagenumberTask extends Task
      */
     public function setFontFamily($font_family)
     {
+        $this->checkValues($font_family, $this->fontFamilyValues);
+
         $this->font_family = $font_family;
         return $this;
     }

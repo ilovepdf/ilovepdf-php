@@ -13,6 +13,8 @@ class PdfaTask extends Task
      */
     public $conformance = "default";
 
+    private $conformanceValues = ['pdfa-1b', 'pdfa-1a', 'pdfa-2b', 'pdfa-2u', 'pdfa-2a', 'pdfa-3b', 'pdfa-3u', 'pdfa-3a'];
+
     /**
      * CompressTask constructor.
      * @param string $publicKey
@@ -26,10 +28,14 @@ class PdfaTask extends Task
 
     /**
      * @param string $conformance
+     * @return Task
      */
     public function setConformance($conformance)
     {
+        $this->checkValues($conformance, $this->conformanceValues);
+
         $this->conformance = $conformance;
+        return $this;
     }
 
     /**
