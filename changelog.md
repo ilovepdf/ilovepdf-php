@@ -3,7 +3,7 @@ Changelog
 
 v1.0.11
 
-* Bug AuthException
+* Bug AuthException warning
 
 v1.0.10
 
