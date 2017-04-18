@@ -29,9 +29,16 @@ class Ilovepdf
     // @var string|null The version of the Ilovepdf API to use for requests.
     public static $apiVersion = 'v1';
 
-    const VERSION = 'php.1.0.10';
+    const VERSION = 'php.1.0.11';
 
     public $token = null;
+
+    /*
+     * @var int delay in seconds, for timezone exceptions.
+     * Time sholud be UTC, but some servers maybe are not using NAT.
+     * This var is here to correct this delay. Currently 5400 seconds : 1h:30'
+     */
+    public $timeDelay = 5400;
 
     private $encrypted = false;
     private $encryptKey;
@@ -108,9 +115,9 @@ class Ilovepdf
         $token = array_merge([
             'iss' => $hostInfo,
             'aud' => $hostInfo,
-            'iat' => $currentTime - 600, //add some "delay"
-            'nbf' => $currentTime - 600, //add some "delay"
-            'exp' => $currentTime + 3600 + 600 ////add some "delay"
+            'iat' => $currentTime - $this->timeDelay,
+            'nbf' => $currentTime - $this->timeDelay,
+            'exp' => $currentTime + 3600 + $this->timeDelay
         ], []);
 
         // Set up id
@@ -164,11 +171,11 @@ class Ilovepdf
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $this->getJWT()
         ), $body);
+
         if ($response->code != '200' && $response->code != '201') {
             if ($response->code == 401) {
                 throw new AuthException($response->body->name, $response->code, null, $response);
             }
-
             if ($endpoint == 'upload') {
                 throw new UploadException($response->body->error->message, $response->code, null, $response);
             }
