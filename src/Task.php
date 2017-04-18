@@ -14,13 +14,14 @@ class Task extends Ilovepdf
     // @var string The Ilovepdf API Task ID.
     public $task = null;
     //private $server = null;
-    public $files = array();
+    public $files = [];
     public $tool;
     public $packaged_filename;
     public $output_filename;
     public $ignore_errors = true;
     public $ignore_password = true;
     public $try_pdf_repair = true;
+    public $meta = [];
 
     /**
      * Task constructor.
@@ -313,5 +314,16 @@ class Task extends Ilovepdf
         }
 
         parent::setFileEncryption($value, $encryptKey);
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     *
+     * set meta values as http://www.adobe.com/content/dam/Adobe/en/devnet/acrobat/pdfs/pdf_reference_1-7.pdf (page 844)
+     */
+    public function setMeta($key, $value)
+    {
+        $this->meta[$key] = $value;
     }
 }

@@ -2,7 +2,8 @@
 
 namespace Ilovepdf\Exceptions;
 
-class AuthException extends \Exception {
+class AuthException extends \Exception
+{
 
     private $params;
     private $type;
@@ -14,26 +15,17 @@ class AuthException extends \Exception {
     {
         parent::__construct($message, $code, $previous);
 
-        $this->type = $response->body->error->type;
+        $this->type = $response->body->name;
         $this->params = null;
     }
 
-    public function getErrors() {
-
-        /*foreach($this->params as $key=>$error_param){
-            foreach($error_param as $single_param){
-                $errors[$key]=$single_param;
-            }
-        }*/
+    public function getErrors()
+    {
         return $this->params;
     }
-    public function getType() {
 
-        /*foreach($this->params as $key=>$error_param){
-            foreach($error_param as $single_param){
-                $errors[$key]=$single_param;
-            }
-        }*/
+    public function getType()
+    {
         return $this->type;
     }
 }

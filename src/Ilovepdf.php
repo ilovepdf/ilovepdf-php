@@ -164,11 +164,11 @@ class Ilovepdf
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $this->getJWT()
         ), $body);
+
         if ($response->code != '200' && $response->code != '201') {
             if ($response->code == 401) {
-                throw new AuthException($response->body->error->message, $response->code, null, $response);
+                throw new AuthException($response->body->name, $response->code, null, $response);
             }
-
             if ($endpoint == 'upload') {
                 throw new UploadException($response->body->error->message, $response->code, null, $response);
             }
