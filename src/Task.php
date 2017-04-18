@@ -20,14 +20,7 @@ class Task extends Ilovepdf
     public $output_filename;
     public $ignore_errors = true;
     public $ignore_password = true;
-
-    const STATUS_WAITING = 'TaskWaiting';
-    const STATUS_PROCESSING = 'TaskProcessing';
-    const STATUS_SUCCESS = 'TaskSuccess';
-    const STATUS_SUCCESSWITHWARNINGS = 'TaskSuccessWithWarnings';
-    const STATUS_ERROR = 'TaskError';
-    const STATUS_DELETED = 'TaskDeleted';
-    const STATUS_NOTFOUND = 'TaskNotFound';
+    public $try_pdf_repair = true;
 
     /**
      * Task constructor.
@@ -151,10 +144,10 @@ class Task extends Ilovepdf
      * @param null|string $path
      * @param null|string $file
      */
-    public function download($path = null, $file = null)
+    public function download($path = null)
     {
         //$download = new Download();
-        $this->downloadFile($this->task, $path, $file);
+        $this->downloadFile($this->task, $path);
         return;
     }
 
@@ -241,22 +234,6 @@ class Task extends Ilovepdf
         $this->output_filename = $filename;
     }
 
-    /**
-     * @param boolean $value If true, and multiple archives are processed it will ignore files with errors and continue process for all others
-     */
-    public function ignoreErrors($value)
-    {
-        $this->ignore_errors = $value;
-    }
-
-    /**
-     * @param boolean $value
-     */
-    public function ignorePassword($value)
-    {
-        $this->ignore_password = $value;
-    }
-
     public function deleteFile($file){
         if (($key = array_search($file, $this->files)) !== false) {
             $body = Request\Body::multipart(['task'=>$this->getTaskId(), 'server_filename'=>$file->server_filename, 'v'=> self::VERSION]);
@@ -271,7 +248,70 @@ class Task extends Ilovepdf
      */
     public function checkValues($value, $allowedValues){
         if(!in_array($value, $allowedValues)){
-            throw new \InvalidArgumentException('Invalid compress level value "'.$value.'". Must be one of: '.implode(',', $allowedValues));
+            throw new \InvalidArgumentException('Invalid '.$this->tool.' value "'.$value.'". Must be one of: '.implode(',', $allowedValues));
         }
+    }
+
+    /**
+     * @param boolean $try_pdf_repair
+     */
+    public function setTryPdfRepair($try_pdf_repair)
+    {
+        $this->try_pdf_repair = $try_pdf_repair;
+    }
+
+    /**
+     * @param boolean $ignore_errors
+     */
+    public function setIgnoreErrors($ignore_errors)
+    {
+        $this->ignore_errors = $ignore_errors;
+    }
+
+    /**
+     *
+     *
+     * @param boolean $ignore_password
+     */
+    public function setIgnorePassword($ignore_password)
+    {
+        $this->ignore_password = $ignore_password;
+    }
+
+
+    /**
+     * alias for setIgnoreError
+     *
+     * Will be deprecated on v2.0
+     *
+     * @param boolean $value If true, and multiple archives are processed it will ignore files with errors and continue process for all others
+     */
+    public function ignoreErrors($value)
+    {
+        $this->ignore_errors = $value;
+    }
+
+    /**
+     * alias for setIgnorePassword
+     *
+     * Will be deprecated on v2.0
+     *
+     * @param boolean $value
+     */
+    public function ignorePassword($value)
+    {
+        $this->ignore_password = $value;
+    }
+
+    /**
+     * @param boolean $value
+     */
+    public function setFileEncryption($value, $encryptKey=null)
+    {
+        if(count($this->files)>0){
+            throw new \Exception('Encrypth mode cannot be set after file upload');
+        }
+
+        parent::setFileEncryption($value, $encryptKey);
     }
 }

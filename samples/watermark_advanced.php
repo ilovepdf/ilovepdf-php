@@ -25,7 +25,7 @@ $myTask->setPages("1-5,7");
 $myTask->setVerticalPosition("top");
 
 // set horizontal position
-$myTask->setHorizontalPosition("rigth");
+$myTask->setHorizontalPosition("right");
 
 // adjust vertical position
 $myTask->setVerticalPositionAdjustment("100");

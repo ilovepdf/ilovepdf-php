@@ -16,9 +16,6 @@ $myTask = $ilovepdf->newTask('merge');
 $fileA = $myTask->addFile('/path/to/file/document_a.pdf');
 $fileB = $myTask->addFile('/path/to/file/document_b.pdf');
 
-// set compression level
-$myTask->setCompressionLevel('extreme');
-
 // and set name for output file.
 // the task will set the correct file extension for you.
 $myTask->setOutputFilename('merged_filename');

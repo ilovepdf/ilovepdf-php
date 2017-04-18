@@ -29,10 +29,7 @@ class Ilovepdf
     // @var string|null The version of the Ilovepdf API to use for requests.
     public static $apiVersion = 'v1';
 
-    // @var string|null Disable Exceptions if needed.
-    public static $exceptions = true;
-
-    const VERSION = 'php.1.0.5';
+    const VERSION = 'php.1.0.10';
 
     public $token = null;
 
