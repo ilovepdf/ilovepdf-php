@@ -2,6 +2,7 @@
 
 namespace Ilovepdf;
 
+use Ilovepdf\Exceptions\DownloadException;
 use Ilovepdf\Exceptions\ProcessException;
 use Ilovepdf\Exceptions\UploadException;
 use Ilovepdf\Exceptions\StartException;
@@ -181,6 +182,9 @@ class Ilovepdf
             }
             elseif ($endpoint == 'process') {
                 throw new ProcessException($response->body->error->message, $response->code, null, $response);
+            }
+            elseif (strpos($endpoint, 'download')===0) {
+                throw new DownloadException($response->body->error->message, $response->code, null, $response);
             }
             else{
                 throw new \Exception($response->body->error->message);
