@@ -6,7 +6,7 @@ namespace Ilovepdf;
  *
  * @package Ilovepdf
  */
-class LockTask extends Task
+class ProtectTask extends Task
 {
 
     /**
@@ -21,7 +21,7 @@ class LockTask extends Task
      */
     function __construct($publicKey, $secretKey)
     {
-        $this->tool = 'lock';
+        $this->tool = 'protect';
         parent::__construct($publicKey, $secretKey);
     }
 
