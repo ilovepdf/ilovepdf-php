@@ -2,6 +2,7 @@
 
 namespace Ilovepdf;
 
+use Ilovepdf\Exceptions\DownloadException;
 use Ilovepdf\Exceptions\ProcessException;
 use Ilovepdf\Exceptions\UploadException;
 use Ilovepdf\Exceptions\StartException;
@@ -29,7 +30,7 @@ class Ilovepdf
     // @var string|null The version of the Ilovepdf API to use for requests.
     public static $apiVersion = 'v1';
 
-    const VERSION = 'php.1.0.11';
+    const VERSION = 'php.1.0.14';
 
     public $token = null;
 
@@ -181,6 +182,9 @@ class Ilovepdf
             }
             elseif ($endpoint == 'process') {
                 throw new ProcessException($response->body->error->message, $response->code, null, $response);
+            }
+            elseif (strpos($endpoint, 'download')===0) {
+                throw new DownloadException($response->body->error->message, $response->code, null, $response);
             }
             else{
                 throw new \Exception($response->body->error->message);

@@ -22,6 +22,10 @@ class ImagepdfTask extends Task
      */
     public $margin;
 
+    /**
+     * @var boolean
+     */
+    public $merge_after = true;
 
     /**
      * @var string
@@ -72,5 +76,23 @@ class ImagepdfTask extends Task
         $this->checkValues($pagesize, $this->pagesizeValues);
         $this->pagesize = $pagesize;
         return $this;
+    }
+
+    /**
+     * @param boolean $merge_after
+     */
+    public function setMergeAfter($merge_after)
+    {
+        $this->merge_after = $merge_after;
+        return $this;
+    }
+
+    /**
+     * @param null $processData
+     * @return mixed
+     */
+    public function execute($processData = null)
+    {
+        return parent::execute(get_object_vars($this));
     }
 }
