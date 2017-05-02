@@ -18,8 +18,9 @@ class ExtendedException extends \Exception
     public function __construct($message, $code = 0, Exception $previous = null, $response)
     {
         $this->type = $response->body->error->type;
-        $this->params = $response->body->error->param;
-
+        if (isset($response->body->error->param)) {
+            $this->params = $response->body->error->param;
+        }
         if (is_array($this->params) && isset($this->params[0]) && isset($this->params[0]->error)) {
             parent::__construct($message . ' (' . $this->params[0]->error . ')', $code, $previous);
         } else {
