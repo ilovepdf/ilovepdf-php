@@ -35,13 +35,13 @@ class WatermarkTask extends Task
      */
     public $vertical_position;
 
-    private $verticalPositionValues = ['bottom', 'center', 'top'];
+    private $verticalPositionValues = ['bottom', 'middle', 'top'];
     /**
      * @var string
      */
     public $horizontal_position;
 
-    private $horizontalPositionValues = ['left', 'middle', 'right'];
+    private $horizontalPositionValues = ['left', 'center', 'right'];
 
     /**
      * @var integer

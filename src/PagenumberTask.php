@@ -40,7 +40,7 @@ class PagenumberTask extends Task
      */
     public $horizontal_position;
 
-    private $horizontalPositionValues = ['left', 'middle', 'right'];
+    private $horizontalPositionValues = ['left', 'center', 'right'];
 
     /**
      * @var integer
