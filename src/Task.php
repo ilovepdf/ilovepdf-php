@@ -3,6 +3,7 @@
 namespace Ilovepdf;
 
 use Ilovepdf\Exceptions\StartException;
+use Ilovepdf\Request\Body;
 
 /**
  * Class Ilovepdf
@@ -32,7 +33,7 @@ class Task extends Ilovepdf
     {
         parent::__construct($publicKey, $secretKey);
         $data = array('v'=> self::VERSION);
-        $body = Request\Body::Form($data);
+        $body = Body::Form($data);
         $response = parent::sendRequest('get', 'start/' . $this->tool, $body);
         if (empty($response->body->server)) {
             throw new StartException('no server assigned on start');
