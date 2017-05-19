@@ -18,8 +18,7 @@ $myTask->setMode("text");
 $myTask->setText("watermark text");
 
 // process files
-// time var will have info about time spent in process
-$time = $myTask->execute();
+$myTask->execute();
 
 // and finally download the unlocked file. If no path is set, it will be donwloaded on current folder
 $myTask->download();

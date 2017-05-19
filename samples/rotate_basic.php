@@ -16,8 +16,7 @@ $file = $myTask->addFile('/path/to/file/document.pdf');
 $file->setRotation(90);
 
 // process files
-// time var will have info about time spent in process
-$time = $myTask->execute();
+$myTask->execute();
 
 // and finally download file. If no path is set, it will be donwloaded on current folder
 $myTask->download();

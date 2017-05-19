@@ -17,8 +17,7 @@ $fileA = $myTask->addFile('/path/to/file/document_a.pdf');
 $fileB = $myTask->addFile('/path/to/file/document_b.pdf');
 
 // process files
-// time var will have info about time spent in process
-$time = $myTask->execute();
+$myTask->execute();
 
 // and finally download file. If no path is set, it will be downloaded on current folder
 $myTask->download();
