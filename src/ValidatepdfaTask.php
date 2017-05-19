@@ -6,7 +6,7 @@ namespace Ilovepdf;
  *
  * @package Ilovepdf
  */
-class PdfaTask extends Task
+class ValidatepdfaTask extends Task
 {
     /**
      * @var string
@@ -22,7 +22,7 @@ class PdfaTask extends Task
      */
     function __construct($publicKey, $secretKey)
     {
-        $this->tool = 'pdfa';
+        $this->tool = 'validatepdfa';
         parent::__construct($publicKey, $secretKey);
     }
 
@@ -45,5 +45,18 @@ class PdfaTask extends Task
     public function execute($processData = null)
     {
         return parent::execute(get_object_vars($this));
+    }
+
+    public function download($path = null)
+    {
+        return;
+    }
+
+    public function blob(){
+        $this->download();
+    }
+
+    public function toBrowser(){
+        $this->download();
     }
 }

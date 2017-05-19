@@ -208,7 +208,7 @@ class Task extends Ilovepdf
      * @throws Exceptions\ProcessException
      * @throws Exceptions\UploadException
      */
-    public function downloadFile($task)
+    private function downloadFile($task)
     {
         $data = array('v'=> self::VERSION);
         $body = Request\Body::Form($data);
