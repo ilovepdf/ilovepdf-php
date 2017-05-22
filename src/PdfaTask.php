@@ -13,6 +13,12 @@ class PdfaTask extends Task
      */
     public $conformance = "pdfa-2b";
 
+
+    /**
+     * @var boolean
+     */
+    public $allow_downgrade = true;
+
     private $conformanceValues = ['pdfa-1b', 'pdfa-1a', 'pdfa-2b', 'pdfa-2u', 'pdfa-2a', 'pdfa-3b', 'pdfa-3u', 'pdfa-3a'];
 
     /**
@@ -45,5 +51,13 @@ class PdfaTask extends Task
     public function execute($processData = null)
     {
         return parent::execute(get_object_vars($this));
+    }
+
+    /**
+     * @param boolean $allowDowngrade
+     */
+    public function setAllowDowngrade($allowDowngrade)
+    {
+        $this->allow_downgrade = $allowDowngrade;
     }
 }
