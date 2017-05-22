@@ -44,6 +44,9 @@ class Ilovepdf
     private $encrypted = false;
     private $encryptKey;
 
+    public $timeout = 10;
+    public $timeoutLarge = null;
+
 
     public function __construct($publicKey = null, $secretKey = null)
     {
@@ -163,9 +166,9 @@ class Ilovepdf
         }
 
         if ($endpoint == 'process' || $endpoint == 'upload' || $endpoint == 'download') {
-            Request::timeout(null);
+            Request::timeout($this->timeoutLarge);
         } else {
-            Request::timeout(10);
+            Request::timeout($this->timeout);
         }
 
         $response = Request::$method($to_server . '/v1/' . $endpoint, array(
