@@ -3,8 +3,9 @@
 namespace Tests\Ilovepdf;
 
 use Ilovepdf\Ilovepdf;
+use PHPUnit\Framework\TestCase;
 
-class IlovepdfTest extends \PHPUnit_Framework_TestCase
+class IlovepdfTest extends TestCase
 {
 
     public $ilovepdf;

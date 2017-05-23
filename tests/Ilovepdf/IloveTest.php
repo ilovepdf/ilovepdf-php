@@ -4,12 +4,13 @@ namespace Tests\Ilovepdf;
 
 use Ilovepdf\CompressTask;
 use Ilovepdf\Ilovepdf;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Base class for Stripe test cases, provides some utility methods for creating
  * objects.
  */
-class IloveTest extends \PHPUnit_Framework_TestCase
+class IloveTest extends TestCase
 {
     public $publicKey = 'public_key';
     public $secretKey = 'secret_key';
