@@ -2,11 +2,11 @@
 //include the autoloader
 require_once('../vendor/autoload.php');
 
-use Ilovepdf\PdfaTask;
+use Ilovepdf\ValidatepdfaTask;
 
 
 //you can call task class directly
-$myTask = new PdfaTask("PUBLIC_KEY", "SECRET_KEY");
+$myTask = new ValidatepdfaTask("PUBLIC_KEY", "SECRET_KEY");
 
 // file var keeps info about server file id, name...
 // it can be used latter to cancel file
