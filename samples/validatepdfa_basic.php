@@ -15,4 +15,6 @@ $file = $myTask->addFile('/path/to/file/document.pdf');
 // process files
 $result = $myTask->execute();
 
-echo $result->validated;
+foreach($result->validations as $file){
+    var_dump($file);
+}

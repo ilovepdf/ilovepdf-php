@@ -18,4 +18,6 @@ $file->setConformance('pdfa-2a');
 // process files
 $result = $myTask->execute();
 
-echo $result->validated;
+foreach($result->validations as $file){
+    var_dump($file);
+}
