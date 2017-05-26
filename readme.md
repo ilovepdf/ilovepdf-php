@@ -52,6 +52,10 @@ $myTask->execute();
 $myTask->download();
 ```
 
+## Samples
+
+See samples folder.
+
 ## Documentation
 
 Please see https://developer.ilovepdf.com/docs for up-to-date documentation.

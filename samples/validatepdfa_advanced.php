@@ -16,8 +16,8 @@ $file = $myTask->addFile('/path/to/file/document.pdf');
 $file->setConformance('pdfa-2a');
 
 // process files
-$result = $myTask->execute();
+$myTask->execute();
 
-foreach($result->validations as $file){
+foreach($myTask->result->validations as $file){
     var_dump($file);
 }

@@ -13,8 +13,8 @@ $myTask = new ValidatepdfaTask("PUBLIC_KEY", "SECRET_KEY");
 $file = $myTask->addFile('/path/to/file/document.pdf');
 
 // process files
-$result = $myTask->execute();
+$myTask->execute();
 
-foreach($result->validations as $file){
+foreach($myTask->result->validations as $file){
     var_dump($file);
 }
