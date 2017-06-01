@@ -15,6 +15,7 @@ require_once __DIR__ . '/src/Exceptions/ProcessException.php';
 require_once __DIR__ . '/src/Exceptions/UploadException.php';
 require_once __DIR__ . '/src/Exceptions/StartException.php';
 require_once __DIR__ . '/src/Exceptions/AuthException.php';
+require_once __DIR__ . '/src/Exceptions/PathException.php';
 
 //Ilovepdf
 require_once __DIR__ . '/src/Ilovepdf.php';
