@@ -3,6 +3,7 @@
 namespace Ilovepdf;
 
 use Ilovepdf\Exceptions\StartException;
+use Ilovepdf\Exceptions\PathException;
 use Ilovepdf\Request\Body;
 
 /**
@@ -156,6 +157,13 @@ class Task extends Ilovepdf
      */
     public function download($path = null)
     {
+        if($path!=null && !is_dir($path)){
+            if(pathinfo($path, PATHINFO_EXTENSION) == ''){
+                throw new PathException('Invalid download path. Use method setOutputFilename() to set the output file name.');
+            }
+            throw new PathException('Invalid download path. Set a valid folder path to download the file.');
+        }
+
         $this->downloadFile($this->task);
 
         if (is_null($path)) $path = '.';
@@ -224,7 +232,7 @@ class Task extends Ilovepdf
 
         $this->outputFile = $response->raw_body;
         $this->outputFileName = $filename;
-        $this->outputFileType = pathinfo($this->fileName, PATHINFO_EXTENSION);
+        $this->outputFileType = pathinfo($this->outputFileName, PATHINFO_EXTENSION);
     }
 
     /**
