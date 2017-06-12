@@ -4,7 +4,7 @@ require_once('../vendor/autoload.php');
 //if manual installation has been used comment line that requires the autoload and uncomment this line:
 //require_once('../init.php');
 
-use Ilovepdf\UnlockTask;
+use Ilovepdf\ProtectTask;
 
 
 // you can call task class directly

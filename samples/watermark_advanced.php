@@ -40,7 +40,7 @@ $myTask->setHorizontalPositionAdjustment("100");
 $myTask->setFontFamily("Arial");
 
 // set mode to text
-$myTask->setFontStyle("italic");
+$myTask->setFontStyle("Italic");
 
 // set the font size
 $myTask->setFontSize("12");

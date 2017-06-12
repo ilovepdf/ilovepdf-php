@@ -25,8 +25,9 @@ class ExtendedException extends Exception
         if (isset($response->body->error->param)) {
             $this->params = $response->body->error->param;
         }
-        if (is_array($this->params) && isset($this->params[0]) && isset($this->params[0]->error)) {
-            parent::__construct($message . ' (' . $this->params[0]->error . ')', $code, $previous);
+        if ($this->params) {
+            $firstError = reset(json_decode(json_encode($this->params), true));
+            parent::__construct($message . ' (' . $firstError[0] . ')', $code, $previous);
         } else {
             parent::__construct($message, $code, $previous);
         }
