@@ -298,4 +298,12 @@ class Ilovepdf
 
         return $response->body;
     }
+
+    /**
+     * @param $verify
+     */
+    public function verifySsl($verify){
+        Request::verifyPeer($verify);
+        Request::verifyHost($verify);
+    }
 }

@@ -393,6 +393,9 @@ class Request
         $info       = self::getInfo();
 
         if ($error) {
+            if(strpos($error,'SSL certificate problem')){
+                throw new \Exception($error.' Try using  method verifySsl to false: "$ilovepdf->verifySsl(false)"');
+            }
             throw new \Exception($error);
         }
 
