@@ -35,5 +35,5 @@ $myTask->setOutputFilename('split');
 // process files
 $myTask->execute();
 
-// and finally download file. If no path is set, it will be donwloaded on current folder
+// and finally download file. If no path is set, it will be downloaded on current folder
 $myTask->download('path/to/download');
