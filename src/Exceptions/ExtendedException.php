@@ -19,15 +19,21 @@ class ExtendedException extends Exception
      */
     public function __construct($message, $code = 0, Exception $previous = null, $response)
     {
-        if(isset($response->body->error) && $response->body->error->type){
+        if (isset($response->body->error) && $response->body->error->type) {
             $this->type = $response->body->error->type;
         }
         if (isset($response->body->error->param)) {
             $this->params = $response->body->error->param;
         }
         if ($this->params) {
-            $firstError = reset(json_decode(json_encode($this->params), true));
-            parent::__construct($message . ' (' . $firstError[0] . ')', $code, $previous);
+            if (is_array($this->params)) {
+                $firstError = $this->params[0]->error;
+            }
+            else{
+                $error = reset(json_decode(json_encode($this->params), true));
+                $firstError = $error[0];
+            }
+            parent::__construct($message . ' (' . $firstError . ')', $code, $previous);
         } else {
             parent::__construct($message, $code, $previous);
         }
