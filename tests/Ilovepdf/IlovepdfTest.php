@@ -60,11 +60,11 @@ class IlovepdfTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Exception
      */
     public function testEmptyTaskShouldThrowException()
     {
-        $this->ilovepdf->newTask("");
+        $task = $this->ilovepdf->newTask("");
+        $this->assertNotNull($task);
     }
 
     /**

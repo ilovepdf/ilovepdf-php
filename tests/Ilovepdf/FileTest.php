@@ -58,7 +58,8 @@ class FileTest extends TestCase
      * @expectedException \InvalidArgumentException
      */
     public function testEmptyServerFilenameTrowException(){
-        new File('', 'some_filename');
+        $file = new File('', 'some_filename');
+        $this->assertEquals($file->filename, 'some_filename');
     }
 
     /*
@@ -66,6 +67,7 @@ class FileTest extends TestCase
      * @expectedException \InvalidArgumentException
      */
     public function testEmptyFilenameTrowException(){
-        new File('server_filename', '');
+        $file = new File('server_filename', '');
+        $this->assertEquals($file->server_filename, 'server_filename');
     }
 }
