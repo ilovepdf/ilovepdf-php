@@ -21,7 +21,7 @@ class ExtractTask extends Task
     function __construct($publicKey, $secretKey)
     {
         $this->tool = 'extract';
-        parent::__construct($publicKey, $secretKey);
+        parent::__construct($publicKey, $secretKey, true);
     }
 
     /**

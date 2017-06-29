@@ -44,7 +44,7 @@ class SplitTask extends Task
     function __construct($publicKey, $secretKey)
     {
         $this->tool = 'split';
-        parent::__construct($publicKey, $secretKey);
+        parent::__construct($publicKey, $secretKey, true);
     }
 
 

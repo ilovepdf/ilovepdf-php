@@ -106,7 +106,7 @@ class WatermarkTask extends Task
     function __construct($publicKey, $secretKey)
     {
         $this->tool='watermark';
-        parent::__construct($publicKey, $secretKey);
+        parent::__construct($publicKey, $secretKey, true);
     }
 
 

@@ -27,11 +27,27 @@ class ExtendedException extends Exception
         }
         if ($this->params) {
             if (is_array($this->params)) {
-                $firstError = $this->params[0]->error;
-            }
-            else{
-                $error = reset(json_decode(json_encode($this->params), true));
-                $firstError = $error[0];
+                if(is_object($this->params[0])){
+                    $firstError = $this->params[0]->error;  //test unlock fail
+                }
+                else{
+                    $firstError = $this->params[0];
+                }
+            } else {
+                $params = json_decode(json_encode($this->params), true);
+
+                if(is_string($params)){
+                    $firstError = $params; //download exception
+                }
+                else{
+                    $error = array_values($params);
+                    if (is_array($error[0])) {
+                        $error[0] = array_values($error[0]);
+                        $firstError = $error[0][0];    //task deleted before execute
+                    } else {
+                        $firstError = $error[0];
+                    }
+                }
             }
             parent::__construct($message . ' (' . $firstError . ')', $code, $previous);
         } else {

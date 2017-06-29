@@ -43,7 +43,7 @@ class ImagepdfTask extends Task
     function __construct($publicKey, $secretKey)
     {
         $this->tool = 'imagepdf';
-        parent::__construct($publicKey, $secretKey);
+        parent::__construct($publicKey, $secretKey, true);
     }
 
     /**

@@ -4,6 +4,7 @@ namespace Ilovepdf;
 
 use Ilovepdf\Exceptions\DownloadException;
 use Ilovepdf\Exceptions\ProcessException;
+use Ilovepdf\Exceptions\TaskException;
 use Ilovepdf\Exceptions\UploadException;
 use Ilovepdf\Exceptions\StartException;
 use Ilovepdf\Exceptions\AuthException;
@@ -30,7 +31,7 @@ class Ilovepdf
     // @var string|null The version of the Ilovepdf API to use for requests.
     public static $apiVersion = 'v1';
 
-    const VERSION = 'php.1.1.4';
+    const VERSION = 'php.1.1.5';
 
     public $token = null;
 
@@ -158,10 +159,10 @@ class Ilovepdf
      * @throws ProcessException
      * @throws UploadException
      */
-    public function sendRequest($method, $endpoint, $body=null)
+    public function sendRequest($method, $endpoint, $body=null, $start=false)
     {
         $to_server = self::$startServer;
-        if (!is_null($this->getWorkerServer())) {
+        if (!$start && !is_null($this->getWorkerServer())) {
             $to_server = $this->workerServer;
         }
 
@@ -190,6 +191,12 @@ class Ilovepdf
                 throw new DownloadException($response->body->error->message, $response->code, null, $response);
             }
             else{
+                if ($response->code == 400) {
+                    if(strpos($endpoint, 'task')!=-1){
+                        throw new TaskException('Invalid task id');
+                    }
+                    throw new \Exception('Bad Request');
+                }
                 throw new \Exception($response->body->error->message);
             }
         }
@@ -203,9 +210,8 @@ class Ilovepdf
      *
      * @throws \Exception
      */
-    public function newTask($tool)
+    public function newTask($tool='')
     {
-        if (!$tool) throw new \Exception();
         $classname = '\\Ilovepdf\\' . ucwords(strtolower($tool)) . 'Task';
         if (!class_exists($classname)) {
             throw new \InvalidArgumentException();

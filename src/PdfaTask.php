@@ -29,7 +29,7 @@ class PdfaTask extends Task
     function __construct($publicKey, $secretKey)
     {
         $this->tool = 'pdfa';
-        parent::__construct($publicKey, $secretKey);
+        parent::__construct($publicKey, $secretKey, true);
     }
 
     /**

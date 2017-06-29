@@ -17,7 +17,7 @@ class MergeTask extends Task
     function __construct($publicKey, $secretKey)
     {
         $this->tool='merge';
-        parent::__construct($publicKey, $secretKey);
+        parent::__construct($publicKey, $secretKey, true);
     }
 
     /**

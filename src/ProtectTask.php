@@ -22,7 +22,7 @@ class ProtectTask extends Task
     function __construct($publicKey, $secretKey)
     {
         $this->tool = 'protect';
-        parent::__construct($publicKey, $secretKey);
+        parent::__construct($publicKey, $secretKey, true);
     }
 
     /**

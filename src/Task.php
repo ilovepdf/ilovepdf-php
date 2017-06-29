@@ -25,6 +25,20 @@ class Task extends Ilovepdf
     public $try_pdf_repair = true;
     public $meta = [];
 
+    //custom data
+    public $custom_int = null;
+    public $custom_string = null;
+    private $statusValues = [
+        '',
+        'TaskSuccess',
+        'TaskDeleted',
+        'TaskWaiting',
+        'TaskProcessing',
+        'TaskSuccessWithWarnings',
+        'TaskError',
+        'TaskNotFound'
+    ];
+
     //results from execute()
     public $result;
 
@@ -38,10 +52,17 @@ class Task extends Ilovepdf
      * @param null $publicKey
      * @param null $secretKey
      */
-    function __construct($publicKey, $secretKey)
+    function __construct($publicKey, $secretKey, $makeStart=false)
     {
         parent::__construct($publicKey, $secretKey);
-        $data = array('v'=> self::VERSION);
+
+        if($makeStart) {
+            $this->start();
+        }
+    }
+
+    public function start(){
+        $data = array('v' => self::VERSION);
         $body = Body::Form($data);
         $response = parent::sendRequest('get', 'start/' . $this->tool, $body);
         if (empty($response->body->server)) {
@@ -68,6 +89,7 @@ class Task extends Ilovepdf
 
     public function getFilesArray()
     {
+        $filesArray = [];
         foreach ($this->files as $file) {
             $filesArray[] = $file->getFileOptions();
         }
@@ -76,8 +98,11 @@ class Task extends Ilovepdf
 
     public function getStatus($server=null, $taskId=null)
     {
-        if($server!=null && $taskId!=null){
-            return parent::getStatus(server, $taskId);
+        $server = $server ? $server : $this->getWorkerServer();
+        $taskId = $taskId ? $taskId : $this->getTaskId();
+
+        if($server==null || $taskId==null){
+            throw new \Exception('Cannot get status if no file is uploaded');
         }
         return parent::getStatus($this->getWorkerServer(), $this->getTaskId());
     }
@@ -265,8 +290,14 @@ class Task extends Ilovepdf
         }
 
         $data = array_merge(
-            get_object_vars($this),
+            $this->getPublicVars($this),
             array('task' => $this->task, 'files' => $this->files, 'v'=> self::VERSION));
+
+        //clean unwanted vars to be sent
+        unset($data['timeoutLarge']);
+        unset($data['timeout']);
+        unset($data['timeDelay']);
+
         $body = Request\Body::multipart($data);
 
         $response = parent::sendRequest('post', 'process', urldecode(http_build_query($body)));
@@ -274,6 +305,10 @@ class Task extends Ilovepdf
         $this->result = $response->body;
 
         return $this;
+    }
+
+    public function getPublicVars () {
+        return call_user_func('get_object_vars', $this);
     }
 
 
@@ -417,5 +452,55 @@ class Task extends Ilovepdf
         $this->meta[$key] = $value;
 
         return $this;
+    }
+
+    /**
+     * @param null $custom_int
+     * @return $this
+     */
+    public function setCustomInt($customInt)
+    {
+        $this->custom_int = $customInt;
+        return $this;
+    }
+
+    /**
+     * @param null $custom_string
+     * @return $this
+     */
+    public function setCustomString($customString)
+    {
+        $this->custom_string = $customString;
+        return $this;
+    }
+
+    /**
+     * @param null $tool
+     * @param null $status
+     * @param null $customInt
+     * @param null $page
+     *
+     * @throws \Exception
+     */
+    public function listTasks($tool=null, $status=null, $customInt=null, $page=null){
+
+        $this->checkValues($status, $this->statusValues);
+
+        $data = [
+            'tool' => $tool,
+            'status' => $status,
+            'custom_int' => $customInt,
+            'page' => $page,
+            'v'=> self::VERSION
+        ];
+
+        $body = Request\Body::multipart($data);
+
+        $response = parent::sendRequest('get', 'task?'.http_build_query($body), null, true);
+//        $response = parent::sendRequest('get', 'task', urldecode(http_build_query($body)), true);
+
+        $this->result = $response->body;
+
+        return $this->result;
     }
 }
