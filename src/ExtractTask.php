@@ -14,6 +14,11 @@ class ExtractTask extends Task
     public $detailed = false;
 
     /**
+     * @var boolean
+     */
+    public $by_word = false;
+
+    /**
      * CompressTask constructor.
      * @param string $publicKey
      * @param string $secretKey
@@ -41,6 +46,14 @@ class ExtractTask extends Task
     public function execute($processData = null)
     {
         return parent::execute(get_object_vars($this));
+    }
+
+    /**
+     * @param boolean $by_word
+     */
+    public function setByWord($by_word)
+    {
+        $this->by_word = $by_word;
     }
 
 }
