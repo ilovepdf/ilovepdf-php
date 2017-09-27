@@ -25,6 +25,11 @@ class Task extends Ilovepdf
     public $try_pdf_repair = true;
     public $meta = [];
 
+    /**
+     * @var string
+     */
+    public $webhook;
+
     //custom data
     public $custom_int = null;
     public $custom_string = null;
@@ -502,5 +507,15 @@ class Task extends Ilovepdf
         $this->result = $response->body;
 
         return $this->result;
+    }
+
+    /**
+     * @param string $webhook
+     * @return $this
+     */
+    public function setWebhook($webhook)
+    {
+        $this->webhook = $webhook;
+        return $this;
     }
 }

@@ -9,6 +9,8 @@ namespace Ilovepdf;
 class MergeTask extends Task
 {
 
+    public $ignore_errors = false;
+
     /**
      * MergeTask constructor.
      * @param string $publicKey
@@ -27,6 +29,4 @@ class MergeTask extends Task
     public function execute($processData=null){
         return parent::execute(get_object_vars($this));
     }
-
-
 }
