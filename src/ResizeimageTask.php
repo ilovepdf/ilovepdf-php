@@ -50,7 +50,7 @@ class ResizeimageTask extends Task
      */
     function __construct($publicKey, $secretKey)
     {
-        $this->tool = 'convertimage';
+        $this->tool = 'resizeimage';
         parent::__construct($publicKey, $secretKey, true);
     }
 

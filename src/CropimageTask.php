@@ -36,7 +36,7 @@ class CropimageTask extends Task
      */
     function __construct($publicKey, $secretKey)
     {
-        $this->tool = 'convertimage';
+        $this->tool = 'cropimage';
         parent::__construct($publicKey, $secretKey, true);
     }
 
