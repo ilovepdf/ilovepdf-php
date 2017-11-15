@@ -9,14 +9,14 @@ use Ilovepdf\Ilovepdf;
 
 // you can call task class directly
 // to get your key pair, please visit https://developer.ilovepdf.com/user/projects
-$ilovepdf = new Ilovepdf('project_public_id','project_secret_key');
+$ilovepdf = new Task('project_public_id', 'project_secret_key');
 
 
 //start the task
 $myTask = $ilovepdf->newTask('merge');
 
 //get remaining files
-$remainingFiles=$ilovepdf->getRemainingFiles();
+$remainingFiles = $myTask->getRemainingFiles();
 
 //print your remaining files
 echo $remainingFiles;
