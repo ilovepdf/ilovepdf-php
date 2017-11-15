@@ -75,6 +75,7 @@ class Task extends Ilovepdf
         };
         $this->setWorkerServer('https://' . $response->body->server);
         $this->setTask($response->body->task);
+        $this->setRemainingFiles($response->body->remaining_files);
     }
 
     public function setTask($task)

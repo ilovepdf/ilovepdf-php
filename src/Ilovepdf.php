@@ -47,6 +47,7 @@ class Ilovepdf
 
     public $timeout = 10;
     public $timeoutLarge = null;
+    private $remainingFiles = null;
 
 
     public function __construct($publicKey = null, $secretKey = null)
@@ -305,6 +306,24 @@ class Ilovepdf
         return $response->body;
     }
 
+    /**
+     * @return integer
+     */
+    public function getRemainingFiles()
+    {
+        if($this->remainingFiles==null){
+            $this->newTask('compress');
+        }
+        return $this->remainingFiles;
+    }
+
+    /**
+     * @param null $remainingFiles
+     */
+    public function setRemainingFiles($remainingFiles)
+    {
+        $this->remainingFiles = $remainingFiles;
+    }
     /**
      * @param $verify
      */
