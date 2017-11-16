@@ -9,6 +9,7 @@ use Ilovepdf\Exceptions\UploadException;
 use Ilovepdf\Exceptions\StartException;
 use Ilovepdf\Exceptions\AuthException;
 use Ilovepdf\IlovepdfTool;
+use Ilovepdf\Request\Body;
 
 /**
  * Class Ilovepdf
@@ -31,7 +32,7 @@ class Ilovepdf
     // @var string|null The version of the Ilovepdf API to use for requests.
     public static $apiVersion = 'v1';
 
-    const VERSION = 'php.1.1.7';
+    const VERSION = 'php.1.1.8';
 
     public $token = null;
 
@@ -47,6 +48,8 @@ class Ilovepdf
 
     public $timeout = 10;
     public $timeoutLarge = null;
+
+    public $info = null;
 
 
     public function __construct($publicKey = null, $secretKey = null)
@@ -311,5 +314,33 @@ class Ilovepdf
     public function verifySsl($verify){
         Request::verifyPeer($verify);
         Request::verifyHost($verify);
+    }
+
+    private function getUpdatedInfo(){
+        $data = array('v' => self::VERSION);
+        $body = Body::Form($data);
+        $response = self::sendRequest('get', 'info', $body);
+        $this->info = $response->body;
+        return $this->info;
+    }
+
+
+
+    /**
+     * @return object
+     */
+    public function getInfo()
+    {
+        $info = $this->getUpdatedInfo();
+        return $info;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getRemainingFiles()
+    {
+        $info = $this->getUpdatedInfo();
+        return $info->remaining_files;
     }
 }

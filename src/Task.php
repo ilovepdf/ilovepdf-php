@@ -52,7 +52,6 @@ class Task extends Ilovepdf
     public $outputFileName;
     public $outputFileType;
 
-    public $info = null;
 
     /**
      * Task constructor.
@@ -519,41 +518,5 @@ class Task extends Ilovepdf
     {
         $this->webhook = $webhook;
         return $this;
-    }
-
-    private function getUpdatedInfo(){
-        $data = array('v' => self::VERSION);
-        $body = Body::Form($data);
-        $response = parent::sendRequest('get', 'info', $body);
-        $this->info = $response->body;
-        return $this->info;
-    }
-
-
-
-    /**
-     * @return object
-     */
-    public function getInfo()
-    {
-        $info = $this->getUpdatedInfo();
-        return $info;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getRemainingFiles()
-    {
-        $info = $this->getUpdatedInfo();
-        return $info->remaining_files;
-    }
-
-    /**
-     * @param null $remainingFiles
-     */
-    private function setRemainingFiles($remainingFiles)
-    {
-        $this->remainingFiles = $remainingFiles;
     }
 }
