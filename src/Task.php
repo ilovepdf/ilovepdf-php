@@ -221,6 +221,8 @@ class Task extends Ilovepdf
      */
     public function toBrowser()
     {
+        $this->downloadFile($this->task);
+
         if($this->outputFileType == 'pdf'){
             header("Content-type:application/pdf");
             header("Content-Disposition:attachment;filename=\"".$this->outputFileName."\"");
