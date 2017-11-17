@@ -223,7 +223,7 @@ class Task extends Ilovepdf
     {
         if($this->outputFileType == 'pdf'){
             header("Content-type:application/pdf");
-            header("Content-Disposition:attachment;filename=\"".$this->fileName."\"");
+            header("Content-Disposition:attachment;filename=\"".$this->outputFileName."\"");
         }
         else{
             if (function_exists('mb_strlen')) {
