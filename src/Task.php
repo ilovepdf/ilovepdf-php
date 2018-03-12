@@ -499,13 +499,13 @@ class Task extends Ilovepdf
             'status' => $status,
             'custom_int' => $customInt,
             'page' => $page,
-            'v'=> self::VERSION
+            'v'=> self::VERSION,
+            'secret_key'=>$this->getSecretKey()
         ];
 
         $body = Request\Body::multipart($data);
 
-        $response = parent::sendRequest('get', 'task?'.http_build_query($body), null, true);
-//        $response = parent::sendRequest('get', 'task', urldecode(http_build_query($body)), true);
+        $response = parent::sendRequest('post', 'task', $body, true);
 
         $this->result = $response->body;
 
