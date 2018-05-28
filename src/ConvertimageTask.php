@@ -11,9 +11,9 @@ class ConvertimageTask extends Task
     /**
      * @var string
      */
-    public $to = 'jpg';
+    public $convert_to = 'jpg';
 
-    private $toValues = ["jpg", "png", "gif"];
+    private $convert_toValues = ["jpg", "png", "gif"];
 
     /**
      * ConvertimageTask constructor.
@@ -32,10 +32,10 @@ class ConvertimageTask extends Task
      * values: ["jpg"|"png"|"gif"]
      * default: "jpg"
      */
-    public function setTo($to)
+    public function setTo($convert_to)
     {
-        $this->checkValues($to, $this->toValues);
-        $this->to = $to;
+        $this->checkValues($convert_to, $this->convert_toValues);
+        $this->convert_to = $convert_to;
         return $this;
     }
 }

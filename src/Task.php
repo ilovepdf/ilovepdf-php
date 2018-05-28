@@ -352,7 +352,7 @@ class Task extends Ilovepdf
     public function deleteFile($file){
         if (($key = array_search($file, $this->files)) !== false) {
             $body = Request\Body::multipart(['task'=>$this->getTaskId(), 'server_filename'=>$file->server_filename, 'v'=> self::VERSION]);
-            $this->sendRequest('post', 'upload/delete', $body);
+            $this->sendRequest('delete', 'upload/'.$this->getTaskId().'/'.$file->server_filename, $body);
             unset($this->files[$key]);
         }
         return $this;
