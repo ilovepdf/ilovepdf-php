@@ -6,7 +6,7 @@
  * http://www.iana.org/assignments/http-methods/http-methods.xhtml
  */
 
-namespace Ilovepdf;
+namespace Ilovepdf\Request;
 
 interface Method
 {

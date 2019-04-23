@@ -2,8 +2,8 @@
 
 namespace Ilovepdf\Request;
 
-use Ilovepdf\Request as Request;
-use Ilovepdf\Exception as Exception;
+use Ilovepdf\Request\Request as Request;
+use \Exception as Exception;
 
 class Body
 {

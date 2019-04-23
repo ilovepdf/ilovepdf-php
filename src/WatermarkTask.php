@@ -2,6 +2,7 @@
 
 namespace Ilovepdf;
 
+use Ilovepdf\Element;
 
 /**
  * Class WatermarkTask
@@ -14,6 +15,7 @@ class WatermarkTask extends Task
      * @var string
      */
     public $mode;
+    private $modeValues = ['image', 'text', 'multi'];
 
     /**
      * @var string
@@ -96,6 +98,11 @@ class WatermarkTask extends Task
     public $layer;
 
     private $layerValues = ['above', 'below'];
+
+    /**
+     * @var array
+     */
+    public $elements;
 
 
     /**
@@ -260,6 +267,23 @@ class WatermarkTask extends Task
         $this->checkValues($layer, $this->layerValues);
 
         $this->layer = $layer;
+        return $this;
+    }
+
+    /**
+     * adds a watermark element
+     *
+     * @param $element
+     * @return $this
+     */
+    public function addElement($element)
+    {
+
+        if (is_a($element, 'Element')) {
+            $this->elements[] = $element;
+        } elseif (is_array($element)) {
+            $this->elements[] = new Element($element);
+        }
         return $this;
     }
 }

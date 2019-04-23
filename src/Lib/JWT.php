@@ -1,6 +1,6 @@
 <?php
 
-namespace Ilovepdf;
+namespace Ilovepdf\Lib;
 
 /**
  * JSON Web Token implementation, based on this spec:

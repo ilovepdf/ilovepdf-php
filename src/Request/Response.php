@@ -1,6 +1,6 @@
 <?php
 
-namespace Ilovepdf;
+namespace Ilovepdf\Request;
 
 class Response
 {

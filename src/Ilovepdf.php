@@ -10,6 +10,8 @@ use Ilovepdf\Exceptions\StartException;
 use Ilovepdf\Exceptions\AuthException;
 use Ilovepdf\IlovepdfTool;
 use Ilovepdf\Request\Body;
+use Ilovepdf\Request\Request;
+use Ilovepdf\Lib\JWT;
 
 /**
  * Class Ilovepdf

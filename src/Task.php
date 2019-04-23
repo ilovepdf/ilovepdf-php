@@ -5,6 +5,7 @@ namespace Ilovepdf;
 use Ilovepdf\Exceptions\StartException;
 use Ilovepdf\Exceptions\PathException;
 use Ilovepdf\Request\Body;
+use Ilovepdf\Request\Request;
 
 /**
  * Class Ilovepdf
@@ -149,7 +150,7 @@ class Task extends Ilovepdf
     {
         $data = array('task' => $task, 'v'=> self::VERSION);
         $files = array('file' => $filepath);
-        $body = Request\Body::multipart($data, $files);
+        $body = Body::multipart($data, $files);
 
         $response = $this->sendRequest('post', 'upload', $body);
         return new File($response->body->server_filename, basename($filepath));
@@ -177,7 +178,7 @@ class Task extends Ilovepdf
     public function uploadUrl($task, $url)
     {
         $data = array('task' => $task, 'cloud_file' => $url, 'v'=> self::VERSION);
-        $body = Request\Body::Form($data);
+        $body = Body::Form($data);
         $response = parent::sendRequest('post', 'upload', $body);
         return new File($response->body->server_filename, basename($url));
     }
@@ -252,7 +253,7 @@ class Task extends Ilovepdf
     private function downloadFile($task)
     {
         $data = array('v'=> self::VERSION);
-        $body = Request\Body::Form($data);
+        $body = Body::Form($data);
         $response = parent::sendRequest('get', 'download/' . $task, $body);
 
         if(preg_match("/filename\*\=utf-8\'\'([\W\w]+)/", $response->headers['Content-Disposition'], $matchesUtf)){
@@ -306,7 +307,7 @@ class Task extends Ilovepdf
         unset($data['timeout']);
         unset($data['timeDelay']);
 
-        $body = Request\Body::multipart($data);
+        $body = Body::multipart($data);
 
         $response = parent::sendRequest('post', 'process', urldecode(http_build_query($body)));
 
@@ -351,7 +352,7 @@ class Task extends Ilovepdf
      */
     public function deleteFile($file){
         if (($key = array_search($file, $this->files)) !== false) {
-            $body = Request\Body::multipart(['task'=>$this->getTaskId(), 'server_filename'=>$file->server_filename, 'v'=> self::VERSION]);
+            $body = Body::multipart(['task'=>$this->getTaskId(), 'server_filename'=>$file->server_filename, 'v'=> self::VERSION]);
             $this->sendRequest('delete', 'upload/'.$this->getTaskId().'/'.$file->server_filename, $body);
             unset($this->files[$key]);
         }
@@ -503,7 +504,7 @@ class Task extends Ilovepdf
             'secret_key'=>$this->getSecretKey()
         ];
 
-        $body = Request\Body::multipart($data);
+        $body = Body::multipart($data);
 
         $response = parent::sendRequest('post', 'task', $body, true);
 
