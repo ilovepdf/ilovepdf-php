@@ -11,7 +11,7 @@ class OfficepdfTask extends Task
 {
 
     /**
-     * CompressTask constructor.
+     * OfficepdfTask constructor.
      * @param string $publicKey
      * @param string $secretKey
      */
