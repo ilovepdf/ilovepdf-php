@@ -17,13 +17,15 @@ class CompressTask extends Task
 
     /**
      * CompressTask constructor.
-     * @param string $publicKey
-     * @param string $secretKey
+     *
+     * @param null|string $publicKey    Your public key
+     * @param null|string $secretKey    Your secret key
+     * @param bool $makeStart           Set to false for chained tasks, because we don't need the start
      */
-    function __construct($publicKey, $secretKey)
+    function __construct($publicKey, $secretKey, $makeStart = true)
     {
         $this->tool = 'compress';
-        parent::__construct($publicKey, $secretKey, true);
+        parent::__construct($publicKey, $secretKey, $makeStart);
     }
 
     /**

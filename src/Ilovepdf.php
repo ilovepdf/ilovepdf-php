@@ -209,19 +209,20 @@ class Ilovepdf
     }
 
     /**
-     * @param string $tool api tool to use
+     * @param string $tool              Api tool to use
+     * @param bool $makeStart           Set to false for chained tasks, because we don't need the start
      *
      * @return mixed Return implemented Task class for specified tool
      *
      * @throws \Exception
      */
-    public function newTask($tool='')
+    public function newTask($tool='', $makeStart = true)
     {
         $classname = '\\Ilovepdf\\' . ucwords(strtolower($tool)) . 'Task';
         if (!class_exists($classname)) {
             throw new \InvalidArgumentException();
         }
-        return new $classname($this->getPublicKey(), $this->getSecretKey());
+        return new $classname($this->getPublicKey(), $this->getSecretKey(), $makeStart);
     }
 
     public static function setStartServer($server){

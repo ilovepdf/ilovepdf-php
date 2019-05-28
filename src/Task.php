@@ -79,6 +79,37 @@ class Task extends Ilovepdf
         $this->setTask($response->body->task);
     }
 
+    public function next($nextTool): Task
+    {
+        $data = [
+            'v' => self::VERSION,
+            'task' => $this->getTaskId(),
+            'tool' => $nextTool
+        ];
+        $body = Body::Form($data);
+
+        try {
+            $response = parent::sendRequest('post', 'task/next', $body);
+
+            if (empty($response->body->task)) {
+                throw new StartException('No task assigned on chained start');
+            };
+        } catch (\Exception $e) {
+            throw new StartException('Error on start chained task');
+        }
+
+        $next = $this->newTask($nextTool);
+        $next->setWorkerServer($this->getWorkerServer());
+        $next->setTask($response->body->task);
+
+        //add files chained
+        foreach ($response->body->files as $serverFilename => $fileName) {
+            $next->files[] = new File($serverFilename, $fileName);
+        }
+
+        return $next;
+    }
+
     public function setTask($task)
     {
         $this->task = $task;
