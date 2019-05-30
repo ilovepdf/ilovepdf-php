@@ -60,6 +60,7 @@ class IlovepdfTest extends TestCase
 
     /**
      * @test
+     * @expectedException \Exception
      */
     public function testEmptyTaskShouldThrowException()
     {
