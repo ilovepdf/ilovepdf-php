@@ -319,6 +319,13 @@ class Ilovepdf
         Request::verifyHost($verify);
     }
 
+    /**
+     * @param $follow
+     */
+    public function followLocation($follow){
+        Request::followLocation($follow);
+    }
+
     private function getUpdatedInfo(){
         $data = array('v' => self::VERSION);
         $body = Body::Form($data);

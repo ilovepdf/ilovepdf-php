@@ -13,8 +13,9 @@ class Request
     private static $socketTimeout = null;
     private static $verifyPeer = true;
     private static $verifyHost = true;
+    private static $followLocation = true;
 
-    private static $auth = array (
+    private static $auth = array(
         'user' => '',
         'pass' => '',
         'method' => CURLAUTH_BASIC
@@ -25,7 +26,7 @@ class Request
         'tunnel' => false,
         'address' => false,
         'type' => CURLPROXY_HTTP,
-        'auth' => array (
+        'auth' => array(
             'user' => '',
             'pass' => '',
             'method' => CURLAUTH_BASIC
@@ -65,6 +66,17 @@ class Request
     public static function verifyHost($enabled)
     {
         return self::$verifyHost = $enabled;
+    }
+
+    /**
+     * Follow location option
+     *
+     * @param bool $enabled enable follow location, by default is true
+     * @return bool
+     */
+    public static function followLocation($enabled)
+    {
+        return self::$followLocation = $enabled;
     }
 
     /**
@@ -308,19 +320,19 @@ class Request
      * @param array $headers additional headers to send
      * @param string $username Authentication username (deprecated)
      * @param string $password Authentication password (deprecated)
-     * @throws \Ilovepdf\Exception if a cURL error occurs
      * @return Response
+     * @throws \Ilovepdf\Exception if a cURL error occurs
      */
     public static function send($method, $url, $body = null, $headers = array(), $username = null, $password = null)
     {
         self::$handle = curl_init();
 
         if ($method !== Method::GET) {
-			if ($method === Method::POST) {
-				curl_setopt(self::$handle, CURLOPT_POST, true);
-			} else {
-				curl_setopt(self::$handle, CURLOPT_CUSTOMREQUEST, $method);
-			}
+            if ($method === Method::POST) {
+                curl_setopt(self::$handle, CURLOPT_POST, true);
+            } else {
+                curl_setopt(self::$handle, CURLOPT_CUSTOMREQUEST, $method);
+            }
 
             curl_setopt(self::$handle, CURLOPT_POSTFIELDS, $body);
         } elseif (is_array($body)) {
@@ -336,7 +348,6 @@ class Request
         $curl_base_options = [
             CURLOPT_URL => self::encodeUrl($url),
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_MAXREDIRS => 10,
             CURLOPT_HTTPHEADER => self::getFormattedHeaders($headers),
             CURLOPT_HEADER => true,
@@ -348,6 +359,10 @@ class Request
         ];
 
         curl_setopt_array(self::$handle, self::mergeCurlOptions($curl_base_options, self::$curlOpts));
+
+        if (self::$followLocation == true) {
+            @curl_setopt(self::$handle, CURLOPT_FOLLOWLOCATION, true);
+        }
 
         if (self::$socketTimeout !== null) {
             curl_setopt(self::$handle, CURLOPT_TIMEOUT, self::$socketTimeout);
@@ -372,38 +387,38 @@ class Request
 
         if (!empty(self::$auth['user'])) {
             curl_setopt_array(self::$handle, array(
-                CURLOPT_HTTPAUTH    => self::$auth['method'],
-                CURLOPT_USERPWD     => self::$auth['user'] . ':' . self::$auth['pass']
+                CURLOPT_HTTPAUTH => self::$auth['method'],
+                CURLOPT_USERPWD => self::$auth['user'] . ':' . self::$auth['pass']
             ));
         }
 
         if (self::$proxy['address'] !== false) {
             curl_setopt_array(self::$handle, array(
-                CURLOPT_PROXYTYPE       => self::$proxy['type'],
-                CURLOPT_PROXY           => self::$proxy['address'],
-                CURLOPT_PROXYPORT       => self::$proxy['port'],
+                CURLOPT_PROXYTYPE => self::$proxy['type'],
+                CURLOPT_PROXY => self::$proxy['address'],
+                CURLOPT_PROXYPORT => self::$proxy['port'],
                 CURLOPT_HTTPPROXYTUNNEL => self::$proxy['tunnel'],
-                CURLOPT_PROXYAUTH       => self::$proxy['auth']['method'],
-                CURLOPT_PROXYUSERPWD    => self::$proxy['auth']['user'] . ':' . self::$proxy['auth']['pass']
+                CURLOPT_PROXYAUTH => self::$proxy['auth']['method'],
+                CURLOPT_PROXYUSERPWD => self::$proxy['auth']['user'] . ':' . self::$proxy['auth']['pass']
             ));
         }
 
-        $response   = curl_exec(self::$handle);
-        $error      = curl_error(self::$handle);
-        $info       = self::getInfo();
+        $response = curl_exec(self::$handle);
+        $error = curl_error(self::$handle);
+        $info = self::getInfo();
 
         if ($error) {
-            if(strpos($error,'SSL certificate problem')){
-                throw new \Exception($error.' Try using  method verifySsl to false: "$ilovepdf->verifySsl(false)"');
+            if (strpos($error, 'SSL certificate problem')) {
+                throw new \Exception($error . ' Try using  method verifySsl to false: "$ilovepdf->verifySsl(false)"');
             }
             throw new \Exception($error);
         }
 
         // Split the full response in its headers and body
         $header_size = $info['header_size'];
-        $header      = substr($response, 0, $header_size);
-        $body        = substr($response, $header_size);
-        $httpCode    = $info['http_code'];
+        $header = substr($response, 0, $header_size);
+        $body = substr($response, $header_size);
+        $httpCode = $info['http_code'];
 
         return new Response($httpCode, $body, $header, self::$jsonOpts);
     }
@@ -428,7 +443,7 @@ class Request
     {
         $formattedHeaders = array();
 
-        $combinedHeaders = array_change_key_case(array_merge(self::$defaultHeaders, (array) $headers));
+        $combinedHeaders = array_change_key_case(array_merge(self::$defaultHeaders, (array)$headers));
 
         foreach ($combinedHeaders as $key => $val) {
             $formattedHeaders[] = self::getHeaderString($key, $val);
@@ -458,7 +473,7 @@ class Request
 
     /**
      * Ensure that a URL is encoded and safe to use with cURL
-     * @param  string $url URL to encode
+     * @param string $url URL to encode
      * @return string
      */
     private static function encodeUrl($url)
@@ -466,10 +481,10 @@ class Request
         $url_parsed = parse_url($url);
 
         $scheme = $url_parsed['scheme'] . '://';
-        $host   = $url_parsed['host'];
-        $port   = (isset($url_parsed['port']) ? $url_parsed['port'] : null);
-        $path   = (isset($url_parsed['path']) ? $url_parsed['path'] : null);
-        $query  = (isset($url_parsed['query']) ? $url_parsed['query'] : null);
+        $host = $url_parsed['host'];
+        $port = (isset($url_parsed['port']) ? $url_parsed['port'] : null);
+        $path = (isset($url_parsed['path']) ? $url_parsed['path'] : null);
+        $query = (isset($url_parsed['query']) ? $url_parsed['query'] : null);
 
         if ($query !== null) {
             $query = '?' . http_build_query(self::getArrayFromQuerystring($query));
