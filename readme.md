@@ -14,7 +14,7 @@ Develop and automate PDF processing tasks like Compress PDF, Merge PDF, Split PD
 
 ## Requirements
 
-PHP 5.6 and later.
+PHP 7.1 and later.
 
 ## Install
 
