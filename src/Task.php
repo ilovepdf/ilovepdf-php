@@ -2,6 +2,7 @@
 
 namespace Ilovepdf;
 
+use http\Exception\InvalidArgumentException;
 use Ilovepdf\Exceptions\StartException;
 use Ilovepdf\Exceptions\PathException;
 use Ilovepdf\Request\Body;
@@ -151,6 +152,7 @@ class Task extends Ilovepdf
      */
     public function addFile($filePath)
     {
+
         $file = $this->uploadFile($this->task, $filePath);
         array_push($this->files, $file);
         return end($this->files);
@@ -179,6 +181,9 @@ class Task extends Ilovepdf
      */
     public function uploadFile($task, $filepath)
     {
+        if(!file_exists($filepath)){
+            throw new \InvalidArgumentException('File '.$filepath.' does not exists');
+        }
         $data = array('task' => $task, 'v'=> self::VERSION);
         $files = array('file' => $filepath);
         $body = Body::multipart($data, $files);

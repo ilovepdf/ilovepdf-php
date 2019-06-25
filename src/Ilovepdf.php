@@ -187,6 +187,9 @@ class Ilovepdf
                 throw new AuthException($response->body->name, $response->code, null, $response);
             }
             if ($endpoint == 'upload') {
+                if(is_string($response->body)){
+                    throw new UploadException("Upload error", $response->code, null, $response);
+                }
                 throw new UploadException($response->body->error->message, $response->code, null, $response);
             }
             elseif ($endpoint == 'process') {

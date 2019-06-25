@@ -1,11 +1,11 @@
 <?php
 
 //Helpers
-require_once __DIR__ . '/src/JWT.php';
+require_once __DIR__ . '/src/Lib/JWT.php';
 require_once __DIR__ . '/src/File.php';
-require_once __DIR__ . '/src/Method.php';
-require_once __DIR__ . '/src/Response.php';
-require_once __DIR__ . '/src/Request.php';
+require_once __DIR__ . '/src/Request/Method.php';
+require_once __DIR__ . '/src/Request/Response.php';
+require_once __DIR__ . '/src/Request/Request.php';
 require_once __DIR__ . '/src/Request/Body.php';
 
 //Exceptions
