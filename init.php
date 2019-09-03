@@ -35,4 +35,4 @@ require_once __DIR__ . '/src/RotateTask.php';
 require_once __DIR__ . '/src/SplitTask.php';
 require_once __DIR__ . '/src/UnlockTask.php';
 require_once __DIR__ . '/src/WatermarkTask.php';
-
+require_once __DIR__ . '/src/ExtractTask.php';
