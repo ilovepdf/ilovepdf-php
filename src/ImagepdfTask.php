@@ -4,7 +4,7 @@ namespace Ilovepdf;
 
 
 /**
- * Class Ilovepdf
+ * Class ImagepdfTask
  *
  * @package Ilovepdf
  */

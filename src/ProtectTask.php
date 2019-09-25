@@ -2,7 +2,7 @@
 
 namespace Ilovepdf;
 /**
- * Class LockTask
+ * Class ProtectTask
  *
  * @package Ilovepdf
  */

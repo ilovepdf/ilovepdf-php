@@ -1,6 +1,7 @@
 <?php
 
 namespace Ilovepdf;
+
 /**
  * Class CompressTask
  *

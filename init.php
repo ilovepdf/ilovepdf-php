@@ -23,6 +23,8 @@ require_once __DIR__ . '/src/Task.php';
 
 //Specific processes
 require_once __DIR__ . '/src/CompressTask.php';
+require_once __DIR__ . '/src/ExtractTask.php';
+require_once __DIR__ . '/src/HtmlpdfTask.php';
 require_once __DIR__ . '/src/ImagepdfTask.php';
 require_once __DIR__ . '/src/MergeTask.php';
 require_once __DIR__ . '/src/OfficepdfTask.php';
@@ -34,5 +36,6 @@ require_once __DIR__ . '/src/RepairTask.php';
 require_once __DIR__ . '/src/RotateTask.php';
 require_once __DIR__ . '/src/SplitTask.php';
 require_once __DIR__ . '/src/UnlockTask.php';
+require_once __DIR__ . '/src/ValidatepdfaTask.php';
 require_once __DIR__ . '/src/WatermarkTask.php';
 

@@ -1,8 +1,9 @@
 <?php
 
 namespace Ilovepdf;
+
 /**
- * Class CompressTask
+ * Class ExtractTask
  *
  * @package Ilovepdf
  */

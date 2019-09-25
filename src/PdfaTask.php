@@ -2,7 +2,7 @@
 
 namespace Ilovepdf;
 /**
- * Class CompressTask
+ * Class PdfaTask
  *
  * @package Ilovepdf
  */
