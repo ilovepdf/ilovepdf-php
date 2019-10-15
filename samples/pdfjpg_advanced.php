@@ -17,7 +17,7 @@ $file1 = $myTask->addFile('/path/to/file/document1.pdf');
 $file2 = $myTask->addFile('/path/to/file/document2.pdf');
 
 // set extract mode
-$myTask->setMode('pages');
+$myTask->setMode('pages');	// Set the process mode: convert each page to image or extract all images in pdf
 
 // and set name for output file.
 // the task will set the correct file extension for you.
