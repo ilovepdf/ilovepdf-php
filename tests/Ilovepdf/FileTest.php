@@ -38,6 +38,7 @@ class FileTest extends TestCase
     public function testSetRotationWithNotAllowedParamTrowsError(){
         $rotation = '900';
         $file = new File('file_server', 'file_name');
+        $this->expectException(\InvalidArgumentException::class);
         $file->setRotation($rotation);
     }
 
@@ -53,21 +54,21 @@ class FileTest extends TestCase
         $this->assertEquals($options['password'], $password);
     }
 
-    /*
+    /**
      * @test
      * @expectedException \InvalidArgumentException
      */
     public function testEmptyServerFilenameTrowException(){
+        $this->expectException(\InvalidArgumentException::class);
         $file = new File('', 'some_filename');
-        $this->assertEquals($file->filename, 'some_filename');
     }
 
-    /*
+    /**
      * @test
      * @expectedException \InvalidArgumentException
      */
     public function testEmptyFilenameTrowException(){
+        $this->expectException(\InvalidArgumentException::class);
         $file = new File('server_filename', '');
-        $this->assertEquals($file->server_filename, 'server_filename');
     }
 }

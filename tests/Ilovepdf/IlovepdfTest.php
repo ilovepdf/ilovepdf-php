@@ -13,7 +13,7 @@ class IlovepdfTest extends TestCase
     public $publicKey = "public_key";
     public $secretKey = "secret_key";
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->ilovepdf = new Ilovepdf();
         $this->ilovepdf->setApiKeys($this->publicKey, $this->secretKey);
@@ -64,6 +64,7 @@ class IlovepdfTest extends TestCase
      */
     public function testEmptyTaskShouldThrowException()
     {
+        $this->expectException(\Exception::class);
         $task = $this->ilovepdf->newTask("");
         $this->assertNotNull($task);
     }
@@ -74,6 +75,7 @@ class IlovepdfTest extends TestCase
      */
     public function testNotExistingTaskShouldThrowException()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->ilovepdf->newTask("tralara");
     }
 
@@ -117,6 +119,7 @@ class IlovepdfTest extends TestCase
      */
     public function testWrongEncryptKeyThrowsException($key)
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->ilovepdf->setFileEncryption(true, $key );
     }
 
