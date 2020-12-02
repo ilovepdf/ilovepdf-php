@@ -121,6 +121,12 @@ class Task extends Ilovepdf
         return $this->task;
     }
 
+    public function setFiles($files)
+    {
+        $this->files = $files;
+    }
+
+
     public function getFiles()
     {
         return $this->files;
@@ -260,22 +266,32 @@ class Task extends Ilovepdf
     {
         $this->downloadFile($this->task);
 
-        if($this->outputFileType == 'pdf'){
-            header("Content-type:application/pdf");
-            header("Content-Disposition:attachment;filename=\"".$this->outputFileName."\"");
-        }
-        else{
-            if (function_exists('mb_strlen')) {
-                $size = mb_strlen($this->outputFile, '8bit');
-            } else {
-                $size = strlen($this->outputFile);
+        // Try to change headers.
+        try {
+
+            if($this->outputFileType == 'pdf'){
+                header("Content-type:application/pdf");
+                header("Content-Disposition:attachment;filename=\"".$this->outputFileName."\"");
             }
-            header('Content-Type: application/zip');
-            header("Content-Disposition: attachment; filename=\"".$this->outputFileName."\"");
-            header("Content-Length: ".$size);
+            else{
+                if (function_exists('mb_strlen')) {
+                    $size = mb_strlen($this->outputFile, '8bit');
+                } else {
+                    $size = strlen($this->outputFile);
+                }
+                header('Content-Type: application/zip');
+                header("Content-Disposition: attachment; filename=\"".$this->outputFileName."\"");
+                header("Content-Length: ".$size);
+            }
         }
-        echo $this->outputFile;
-        return;
+        catch (\Throwable $th) {
+            // Do nothing.
+            // This happens when output stream is opened and headers
+            // are changed.
+        }
+        finally {
+            echo $this->outputFile;
+        }
     }
 
     /**
