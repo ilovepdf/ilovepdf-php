@@ -38,3 +38,4 @@ require_once __DIR__ . '/src/SplitTask.php';
 require_once __DIR__ . '/src/UnlockTask.php';
 require_once __DIR__ . '/src/ValidatepdfaTask.php';
 require_once __DIR__ . '/src/WatermarkTask.php';
+require_once __DIR__ . '/src/EditpdfTask.php';
