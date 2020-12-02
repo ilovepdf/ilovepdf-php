@@ -54,6 +54,7 @@ class Task extends Ilovepdf
     public $outputFileName;
     public $outputFileType;
 
+    public $PROCESS_ENDPOINT = 'process';
 
     /**
      * Task constructor.
@@ -335,8 +336,9 @@ class Task extends Ilovepdf
         }
 
         $data = array_merge(
-            $this->getPublicVars($this),
-            array('task' => $this->task, 'files' => $this->files, 'v'=> self::VERSION));
+            $this->__toArray(),
+            array('task' => $this->task, 'files' => $this->files, 'v'=> self::VERSION)
+        );
 
         //clean unwanted vars to be sent
         unset($data['timeoutLarge']);
@@ -345,14 +347,34 @@ class Task extends Ilovepdf
 
         $body = Body::multipart($data);
 
-        $response = parent::sendRequest('post', 'process', urldecode(http_build_query($body)));
+        $response = parent::sendRequest('post', $this->PROCESS_ENDPOINT , urldecode(http_build_query($body)));
 
-        $this->result = $response->body;
+        $this->setResult($response->body);
 
         return $this;
     }
 
-    public function getPublicVars () {
+    /**
+     * @return mixed
+     */
+    public function getResult()
+    {
+        return $this->result;
+    }
+
+    /**
+     * @param mixed $result
+     * @return Task
+     */
+    public function setResult($result)
+    {
+        $this->result = $result;
+        return $this;
+    }
+
+
+
+    public function __toArray () {
         return call_user_func('get_object_vars', $this);
     }
 
@@ -503,7 +525,7 @@ class Task extends Ilovepdf
      * @param null $custom_int
      * @return $this
      */
-    public function setCustomInt($customInt)
+    public function setCustomInt(?int $customInt)
     {
         $this->custom_int = $customInt;
         return $this;
@@ -513,7 +535,7 @@ class Task extends Ilovepdf
      * @param null $custom_string
      * @return $this
      */
-    public function setCustomString($customString)
+    public function setCustomString(?string $customString)
     {
         $this->custom_string = $customString;
         return $this;

@@ -134,7 +134,7 @@ class Ilovepdf
         $token['jti'] = $this->getPublicKey();
 
         // Set encryptKey
-        if ($this->getFileEncryption()){
+        if ($this->getFileEncryption()) {
             $token['file_encryption_key'] = $this->getEncrytKey();
         }
 
@@ -164,7 +164,7 @@ class Ilovepdf
      * @throws ProcessException
      * @throws UploadException
      */
-    public function sendRequest($method, $endpoint, $body=null, $start=false)
+    public function sendRequest($method, $endpoint, $body = null, $start = false)
     {
         $to_server = self::$startServer;
         if (!$start && !is_null($this->getWorkerServer())) {
@@ -187,22 +187,20 @@ class Ilovepdf
                 throw new AuthException($response->body->name, $response->code, null, $response);
             }
             if ($endpoint == 'upload') {
-                if(is_string($response->body)){
+                if (is_string($response->body)) {
                     throw new UploadException("Upload error", $response->code, null, $response);
                 }
                 throw new UploadException($response->body->error->message, $response->code, null, $response);
-            }
-            elseif ($endpoint == 'process') {
+            } elseif ($endpoint == 'process') {
                 throw new ProcessException($response->body->error->message, $response->code, null, $response);
-            }
-            elseif (strpos($endpoint, 'download')===0) {
+            } elseif (strpos($endpoint, 'download') === 0) {
                 throw new DownloadException($response->body->error->message, $response->code, null, $response);
-            }
-            else{
+            } else {
                 if ($response->code == 400) {
-                    if(strpos($endpoint, 'task')!=-1){
+                    if (strpos($endpoint, 'task') != -1 && $endpoint != 'signature') {
                         throw new TaskException('Invalid task id');
                     }
+                    var_dump($response);
                     throw new \Exception('Bad Request');
                 }
                 throw new \Exception($response->body->error->message);
@@ -212,14 +210,14 @@ class Ilovepdf
     }
 
     /**
-     * @param string $tool              Api tool to use
-     * @param bool $makeStart           Set to false for chained tasks, because we don't need the start
+     * @param string $tool Api tool to use
+     * @param bool $makeStart Set to false for chained tasks, because we don't need the start
      *
      * @return mixed Return implemented Task class for specified tool
      *
      * @throws \Exception
      */
-    public function newTask($tool='', $makeStart = true)
+    public function newTask($tool = '', $makeStart = true)
     {
         $classname = '\\Ilovepdf\\' . ucwords(strtolower($tool)) . 'Task';
         if (!class_exists($classname)) {
@@ -228,12 +226,14 @@ class Ilovepdf
         return new $classname($this->getPublicKey(), $this->getSecretKey(), $makeStart);
     }
 
-    public static function setStartServer($server){
+    public static function setStartServer($server)
+    {
         self::$startServer = $server;
     }
 
 
-    public static function getStartServer(){
+    public static function getStartServer()
+    {
         return self::$startServer;
     }
 
@@ -254,17 +254,15 @@ class Ilovepdf
     }
 
 
-
     /**
      * @param boolean $value
      */
-    public function setFileEncryption($value, $encryptKey=null)
+    public function setFileEncryption($value, $encryptKey = null)
     {
         $this->encrypted = $value;
-        if($this->encrypted){
+        if ($this->encrypted) {
             $this->setEncryptKey($encryptKey);
-        }
-        else{
+        } else {
             $this->encryptKey = null;
         }
     }
@@ -289,9 +287,9 @@ class Ilovepdf
     /**
      * @param mixed $encrytKey
      */
-    public function setEncryptKey($encryptKey=null)
+    public function setEncryptKey($encryptKey = null)
     {
-        if($encryptKey==null){
+        if ($encryptKey == null) {
             $encryptKey = IlovepdfTool::rand_sha1(32);
         }
         $len = strlen($encryptKey);
@@ -308,7 +306,7 @@ class Ilovepdf
     {
         $workerServer = $this->getWorkerServer();
         $this->setWorkerServer($server);
-        $response = $this->sendRequest('get', 'task/'.$taskId);
+        $response = $this->sendRequest('get', 'task/' . $taskId);
         $this->setWorkerServer($workerServer);
 
         return $response->body;
@@ -317,7 +315,8 @@ class Ilovepdf
     /**
      * @param $verify
      */
-    public function verifySsl($verify){
+    public function verifySsl($verify)
+    {
         Request::verifyPeer($verify);
         Request::verifyHost($verify);
     }
@@ -325,18 +324,19 @@ class Ilovepdf
     /**
      * @param $follow
      */
-    public function followLocation($follow){
+    public function followLocation($follow)
+    {
         Request::followLocation($follow);
     }
 
-    private function getUpdatedInfo(){
+    private function getUpdatedInfo()
+    {
         $data = array('v' => self::VERSION);
         $body = Body::Form($data);
         $response = self::sendRequest('get', 'info', $body);
         $this->info = $response->body;
         return $this->info;
     }
-
 
 
     /**
