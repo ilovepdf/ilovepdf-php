@@ -36,8 +36,8 @@ class File
      */
     function __construct($server_filename, $filename)
     {
-        $this->server_filename = $server_filename;
-        $this->filename = $filename;
+        $this->setServerFilename($server_filename);
+        $this->setFilename($filename);
     }
 
     /**
@@ -83,5 +83,22 @@ class File
     function getServerFilename()
     {
         return $this->server_filename;
+    }
+
+    function setServerFilename($server_filename)
+    {
+        if($server_filename == '') {
+            throw new \InvalidArgumentException;
+        }
+        $this->server_filename = $server_filename;
+    }
+
+
+    function setFilename($filename)
+    {
+        if($filename == '') {
+            throw new \InvalidArgumentException;
+        }
+        $this->filename = $filename;
     }
 }
