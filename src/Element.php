@@ -119,6 +119,7 @@ class Element
 
 
     public $bold = false;
+
     /**
      * string
      * @var
@@ -258,6 +259,26 @@ class Element
     public function setHorizontalPositionAdjustment($horizontal_position_adjustment)
     {
         $this->horizontal_position_adjustment = $horizontal_position_adjustment;
+        return $this;
+    }
+
+    /**
+     * @param mixed $server_filename
+     * @return Element
+     */
+    public function setServerFilename($server_filename)
+    {
+        $this->server_filename = $server_filename;
+        return $this;
+    }
+
+    /**
+     * @param File $file
+     * @return Element
+     */
+    public function setFile($file)
+    {
+        $this->server_filename = $file->getServerFilename();
         return $this;
     }
 }

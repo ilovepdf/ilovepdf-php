@@ -199,6 +199,24 @@ class Task extends Ilovepdf
     }
 
     /**
+     * @param string $filePath
+     * @return File
+     */
+    public function addElementFile($filePath)
+    {
+        return $this->uploadFile($this->task, $filePath);
+    }
+
+    /**
+     * @param string $url
+     * @return File
+     */
+    public function addElementFileFromUrl($url)
+    {
+        return $this->uploadUrl($this->task, $url);
+    }
+
+    /**
      * @return Task
      */
     public function delete()
