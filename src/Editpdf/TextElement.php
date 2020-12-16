@@ -2,6 +2,8 @@
 
 namespace Ilovepdf\Editpdf;
 
+use \Ilovepdf\Lib\Helper;
+
 
 class TextElement extends Element
 {
@@ -16,7 +18,7 @@ class TextElement extends Element
     /**
      * @var string
      */
-    private $text_align = "left";
+    private $text_align;
 
     /**
      * @var string
@@ -32,11 +34,6 @@ class TextElement extends Element
      * @var string
      */
     private $font_color;
-
-    /**
-     * @var string
-     */
-    private $background_color;
 
     /**
      * @var float
@@ -96,23 +93,22 @@ class TextElement extends Element
       return $this;
     }
 
-    // public function getFontColor(){
-    //   return $this->font_color;
-    // }
+    public function getFontColor(){
+      return $this->font_color;
+    }
 
-    // public function setFontColor(string $fontColor){
-    //   $isValid = (is_int($fontSize) && $fontSize > 0);
-    //   if(!$isValid){
-    //     throw new \InvalidArgumentException("Font color must be a hex value (e.g '#ABCDEF') or 'transparent'");
-    //   }
-    //   $this->font_color = $fontColor;
-    //   return $this;
-    // }
+    public function setFontColor(string $fontColor){
+      if(!Helper::isValidColor($fontColor)){
+        throw new \InvalidArgumentException("Font color must be a 6-character hex value (e.g '#ABCDEF') or 'transparent'");
+      }
+      $this->font_color = $fontColor;
+      return $this;
+    }
 
     public function setFontSize(float $fontSize){
       $isValid = (is_int($fontSize) && $fontSize > 0);
       if(!$isValid){
-        throw new \InvalidArgumentException("Font size must be a float greather than 0");
+        throw new \InvalidArgumentException("Font size must be a float greater than 0");
       }
       $this->fontSize = $fontSize;
       return $this;
@@ -170,27 +166,61 @@ class TextElement extends Element
       }else if($this->is_bold){
         return "Bold";
       }else if($this->is_italic){
-        return "Italic"
+        return "Italic";
       }
       
       return "Regular";
     }
 
-    // public function validate(){
-    //   $parentIsValid = parent::validate();
-      
-    //   if($this->coordinates === null) $this->addError('coordinates', 'required');
-    //   if($this->pages === null) $this->addError('pages', 'required');
+    private function getLetterSpacing(){
+      return $this->letter_spacing;
+    }
 
-    //   return empty($this->errors);
-    // }
+    private function setLetterSpacing(float $num){
+      $isValid = (is_numeric($num) && $num >= 0);
+      if(!$isValid){
+        throw new \InvalidArgumentException("Letter spacing must be a number greater or equal to 0");
+      }
+      $this->letter_spacing = $num;
+      return $this;
+    }
+
+    private function getLineHeight(){
+      return $this->line_height;
+    }
+
+    private function setLineHeight(float $num){
+      $isValid = (is_numeric($num) && $num >= 0);
+      if(!$isValid){
+        throw new \InvalidArgumentException("Line height must be a number greater or equal to 0");
+      }
+      $this->line_height = $num;
+      return $this;
+    }
+    
+
+    public function validate(){
+      $parentIsValid = parent::validate();
+      
+      if($this->text === null) $this->addError('text', 'required');
+
+      return empty($this->errors);
+    }
 
     public function __toArray()
     {
       $data = array_merge(
         parent::__toArray(),
         [
-          'font_style' => $this->computeFontStyle()
+          'text'              => $this->text,
+          'text_align'        => $this->text_align,
+          'font_family'       => $this->font_family,
+          'font_size'         => $this->font_size,
+          'font_style'        => $this->computeFontStyle(),
+          'font_color'        => $this->font_color,
+          'letter_spacing'    => $this->letter_spacing,
+          'line_height'       => $this->line_height,
+          'underline_text'    => $this->is_underline,
         ]
       );
       return $data;

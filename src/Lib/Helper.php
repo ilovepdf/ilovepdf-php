@@ -1,9 +1,9 @@
 <?php
-namespace Ilovepdf;
+namespace Ilovepdf\Lib;
 
 class Helper{
-  static function validateHexColor($hexFormat){
-    return preg_match("^#[a-fA-F0-9]{6}$") === 1;
+  static function validateHexColor(string $hexFormat){
+    return preg_match("/^#[a-fA-F0-9]{6}$/", $hexFormat) === 1;
   }
 
     
@@ -15,14 +15,18 @@ class Helper{
    * @return string
    * @link https://www.php.net/manual/es/function.vsprintf.php#119959
    * <code>
-   *   $string = 'Hello %name!';
-   *   $data = array(
+   *   $str = 'Hello %name!';
+   *   $args = array(
    *    '%name' => 'John'
    *   ); 
-   *  $formattedString = Helper::namedSprintf($string, $data);
+   *  $formattedString = Helper::namedSprintf($str, $args);
    * </code>
    */
-  static function namedSprintf($str, $args){
-    return str_replace(array_keys($data), array_values($data), $string);
+  static function namedSprintf(string $str, array $args){
+    return str_replace(array_keys($args), array_values($args), $str);
+  }
+
+  static function isValidColor(string $str){
+    return $str === 'transparent' || self::validateHexColor($str);
   }
 }

@@ -11,17 +11,16 @@ class ImageElement extends Element
 
   private $file = null;
 
-  public function setImage(File $file){
+  public function setFile(File $file){
     $this->file = $file;
   }
 
   public function validate(){
     parent::validate();
     
-    if($this->dimensions === null) $this->addError('image', 'required');
-    if($this->file === null) $this->addError('image', 'required');
+    if($this->file === null) $this->addError('file', 'required');
     if($this->file && empty($this->file->server_filename)){ 
-      $this->addError('image', 'custom', ['message' => 'server_filename not present in image ']);
+      $this->addError('file', 'custom', ['message' => 'server_filename not present in file']);
     }
 
     return empty($this->errors);

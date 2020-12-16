@@ -2,7 +2,7 @@
 
 namespace Ilovepdf\Editpdf;
 
-use Ilovepdf\Helper;
+use Ilovepdf\Lib\Helper;
 
 /**
  * Class Element
@@ -115,7 +115,7 @@ class Element
     }
 
     public function setCoordinates(float $x, float $y){
-      $isValid = $x > 0 && $y > 0;
+      $isValid = $x >= 0 && $y >= 0;
       if(!$isValid) {
         throw new \InvalidArgumentException("x and y must be greater than 0");
       }
@@ -138,10 +138,12 @@ class Element
 
     public function validate(){
       $this->errors = [];
-      if($this->coordinates === null) $this->addError('coordinates', 'required');
-      if($this->pages === null) $this->addError('pages', 'required');
 
       return empty($this->errors);
+    }
+
+    public function getErrors(){
+      return $this->errors;
     }
 
     private function addError(string $attrName, string $errorType, array $params=[]){
