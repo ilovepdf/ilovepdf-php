@@ -106,7 +106,7 @@ class TextElement extends Element
     }
 
     public function setFontSize(float $fontSize){
-      $isValid = (is_int($fontSize) && $fontSize > 0);
+      $isValid = (is_numeric($fontSize) && $fontSize > 0);
       if(!$isValid){
         throw new \InvalidArgumentException("Font size must be a float greater than 0");
       }

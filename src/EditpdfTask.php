@@ -42,6 +42,11 @@ class EditpdfTask extends Task
       return $this;
     }
 
+    public function getElements()
+    {
+      return $this->elements;
+    }
+
     public function getElementsData(){
       return array_map(function($elem){ return $elem->__toArray(); }, $this->elements); 
     }

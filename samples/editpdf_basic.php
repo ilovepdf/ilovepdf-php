@@ -20,17 +20,7 @@ $imageFile = $editpdfTask->addFile('your_image.jpg');
 
 // Create ImageElement
 $imageElem = new ImageElement();
-$imageElem->setCoordinates(300, 600)
-          ->setPages(1)
-          ->setImage($imageFile);
-
-if(!$imageElem->validate()){
-  $validationErrors = $imageElem->getErrors();
-  
-  // Output what went wrong
-  var_dump($validationErrors);
-  exit(1);
-}
+$imageElem->setImage($imageFile);
 
 // Add image element to Editpdf task
 $editpdfTask->addElement($imageElem);

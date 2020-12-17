@@ -42,11 +42,6 @@ class Element
     private $coordinates = null;
 
     /**
-     * @var integer
-     */
-    private $zindex = null;
-
-    /**
      * @var array
      */
     private $errors = [];
@@ -94,19 +89,6 @@ class Element
         throw new \InvalidArgumentException("Opacity must be an integer between 0 and 100");
       }
       $this->opacity = $opacity;
-      return $this;
-    }
-
-    public function getZindex($zindex){
-      return $this->zindex;
-    }
-
-    public function setZindex(int $zindex){
-      $isValid = (is_int($zindex) && $zindex >= 0);
-      if(!$isValid){
-        throw new \InvalidArgumentException("Zindex must be an integer bigger than 0");
-      }
-      $this->zindex = $zindex;
       return $this;
     }
 
@@ -164,7 +146,6 @@ class Element
         'rotation'    => $this->rotation,
         'opacity'     => $this->opacity,
         'coordinates' => $this->coordinates,
-        'zindex'      => $this->zindex
       ];
     }
 }
