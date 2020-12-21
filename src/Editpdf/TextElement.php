@@ -85,11 +85,11 @@ class TextElement extends Element
       return $this->fontFamily;
     }
 
-    public function setFontFamily(string $fontFamily){
-      if(!in_array($fontFamily, self::FONT_FAMILY_VALUES)){
+    public function setFontFamily(string $font_family){
+      if(!in_array($font_family, self::FONT_FAMILY_VALUES)){
         throw new \InvalidArgumentException("Font family must be one of the following values: " . implode(',', self::FONT_FAMILY_VALUES));
       }
-      $this->fontFamily = $fontFamily;
+      $this->font_family = $font_family;
       return $this;
     }
 
@@ -97,20 +97,20 @@ class TextElement extends Element
       return $this->font_color;
     }
 
-    public function setFontColor(string $fontColor){
-      if(!Helper::isValidColor($fontColor)){
+    public function setFontColor(string $font_color){
+      if(!Helper::isValidColor($font_color)){
         throw new \InvalidArgumentException("Font color must be a 6-character hex value (e.g '#ABCDEF') or 'transparent'");
       }
-      $this->font_color = $fontColor;
+      $this->font_color = $font_color;
       return $this;
     }
 
-    public function setFontSize(float $fontSize){
-      $isValid = (is_numeric($fontSize) && $fontSize > 0);
+    public function setFontSize(float $font_size){
+      $isValid = (is_numeric($font_size) && $font_size > 0);
       if(!$isValid){
         throw new \InvalidArgumentException("Font size must be a float greater than 0");
       }
-      $this->fontSize = $fontSize;
+      $this->font_size = $font_size;
       return $this;
     }
 
@@ -172,11 +172,11 @@ class TextElement extends Element
       return "Regular";
     }
 
-    private function getLetterSpacing(){
+    public function getLetterSpacing(){
       return $this->letter_spacing;
     }
 
-    private function setLetterSpacing(float $num){
+    public function setLetterSpacing(float $num){
       $isValid = (is_numeric($num) && $num >= 0);
       if(!$isValid){
         throw new \InvalidArgumentException("Letter spacing must be a number greater or equal to 0");
@@ -185,11 +185,11 @@ class TextElement extends Element
       return $this;
     }
 
-    private function getLineHeight(){
+    public function getLineHeight(){
       return $this->line_height;
     }
 
-    private function setLineHeight(float $num){
+    public function setLineHeight(float $num){
       $isValid = (is_numeric($num) && $num >= 0);
       if(!$isValid){
         throw new \InvalidArgumentException("Line height must be a number greater or equal to 0");
