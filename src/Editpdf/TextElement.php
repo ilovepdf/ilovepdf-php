@@ -41,11 +41,6 @@ class TextElement extends Element
     private $letter_spacing;
 
     /**
-     * @var float
-     */
-    private $line_height;
-
-    /**
      * @var bool
      */
     private $is_bold = false;
@@ -177,27 +172,13 @@ class TextElement extends Element
     }
 
     public function setLetterSpacing(float $num){
-      $isValid = (is_numeric($num) && $num >= 0);
+      $isValid = (is_numeric($num) && $num >= -20);
       if(!$isValid){
         throw new \InvalidArgumentException("Letter spacing must be a number greater or equal to 0");
       }
       $this->letter_spacing = $num;
       return $this;
     }
-
-    public function getLineHeight(){
-      return $this->line_height;
-    }
-
-    public function setLineHeight(float $num){
-      $isValid = (is_numeric($num) && $num >= 0);
-      if(!$isValid){
-        throw new \InvalidArgumentException("Line height must be a number greater or equal to 0");
-      }
-      $this->line_height = $num;
-      return $this;
-    }
-    
 
     public function validate(){
       $parentIsValid = parent::validate();
@@ -219,7 +200,6 @@ class TextElement extends Element
           'font_style'        => $this->computeFontStyle(),
           'font_color'        => $this->font_color,
           'letter_spacing'    => $this->letter_spacing,
-          'line_height'       => $this->line_height,
           'underline_text'    => $this->is_underline,
         ]
       );
