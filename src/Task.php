@@ -369,8 +369,9 @@ class Task extends Ilovepdf
         }
 
         $data = array_merge(
-            $this->getPublicVars($this),
-            array('task' => $this->task, 'files' => $this->files, 'v'=> self::VERSION));
+            $this->__toArray(),
+            array('task' => $this->task, 'files' => $this->files, 'v'=> self::VERSION)
+        );
 
         //clean unwanted vars to be sent
         unset($data['timeoutLarge']);
@@ -386,7 +387,7 @@ class Task extends Ilovepdf
         return $this;
     }
 
-    public function getPublicVars () {
+    public function __toArray () {
         return call_user_func('get_object_vars', $this);
     }
 
