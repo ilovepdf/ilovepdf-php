@@ -20,7 +20,7 @@ require_once __DIR__ . '/src/Exceptions/PathException.php';
 //Ilovepdf
 require_once __DIR__ . '/src/Ilovepdf.php';
 require_once __DIR__ . '/src/Task.php';
-require_once __DIR__ . '/src/lib/Helper.php';
+require_once __DIR__ . '/src/Lib/Helper.php';
 
 //Specific processes
 require_once __DIR__ . '/src/CompressTask.php';
