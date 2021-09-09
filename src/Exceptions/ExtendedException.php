@@ -17,7 +17,7 @@ class ExtendedException extends Exception
      * @param Exception|null $previous
      * @param $response
      */
-    public function __construct($message, $code = 0, Exception $previous = null, $response)
+    public function __construct($message, $response, $code = 0, Exception $previous = null)
     {
         if (isset($response->body->error) && $response->body->error->type) {
             $this->type = $response->body->error->type;

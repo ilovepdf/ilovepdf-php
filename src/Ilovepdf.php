@@ -184,19 +184,19 @@ class Ilovepdf
 
         if ($response->code != '200' && $response->code != '201') {
             if ($response->code == 401) {
-                throw new AuthException($response->body->name, $response->code, null, $response);
+                throw new AuthException($response->body->name, $response, $response->code, null);
             }
             if ($endpoint == 'upload') {
                 if(is_string($response->body)){
-                    throw new UploadException("Upload error", $response->code, null, $response);
+                    throw new UploadException("Upload error", $response, $response->code, null);
                 }
-                throw new UploadException($response->body->error->message, $response->code, null, $response);
+                throw new UploadException($response->body->error->message, $response, $response->code, null);
             }
             elseif ($endpoint == 'process') {
-                throw new ProcessException($response->body->error->message, $response->code, null, $response);
+                throw new ProcessException($response->body->error->message, $response $response->code, null);
             }
             elseif (strpos($endpoint, 'download')===0) {
-                throw new DownloadException($response->body->error->message, $response->code, null, $response);
+                throw new DownloadException($response->body->error->message, $response $response->code, null);
             }
             else{
                 if ($response->code == 400) {
