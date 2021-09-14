@@ -1,6 +1,6 @@
 {
-    "name": "ilovepdf/ilovepdf-php",
-    "description": "iLovePDF Php Api",
+    "name": "eswachsman/ilovepdf-php",
+    "description": "iLovePDF Php Api for PHP 8",
     "type": "library",
     "homepage": "https://ilovepdf.com/",
     "license": "MIT",
