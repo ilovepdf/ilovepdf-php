@@ -193,10 +193,10 @@ class Ilovepdf
                 throw new UploadException($response->body->error->message, $response, $response->code, null);
             }
             elseif ($endpoint == 'process') {
-                throw new ProcessException($response->body->error->message, $response $response->code, null);
+                throw new ProcessException($response->body->error->message, $response, $response->code, null);
             }
             elseif (strpos($endpoint, 'download')===0) {
-                throw new DownloadException($response->body->error->message, $response $response->code, null);
+                throw new DownloadException($response->body->error->message, $response, $response->code, null);
             }
             else{
                 if ($response->code == 400) {
