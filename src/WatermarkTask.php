@@ -20,7 +20,7 @@ class WatermarkTask extends Task
     /**
      * @var string
      */
-     public $text;
+    public $text;
 
     /**
      * @var strig
@@ -144,6 +144,15 @@ class WatermarkTask extends Task
     public function setImage($image)
     {
         $this->image = $image;
+        return $this;
+    }
+
+    /**
+     * @param File $image
+     */
+    public function setImageFile(File $imageFile)
+    {
+        $this->image = $imageFile->getServerFilename();
         return $this;
     }
 

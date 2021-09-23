@@ -3,9 +3,15 @@
 namespace Ilovepdf\Sign;
 
 use Ilovepdf\File;
+use Ilovepdf\Sign\Elements\ElementAbstract;
 
 class SignatureFile
 {
+
+    /**
+     * @var string
+     */
+    public $file;
     /**
      * @var string
      */
@@ -19,6 +25,7 @@ class SignatureFile
 
     public function __construct(File $file, array $elements = [])
     {
+        $this->file;
         $this->server_filename = $file->getServerFilename();
         $this->setElements($elements);
     }
@@ -61,7 +68,7 @@ class SignatureFile
     /**
      * @param array $elements
      */
-    public function addElement(Element $element)
+    public function addElement(ElementAbstract $element)
     {
         $this->elements[] = $element;
     }

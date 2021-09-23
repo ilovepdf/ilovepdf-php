@@ -54,7 +54,6 @@ class Task extends Ilovepdf
     public $outputFileName;
     public $outputFileType;
 
-    public $PROCESS_ENDPOINT = 'process';
 
     /**
      * Task constructor.
@@ -122,6 +121,12 @@ class Task extends Ilovepdf
         return $this->task;
     }
 
+    public function setFiles($files)
+    {
+        $this->files = $files;
+    }
+
+
     public function getFiles()
     {
         return $this->files;
@@ -185,12 +190,37 @@ class Task extends Ilovepdf
         if(!file_exists($filepath)){
             throw new \InvalidArgumentException('File '.$filepath.' does not exists');
         }
-        $data = array('task' => $task, 'v'=> self::VERSION);
+        $data = $this->getFileData($task);
         $files = array('file' => $filepath);
         $body = Body::multipart($data, $files);
-
         $response = $this->sendRequest('post', 'upload', $body);
+        return $this->getFileFromResponse($response,$filepath);
+    }
+
+    protected function getFileData(string $task){
+        return array('task' => $task, 'v'=> self::VERSION);
+    }
+
+    protected function getFileFromResponse($response,$filepath){
         return new File($response->body->server_filename, basename($filepath));
+    }
+
+    /**
+     * @param string $filePath
+     * @return File
+     */
+    public function addElementFile($filePath)
+    {
+        return $this->uploadFile($this->task, $filePath);
+    }
+
+    /**
+     * @param string $url
+     * @return File
+     */
+    public function addElementFileFromUrl($url)
+    {
+        return $this->uploadUrl($this->task, $url);
     }
 
     /**
@@ -261,22 +291,32 @@ class Task extends Ilovepdf
     {
         $this->downloadFile($this->task);
 
-        if($this->outputFileType == 'pdf'){
-            header("Content-type:application/pdf");
-            header("Content-Disposition:attachment;filename=\"".$this->outputFileName."\"");
-        }
-        else{
-            if (function_exists('mb_strlen')) {
-                $size = mb_strlen($this->outputFile, '8bit');
-            } else {
-                $size = strlen($this->outputFile);
+        // Try to change headers.
+        try {
+
+            if($this->outputFileType == 'pdf'){
+                header("Content-type:application/pdf");
+                header("Content-Disposition:attachment;filename=\"".$this->outputFileName."\"");
             }
-            header('Content-Type: application/zip');
-            header("Content-Disposition: attachment; filename=\"".$this->outputFileName."\"");
-            header("Content-Length: ".$size);
+            else{
+                if (function_exists('mb_strlen')) {
+                    $size = mb_strlen($this->outputFile, '8bit');
+                } else {
+                    $size = strlen($this->outputFile);
+                }
+                header('Content-Type: application/zip');
+                header("Content-Disposition: attachment; filename=\"".$this->outputFileName."\"");
+                header("Content-Length: ".$size);
+            }
         }
-        echo $this->outputFile;
-        return;
+        catch (\Throwable $th) {
+            // Do nothing.
+            // This happens when output stream is opened and headers
+            // are changed.
+        }
+        finally {
+            echo $this->outputFile;
+        }
     }
 
     /**
@@ -347,32 +387,12 @@ class Task extends Ilovepdf
 
         $body = Body::multipart($data);
 
-        $response = parent::sendRequest('post', $this->PROCESS_ENDPOINT , urldecode(http_build_query($body)));
+        $response = parent::sendRequest('post', 'process', http_build_query($body, null, '&', PHP_QUERY_RFC3986));
 
-        $this->setResult($response->body);
+        $this->result = $response->body;
 
         return $this;
     }
-
-    /**
-     * @return mixed
-     */
-    public function getResult()
-    {
-        return $this->result;
-    }
-
-    /**
-     * @param mixed $result
-     * @return Task
-     */
-    public function setResult($result)
-    {
-        $this->result = $result;
-        return $this;
-    }
-
-
 
     public function __toArray () {
         return call_user_func('get_object_vars', $this);
@@ -525,7 +545,7 @@ class Task extends Ilovepdf
      * @param null $custom_int
      * @return $this
      */
-    public function setCustomInt(?int $customInt)
+    public function setCustomInt($customInt)
     {
         $this->custom_int = $customInt;
         return $this;
@@ -535,7 +555,7 @@ class Task extends Ilovepdf
      * @param null $custom_string
      * @return $this
      */
-    public function setCustomString(?string $customString)
+    public function setCustomString($customString)
     {
         $this->custom_string = $customString;
         return $this;

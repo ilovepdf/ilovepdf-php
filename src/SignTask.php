@@ -3,27 +3,18 @@
 namespace Ilovepdf;
 
 use Ilovepdf\Sign\Requester;
-use Ilovepdf\Sign\Signer;
 use phpDocumentor\Reflection\Types\Boolean;
+use Ilovepdf\Request\Body;
+use Ilovepdf\Sign\Receivers\ReceiverAbstract;
 
 /**
- * Class WatermarkTask
+ * Class SignTask
  *
  * @package Ilovepdf
  */
 class SignTask extends Task
 {
-    public $PROCESS_ENDPOINT = 'signature';
-
-    /**
-     * @var string
-     */
-    public $name;
-
-    /**
-     * @var string
-     */
-    public $email;
+    //public $PROCESS_ENDPOINT = 'signature';
 
     /**
      * @var int
@@ -33,43 +24,12 @@ class SignTask extends Task
     /**
      * @var int
      */
-    public $expiration_date = 120;
-
-    /**
-     * @var int
-     */
-    public $certified = 0;
-
-    /**
-     * @var int
-     */
-    public $custom_int;
-
-    /**
-     * @var string
-     */
-    public $custom_string;
+    public $expiration_date = 30;
 
     /**
      * @var string
      */
     public $language = 'en';
-
-    /**
-     * @var array
-     */
-    private $languageValues = ['EN', 'ES', 'FR', 'IT', 'JA', 'ZH-CN', 'ZH-TW', 'BG'];
-
-    /**
-     * @var string
-     */
-    public $mode = 'single';
-
-    /**
-     * @var array
-     */
-    private $modeValues = ['single', 'multiple', 'batch'];
-
 
     /**
      * @var array
@@ -80,11 +40,6 @@ class SignTask extends Task
      * @var Boolean
      */
     public $uuid_visible = true;
-
-    /**
-     * @var Requester
-     */
-    private $requester;
 
     /**
      * SignatureTask constructor.
@@ -99,21 +54,23 @@ class SignTask extends Task
         parent::__construct($publicKey, $secretKey, $makeStart);
     }
 
-    function setRequester(Requester $requester)
-    {
-        $this->requester = $requester;
-        $this
-            ->setName($requester->getName())
-            ->setEmail($requester->getEmail())
-            ->setCustomInt($requester->getCustomInt())
-            ->setCustomString($requester->getCustomString());
-        return $this;
-    }
-
-    function addSigner(Signer $signer)
+    function addReceiver(ReceiverAbstract $signer)
     {
         $this->signers[] = $signer;
         return $this;
+    }
+
+    protected function getFileData(string $task){
+        $data = parent::getFileData($task);
+        $data["pdfinfo"] = "1";
+        return $data;
+    }
+
+    protected function getFileFromResponse($response,$filepath){
+        $file = new File($response->body->server_filename, basename($filepath));
+        $file->setPdfPages($response->body->pdf_pages);
+        $file->setPdfPageNumber(intval($response->body->pdf_page_number));
+        return $file;
     }
 
     /**
@@ -155,88 +112,34 @@ class SignTask extends Task
      */
     public function getLockOrder(): int
     {
-        return $this->lock_order;
+        return intval($this->lock_order);
     }
 
     /**
      * @param int $lock_order
      * @return SignTask
      */
-    public function setLockOrder(int $lock_order): SignTask
+    public function setLockOrder(boolean $lock_order): SignTask
     {
-        $this->lock_order = $lock_order;
+        $this->lock_order = intval($lock_order);
         return $this;
     }
 
     /**
      * @return int
      */
-    public function getExpirationDate(): int
+    public function getExpirationDays(): int
     {
-        return $this->expiration_date;
+        return $this->expiration_days;
     }
 
     /**
      * @param int $expiration_date
      * @return SignTask
      */
-    public function setExpirationDate(int $expiration_date): SignTask
+    public function setExpirationDays(int $expiration_days): SignTask
     {
-        $this->expiration_date = $expiration_date;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getCertified(): int
-    {
-        return $this->certified;
-    }
-
-    /**
-     * @param int $certified
-     * @return SignTask
-     */
-    public function setCertified(int $certified): SignTask
-    {
-        $this->certified = $certified;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getCustomInt(): ?int
-    {
-        return $this->custom_int;
-    }
-
-    /**
-     * @param int $custom_int
-     * @return SignTask
-     */
-    public function setCustomInt(?int $custom_int): SignTask
-    {
-        $this->custom_int = $custom_int;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCustomString(): ?string
-    {
-        return $this->custom_string;
-    }
-
-    /**
-     * @param string $custom_string
-     * @return SignTask
-     */
-    public function setCustomString(?string $custom_string): SignTask
-    {
-        $this->custom_string = $custom_string;
+        $this->expiration_days = $expiration_days;
         return $this;
     }
 
@@ -255,24 +158,6 @@ class SignTask extends Task
     public function setLanguage(string $language): SignTask
     {
         $this->language = $language;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMode(): string
-    {
-        return $this->mode;
-    }
-
-    /**
-     * @param string $mode
-     * @return SignTask
-     */
-    public function setMode(string $mode): SignTask
-    {
-        $this->mode = $mode;
         return $this;
     }
 
@@ -328,5 +213,34 @@ class SignTask extends Task
             array('signers' => $this->getSignersData())
         );
         return $data;
+    }
+
+    /**
+     * @return Task
+     * @throws Exceptions\AuthException
+     * @throws Exceptions\ProcessException
+     * @throws Exceptions\UploadException
+     */
+    public function execute()
+    {
+        if($this->task===null){
+            throw new \Exception('Current task not exists');
+        }
+
+        $data = $this->__toArray();
+
+        //clean unwanted vars to be sent
+        unset($data['timeoutLarge']);
+        unset($data['timeout']);
+        unset($data['timeDelay']);
+
+        $body = Body::multipart($data);
+
+        var_dump(json_encode($data));
+        $response = parent::sendRequest('post', 'signature', http_build_query($body, null, '&', PHP_QUERY_RFC3986));
+
+        $this->result = $response->body;
+
+        return $this;
     }
 }
