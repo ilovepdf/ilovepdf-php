@@ -164,7 +164,7 @@ class Ilovepdf
      * @throws ProcessException
      * @throws UploadException
      */
-    public function sendRequest($method, $endpoint, $body = null, $start = false)
+    public function sendRequest($method, $endpoint, $body = null, $start = false,$isJson=false)
     {
         $to_server = self::$startServer;
         if (!$start && !is_null($this->getWorkerServer())) {
@@ -177,10 +177,16 @@ class Ilovepdf
             Request::timeout($this->timeout);
         }
 
-        $response = Request::$method($to_server . '/v1/' . $endpoint, array(
+        $headers = array(
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $this->getJWT()
-        ), $body);
+        );
+
+        if($isJson){
+            $headers["Content-Type"] = "application/json";
+        }
+
+        $response = Request::$method($to_server . '/v1/' . $endpoint, $headers, $body);
 
         if ($response->code != '200' && $response->code != '201') {
             if ($response->code == 401) {
@@ -200,7 +206,6 @@ class Ilovepdf
                     if (strpos($endpoint, 'task') != -1 && $endpoint != 'signature') {
                         throw new TaskException('Invalid task id');
                     }
-                    var_dump($response);
                     throw new \Exception('Bad Request');
                 }
                 throw new \Exception($response->body->error->message);
