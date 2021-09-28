@@ -8,15 +8,15 @@ use Ilovepdf\SignTask;
 use Ilovepdf\Sign\Receivers\Signer;
 use Ilovepdf\Sign\SignatureFile;
 use Ilovepdf\Sign\Elements\ElementSignature;
-$signTask = new SignTask("project_public_6d8160ca929409eab330cd6cf7b1164a_UuLiW383045d01ef1df3767a325d46fb7bf30",
-                            "secret_key_6aa1ba9745e41682940f50b86d7055b5_LOxoeb15108b113f609967c7b89fa9f09c621");
+$signTask = new SignTask("project_public_key",
+                            "private_secret_key");
 
 // We first upload the file that we are going to use
-$file = $signTask->addFile('./sample.pdf');
+$file = $signTask->addFile('/path/to/file');
 
 
 // Add signers and their elements;
-$signer = new Signer("Guillem","guillem.vidal+1@iloveimg.com");
+$signer = new Signer("name","signeremail@email.com");
 $signatureFile = new SignatureFile($file);
 
 $signatureElement = new ElementSignature();
