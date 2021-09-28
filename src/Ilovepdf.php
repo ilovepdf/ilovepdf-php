@@ -34,7 +34,7 @@ class Ilovepdf
     // @var string|null The version of the Ilovepdf API to use for requests.
     public static $apiVersion = 'v1';
 
-    const VERSION = 'php.1.2.0';
+    const VERSION = 'php.1.2.1';
 
     public $token = null;
 
@@ -199,13 +199,19 @@ class Ilovepdf
                 throw new DownloadException($response->body->error->message, $response, $response->code, null);
             }
             else{
+                if ($response->code == 429) {
+                    throw new \Exception('Too Many Requests');
+                }
                 if ($response->code == 400) {
                     if(strpos($endpoint, 'task')!=-1){
                         throw new TaskException('Invalid task id');
                     }
                     throw new \Exception('Bad Request');
                 }
-                throw new \Exception($response->body->error->message);
+                if(isset($response->body->error) && isset($response->body->error->message)) {
+                    throw new \Exception($response->body->error->message);
+                }
+                throw new \Exception('Bad Request');
             }
         }
         return $response;
