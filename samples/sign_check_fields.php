@@ -8,7 +8,7 @@ use Ilovepdf\SignatureRequest;
 
 $signatureRequest = new SignatureRequest("publickey","secretkey");
 $token_requester = "tokenrequester";
-$signer_shared_token = "signersharedtoken";
+$signer_token_requester = "signertokenrequester";
 
 // Get the list of the signatures
 $signatureRequest->getSignaturesList();
@@ -20,7 +20,7 @@ $signatureRequest->getSignaturesList(0,50);
 $signatureRequest->getSignature($token_requester);
 
 // Get the information about an specific signer:
-$signatureRequest->getSignerInfo($signer_shared_token);
+$signatureRequest->getSignerInfo($signer_token_requester);
 
 // Save audit file on the filesystem
 $signatureRequest->getSignatureAuditFile($token_requester,"./","audit3");
@@ -29,3 +29,7 @@ $signatureRequest->getSignatureOriginalFile($token_requester,"./","original3");
 
 // Save the original file on the filesystem:
 $signatureRequest->getSignatureSignedFile($token_requester,"./","signed4"); 
+
+$signatureRequest->fixSignerEmail($signer_token_requester,"newemail@email.com"); 
+
+$signatureRequest->fixSignerPhone($signer_token_requester,"+34666666666"); 

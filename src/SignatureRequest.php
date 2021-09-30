@@ -75,8 +75,26 @@ class SignatureRequest extends Ilovepdf{
         return $filePath;
     }
 
-    public function getSignerInfo(string $signerTokenShared): stdClass{
-        return parent::sendRequest("get","signature/signer/info/{$signerTokenShared}")->body;
+    public function fixSignerEmail(string $signerTokenRequester, string $newEmail): bool{
+        $body = [
+            "email" => $newEmail
+        ];
+        $response = parent::sendRequest("put","signature/signer/fix-email/{$signerTokenRequester}",$body,false,true);
+        //if above fails, it throws an exception
+        return true;
+    }
+
+    public function fixSignerPhone(string $signerTokenRequester, string $newPhone): bool{
+        $body = [
+            "phone" => $newPhone
+        ];
+        $response = parent::sendRequest("put","signature/signer/fix-email/{$signerTokenRequester}",$body,false,true);
+        //if above fails, it throws an exception
+        return true;
+    }
+
+    public function getSignerInfo(string $signerTokenRequester): stdClass{
+        return parent::sendRequest("get","signature/signer/info/{$signerTokenRequester}")->body;
     }
 
     /**
