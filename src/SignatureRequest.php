@@ -5,6 +5,7 @@ use Ilovepdf\Request\Body;
 use Ilovepdf\Request\Request;
 use Ilovepdf\Request\Response;
 use stdClass;
+use Ilovepdf\Exceptions\DownloadException;
 
 /**
  * Class SignatureRequest
@@ -35,23 +36,47 @@ class SignatureRequest extends Ilovepdf{
         return parent::sendRequest("get","signature/requesterview/{$signatureId}")->body;
     }
 
-    public function getSignatureAuditFile(string $signatureId, string $pathToSave): bool{
+    public function getSignatureAuditFile(string $signatureId, string $pathToSave,string $filename): bool{
         $response = parent::sendRequest("get","signatures/{$signatureId}/download-audit");
-        return file_put_contents($pathToSave,$response->raw_body);
+        if(!is_dir($pathToSave)){
+            throw new \Exception("{$pathToSave} is not a directory");
+        }
+        $mime_type = $response->headers["Content-Type"];
+        $filePath = "{$pathToSave}/{$filename}.".$this->getExtensionFromMime($mime_type);
+        if(!file_put_contents($filePath,$response->raw_body)){
+            throw new DownloadException("Download success, but could not save the contents of the file to {$filePath}. Check permissions of the directory", 1, null, $response);
+        }
+        return $filePath;
     }
 
-    public function getSignatureOriginalFile(string $signatureId, string $pathToSave): bool{
+    public function getSignatureOriginalFile(string $signatureId, string $pathToSave,string $filename): string{
         $response = parent::sendRequest("get","signatures/{$signatureId}/download-original");
-        return file_put_contents($pathToSave,$response->raw_body);
+        if(!is_dir($pathToSave)){
+            throw new \Exception("{$pathToSave} is not a directory");
+        }
+        $mime_type = $response->headers["Content-Type"];
+        $filePath = "{$pathToSave}/{$filename}.".$this->getExtensionFromMime($mime_type);
+        if(!file_put_contents($filePath,$response->raw_body)){
+            throw new DownloadException("Download success, but could not save the contents of the file to {$filePath}. Check permissions of the directory", 1, null, $response);
+        }
+        return $filePath;
     }
 
-    public function getSignatureSignedFile(string $signatureId, string $pathToSave): bool{
+    public function getSignatureSignedFile(string $signatureId, string $pathToSave,string $filename): string{
         $response = parent::sendRequest("get","signatures/{$signatureId}/download-signed");
-        return file_put_contents($pathToSave,$response->raw_body);
+        if(!is_dir($pathToSave)){
+            throw new \Exception("{$pathToSave} is not a directory");
+        }
+        $mime_type = $response->headers["Content-Type"];
+        $filePath = "{$pathToSave}/{$filename}.".$this->getExtensionFromMime($mime_type);
+        if(!file_put_contents($filePath,$response->raw_body)){
+            throw new DownloadException("Download success, but could not save the contents of the file to {$filePath}. Check permissions of the directory", 1, null, $response);
+        }
+        return $filePath;
     }
 
-    public function getSignerInfo(string $signerId): bool{
-        return parent::sendRequest("get","signature/signerview/{$signerId}")->body;
+    public function getSignerInfo(string $signerTokenShared): stdClass{
+        return parent::sendRequest("get","signature/signer/info/{$signerTokenShared}")->body;
     }
 
     /**
@@ -65,5 +90,9 @@ class SignatureRequest extends Ilovepdf{
     public function newTask($tool = '', $makeStart = true)
     {
         throw new \Exception("Method not valid");
+    }
+
+    private function getExtensionFromMime(string $mime_type){
+        return explode("/",$mime_type)[1];
     }
 }

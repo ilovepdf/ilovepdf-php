@@ -6,9 +6,9 @@ require_once('../vendor/autoload.php');
 
 use Ilovepdf\SignatureRequest;
 
-$signatureRequest = new SignatureRequest("public_key","protected_key");
+$signatureRequest = new SignatureRequest("publickey","secretkey");
 $token_requester = "tokenrequester";
-$signer_token = "signertoken";
+$signer_shared_token = "signersharedtoken";
 
 // Get the list of the signatures
 $signatureRequest->getSignaturesList();
@@ -20,12 +20,12 @@ $signatureRequest->getSignaturesList(0,50);
 $signatureRequest->getSignature($token_requester);
 
 // Get the information about an specific signer:
-$signatureRequest->getSignerInfo($signer_token);
+$signatureRequest->getSignerInfo($signer_shared_token);
 
 // Save audit file on the filesystem
-$signatureRequest->getSignatureAuditFile($token_requester,"/path/to/save/file");
+$signatureRequest->getSignatureAuditFile($token_requester,"./","audit3");
 // Save the original file on the filesystem:
-$signatureRequest->getSignatureOriginalFile($token_requester,"/path/to/save/file");
+$signatureRequest->getSignatureOriginalFile($token_requester,"./","original3");
 
 // Save the original file on the filesystem:
-$signatureRequest->getSignatureSignedFile($token_requester,"/path/to/save/file");
+$signatureRequest->getSignatureSignedFile($token_requester,"./","signed4"); 
