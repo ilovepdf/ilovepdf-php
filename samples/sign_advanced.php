@@ -20,6 +20,13 @@ use Ilovepdf\Sign\Receivers\Witness;
 $signTask = new SignTask("public_key",
                             "secret_key");
 
+// Set the settings
+$reminderDays = 3;
+$signTask = $signTask->setVerifySignatureVerification(true)->
+                setMessage("Body of the first message")->
+                setReminders($reminderDays)->setLockOrder(false)->
+                setExpirationDays(130)->setLanguage("en-US")->setUuidVisible(true);
+
 // We first upload the file that we are going to use
 $file = $signTask->addFile('/path/to/file/document.pdf');
 

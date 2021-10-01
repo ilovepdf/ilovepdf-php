@@ -24,12 +24,22 @@ class SignTask extends Task
     /**
      * @var int
      */
-    public $expiration_date = 30;
+    public $expiration_days = 90;
 
     /**
      * @var string
      */
     public $language = 'en';
+
+    /**
+     * @var string
+     */
+    public $subject_signer = null;
+
+    /**
+     * @var string
+     */
+    public $message_signer = null;
 
     /**
      * @var array
@@ -40,6 +50,10 @@ class SignTask extends Task
      * @var Boolean
      */
     public $uuid_visible = true;
+    
+    public $reminders = 0;
+
+    public $verify_enabled = true;
 
     /**
      * SignatureTask constructor.
@@ -76,34 +90,48 @@ class SignTask extends Task
     /**
      * @return string
      */
-    public function getName(): string
+    public function getVerifySignatureVerification(): bool
     {
-        return $this->name;
+        return $this->verify_enabled;
     }
 
     /**
-     * @param string $name
+     * @param bool $verification
      */
-    public function setName(string $name): SignTask
+    public function setVerifySignatureVerification(bool $verification): SignTask
     {
-        $this->name = $name;
+        $this->verify_enabled = $verification;
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getEmail(): string
+    public function getMessage(): string
     {
-        return $this->email;
+        return $this->message_signer;
     }
 
     /**
-     * @param string $email
+     * @param string $subject
      */
-    public function setEmail(string $email): SignTask
+    public function setMessage(string $message): SignTask
     {
-        $this->email = $email;
+        $this->message_signer = $message;
+        return $this;
+    }
+
+    public function getReminders(): int
+    {
+        return $this->reminders;
+    }
+
+    /**
+     * @param int $reminders
+     */
+    public function setReminders(int $reminders): SignTask
+    {
+        $this->reminders = $reminders;
         return $this;
     }
 
@@ -119,7 +147,7 @@ class SignTask extends Task
      * @param int $lock_order
      * @return SignTask
      */
-    public function setLockOrder(boolean $lock_order): SignTask
+    public function setLockOrder(bool $lock_order): SignTask
     {
         $this->lock_order = intval($lock_order);
         return $this;
@@ -191,7 +219,7 @@ class SignTask extends Task
     /**
      * @return Boolean
      */
-    public function getUuidVisible(): Boolean
+    public function getUuidVisible(): bool
     {
         return $this->uuid_visible;
     }
@@ -200,7 +228,7 @@ class SignTask extends Task
      * @param Boolean $uuid_visible
      * @return SignTask
      */
-    public function setUuidVisible(Boolean $uuid_visible): SignTask
+    public function setUuidVisible(bool $uuid_visible): SignTask
     {
         $this->uuid_visible = $uuid_visible;
         return $this;
@@ -208,8 +236,14 @@ class SignTask extends Task
 
     public function __toArray()
     {
+        $signTaskData = parent::__toArray();
+        if(isset($signTaskData["reminders"]) && $signTaskData["reminders"] > 0){
+            $signTaskData["signer_reminders"] = true;
+            $signTaskData["signer_reminder_days_cycle"] = $signTaskData["reminders"];
+            unset($signTaskData["reminders"]);
+        }
         $data = array_merge(
-            parent::__toArray(),
+            $signTaskData,
             array('signers' => $this->getSignersData())
         );
         return $data;
