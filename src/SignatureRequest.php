@@ -75,7 +75,24 @@ class SignatureRequest extends Ilovepdf{
     public function sendReminders(string $signerTokenRequester): bool{
         $body = [
         ];
-        $response = parent::sendRequest("put","v1/signature/sendReminder/{$signerTokenRequester}",$body,false,true);
+        $response = parent::sendRequest("post","v1/signature/sendReminder/{$signerTokenRequester}",$body,false,true);
+        //if above fails, it throws an exception
+        return true;
+    }
+
+    public function void(string $signerTokenRequester): bool{
+        $body = [
+        ];
+        $response = parent::sendRequest("put","v1/signature/void/{$signerTokenRequester}",$body,false,true);
+        //if above fails, it throws an exception
+        return true;
+    }
+
+    public function increaseExpirationDays(string $signerTokenRequester, int $amountOfDays): bool{
+        $body = [
+            "days" => $amountOfDays
+        ];
+        $response = parent::sendRequest("put","v1/signature/void/{$signerTokenRequester}",$body,false,true);
         //if above fails, it throws an exception
         return true;
     }

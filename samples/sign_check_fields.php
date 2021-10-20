@@ -35,3 +35,7 @@ $signatureRequest->fixSignerEmail($signer_token_requester,"newemail@email.com");
 $signatureRequest->fixSignerPhone($signer_token_requester,"34666666666");
 
 $signatureRequest->sendReminders($signer_token_requester); 
+
+$signatureRequest->increaseExpirationDays($signer_token_requester,4); 
+
+$signatureRequest->void($signer_token_requester);
