@@ -32,4 +32,6 @@ $signatureRequest->getSignatureSignedFile($token_requester,"./","signed4");
 
 $signatureRequest->fixSignerEmail($signer_token_requester,"newemail@email.com"); 
 
-$signatureRequest->fixSignerPhone($signer_token_requester,"+34666666666"); 
+$signatureRequest->fixSignerPhone($signer_token_requester,"34666666666");
+
+$signatureRequest->sendReminders($signer_token_requester); 
