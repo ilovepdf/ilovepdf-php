@@ -37,41 +37,20 @@ class SignatureRequest extends Ilovepdf{
     }
 
     public function getSignatureAuditFile(string $signatureId, string $pathToSave,string $filename): bool{
-        $response = parent::sendRequest("get","signatures/{$signatureId}/download-audit");
-        if(!is_dir($pathToSave)){
-            throw new \Exception("{$pathToSave} is not a directory");
-        }
-        $mime_type = $response->headers["Content-Type"];
-        $filePath = "{$pathToSave}/{$filename}.".$this->getExtensionFromMime($mime_type);
-        if(!file_put_contents($filePath,$response->raw_body)){
-            throw new DownloadException("Download success, but could not save the contents of the file to {$filePath}. Check permissions of the directory", 1, null, $response);
-        }
+        $response = parent::sendRequest("get","signature/{$signatureId}/download-audit");
+        $this->downloadResponseToFile($response,$pathToSave,$filename);
         return $filePath;
     }
 
     public function getSignatureOriginalFile(string $signatureId, string $pathToSave,string $filename): string{
-        $response = parent::sendRequest("get","signatures/{$signatureId}/download-original");
-        if(!is_dir($pathToSave)){
-            throw new \Exception("{$pathToSave} is not a directory");
-        }
-        $mime_type = $response->headers["Content-Type"];
-        $filePath = "{$pathToSave}/{$filename}.".$this->getExtensionFromMime($mime_type);
-        if(!file_put_contents($filePath,$response->raw_body)){
-            throw new DownloadException("Download success, but could not save the contents of the file to {$filePath}. Check permissions of the directory", 1, null, $response);
-        }
+        $response = parent::sendRequest("get","signature/{$signatureId}/download-original");
+        $this->downloadResponseToFile($response,$pathToSave,$filename);
         return $filePath;
     }
 
     public function getSignatureSignedFile(string $signatureId, string $pathToSave,string $filename): string{
-        $response = parent::sendRequest("get","signatures/{$signatureId}/download-signed");
-        if(!is_dir($pathToSave)){
-            throw new \Exception("{$pathToSave} is not a directory");
-        }
-        $mime_type = $response->headers["Content-Type"];
-        $filePath = "{$pathToSave}/{$filename}.".$this->getExtensionFromMime($mime_type);
-        if(!file_put_contents($filePath,$response->raw_body)){
-            throw new DownloadException("Download success, but could not save the contents of the file to {$filePath}. Check permissions of the directory", 1, null, $response);
-        }
+        $response = parent::sendRequest("get","signature/{$signatureId}/download-signed");
+        $this->downloadResponseToFile($response,$pathToSave,$filename);
         return $filePath;
     }
 
@@ -89,6 +68,14 @@ class SignatureRequest extends Ilovepdf{
             "phone" => $newPhone
         ];
         $response = parent::sendRequest("put","signature/signer/fix-email/{$signerTokenRequester}",$body,false,true);
+        //if above fails, it throws an exception
+        return true;
+    }
+
+    public function sendReminders(string $signerTokenRequester): bool{
+        $body = [
+        ];
+        $response = parent::sendRequest("put","v1/signature/sendReminder/{$signerTokenRequester}",$body,false,true);
         //if above fails, it throws an exception
         return true;
     }
@@ -112,5 +99,17 @@ class SignatureRequest extends Ilovepdf{
 
     private function getExtensionFromMime(string $mime_type){
         return explode("/",$mime_type)[1];
+    }
+
+    protected function downloadResponseToFile($response,string $pathToSave,string $filename): string{
+        if(!is_dir($pathToSave)){
+            throw new \Exception("{$pathToSave} is not a directory");
+        }
+        $mime_type = $response->headers["Content-Type"];
+        $filePath = "{$pathToSave}/{$filename}.".$this->getExtensionFromMime($mime_type);
+        if(!file_put_contents($filePath,$response->raw_body)){
+            throw new DownloadException("Download success, but could not save the contents of the file to {$filePath}. Check permissions of the directory", 1, null, $response);
+        }
+        return $filePath;
     }
 }
