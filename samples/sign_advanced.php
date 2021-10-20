@@ -23,7 +23,7 @@ $signTask = new SignTask("public_key",
 // Set the settings
 $reminderDays = 3;
 $signTask = $signTask->setVerifySignatureVerification(true)->
-                setMessage("Body of the first message")->
+                setMessage("Body of the first message")->setSubject("My subject")->
                 setReminders($reminderDays)->setLockOrder(false)->
                 setExpirationDays(130)->setLanguage("en-US")->setUuidVisible(true);
 
