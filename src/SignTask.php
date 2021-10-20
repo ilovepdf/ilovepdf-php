@@ -121,6 +121,23 @@ class SignTask extends Task
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getSubject(): string
+    {
+        return $this->subject_signer;
+    }
+
+    /**
+     * @param string $subject
+     */
+    public function setSubject(string $subject): SignTask
+    {
+        $this->subject_signer = $subject;
+        return $this;
+    }
+
     public function getReminders(): int
     {
         return $this->reminders;
@@ -217,7 +234,7 @@ class SignTask extends Task
     }
 
     /**
-     * @return Boolean
+     * @return Bool
      */
     public function getUuidVisible(): bool
     {
