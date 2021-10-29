@@ -3,18 +3,37 @@
 namespace Ilovepdf\Sign\Receivers;
 
 use Ilovepdf\Sign\Receivers\ReceiverAbstract;
+use Ilovepdf\File;
+use Ilovepdf\Sign\Elements\ElementAbstract;
 
 class Signer extends ReceiverAbstract
 {
     public $phone;
     public $force_signature_type;
     public $valid_force_signature_types = ["all","text","sign","image"];
+    
+    private $_elements = [];
 
-
-    public function __construct(string $name, string $email, array $signatureFiles = [])
+    public function __construct(string $name, string $email)
     {
         $this->setType("signer");
-        parent::__construct($name,$email,$signatureFiles);
+        parent::__construct($name,$email);
+    }
+
+    /**
+     * @param File $file
+     * @param ElementAbstract $element
+     * 
+     * @return Signer
+     */
+    public function addElement(File $file, ElementAbstract $element){
+        $serverFilename = $file->getServerFilename();
+        if(!array_key_exists($serverFilename, $this->_elements)){
+            $this->_elements[$serverFilename] = ['file' => $file, 'elements' => []];
+        }
+
+        array_push($this->_elements[$serverFilename]['elements'], $element);
+        return $this;
     }
 
     /**
@@ -62,6 +81,19 @@ class Signer extends ReceiverAbstract
         $array["force_signature_type"] = $this->getForceSignatureType();
         $array["access_code"] = $this->getAccessCode();
         $array["phone"] = $this->getPhone();
+        $array['files'] = $this->getFilesData();
         return $array;
+    }
+
+    private function getFilesData(){
+        $output = [];
+        foreach($this->_elements as $serverFilename => $item){
+            $elementsData = [];
+            foreach($item['elements'] as $singleElement){
+                $elementsData[] = $singleElement->__toArray();
+            }
+            $output[] = ['server_filename' => $serverFilename, 'elements' => $elementsData];
+        }
+        return $output;
     }
 }

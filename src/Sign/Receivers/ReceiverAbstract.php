@@ -1,7 +1,6 @@
 <?php
 
 namespace Ilovepdf\Sign\Receivers;
-use Ilovepdf\Sign\SignatureFile;
 
 abstract class ReceiverAbstract
 {
@@ -9,15 +8,11 @@ abstract class ReceiverAbstract
     public $email;
     protected $type;
     public $access_code;
-    public $files = [];
 
-    
-
-    public function __construct(string $name, string $email, array $signatureFiles = [])
+    public function __construct(string $name, string $email)
     {
         $this->setName($name);
         $this->setEmail($email);
-        $this->setFiles($signatureFiles);
     }
 
     /**
@@ -75,34 +70,6 @@ abstract class ReceiverAbstract
     }
 
     /**
-     * @return array
-     */
-    public function getFiles(): array
-    {
-        return $this->files;
-    }
-
-    /**
-     * @param array $files
-     * @return ReceiverAbstract
-     */
-    public function setFiles(array $files): ReceiverAbstract
-    {
-        $this->files = $files;
-        return $this;
-    }
-
-    /**
-     * @param SignatureFile $file
-     * @return ReceiverAbstract
-     */
-    public function addFile(SignatureFile $file): ReceiverAbstract
-    {
-        $this->files[] = $file;
-        return $this;
-    }
-
-    /**
      * @return mixed
      */
     public function getAccessCode()
@@ -120,23 +87,12 @@ abstract class ReceiverAbstract
         return $this;
     }
 
-    public function getFilesData(): array
-    {
-        $data = [];
-        foreach ($this->getFiles() as $file) {
-            $data[] = $file->__toArray();
-        }
-        return $data;
-    }
-
-
     public function __toArray()
     {
         return [
             'name' => $this->getName(),
             'email' => $this->getEmail(),
             'type' => $this->getType(),
-            'files' => $this->getFilesData(),
             'access_code' => $this->getAccessCode()
         ];
     }
