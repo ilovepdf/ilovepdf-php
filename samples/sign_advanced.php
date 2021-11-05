@@ -6,7 +6,6 @@ require_once('../vendor/autoload.php');
 
 use Ilovepdf\SignTask;
 
-use Ilovepdf\Sign\SignatureFile;
 use Ilovepdf\Sign\Elements\ElementSignature;
 use Ilovepdf\Sign\Elements\ElementDate;
 use Ilovepdf\Sign\Elements\ElementInitials;
@@ -17,76 +16,89 @@ use Ilovepdf\Sign\Receivers\Signer;
 use Ilovepdf\Sign\Receivers\Validator;
 use Ilovepdf\Sign\Receivers\Witness;
 
-$signTask = new SignTask("public_key",
-                            "secret_key");
+$signTask = new SignTask("public_key", "secret_key");
 
-// Set the settings
+// Set the Signature settings
+$emailSubject = "My subject";
+$emailBody = "Body of the first message";
+
 $reminderDays = 3;
-$signTask = $signTask->setVerifySignatureVerification(true)->
-                setMessage("Body of the first message")->setSubject("My subject")->
-                setReminders($reminderDays)->setLockOrder(false)->
-                setExpirationDays(130)->setLanguage("en-US")->setUuidVisible(true);
+$daysUntilSignatureExpires = 130;
+$taskLanguage = "en-US";
 
-// We first upload the file that we are going to use
+$signTask = $signTask->
+                setVerifySignatureVerification(true)->
+                setSubject($emailSubject)->
+                setMessage($emailBody)->
+                setReminders($reminderDays)->
+                setLockOrder(false)->
+                setExpirationDays($daysUntilSignatureExpires)->
+                setLanguage($taskLanguage)->
+                setUuidVisible(true);
+
+// We first upload the files that we are going to use
 $file = $signTask->addFile('/path/to/file/document.pdf');
 
+// Set brand
+$brandLogo = $signTask->addFile('/path/to/file/brand_logo.png');
+$signTask->setBrand('My brand name', $brandLogo);
 
-// Add signers and their elements;
-$signer = new Signer("Signer","signer@email.com");
+//////////////
+// ELEMENTS //
+//////////////
+// Let's define the elements to be placed in the documents
 $elements = [];
 
 $signatureElement = new ElementSignature();
-$signatureElement->setPosition("20 -20");
+$signatureElement->setPosition(20, -20);
 //we can define the pages with a comma
 $signatureElement->setPages("1,2");
 $elements[]= $signatureElement;
 
 // Now add a date element to that signer
 $dateElement = new ElementDate();
-$dateElement->setPosition("30 -30");
+$dateElement->setPosition(30, -30);
 //ranges can also be defined this way
 $dateElement->setPages("1-2");
 $elements[]= $dateElement;
 
 $initialsElement = new ElementInitials();
-$initialsElement->setPosition("40 -40");
+$initialsElement->setPosition(40, -40);
 //You can define multiple ranges
 $initialsElement->setPages("1,2,3-6");
 $elements[]= $initialsElement;
 
-
-
 $inputElement = new ElementInput();
-$inputElement->setPosition("50 -50");
+$inputElement->setPosition(50, -50);
 $inputElement->setLabel("Passport Number");
-$inputElement->setDescription("Please put your passport number");
+$inputElement->setText("Please put your passport number");
 $elements[]= $inputElement;
-
 
 // If not specified, the default page is 1.
 $nameElement = new ElementName();
-$nameElement->setPosition("60 -60");
+$nameElement->setPosition(60, -60);
 $elements[]= $nameElement;
 
 $textElement = new ElementText();
-$textElement->setPosition("70 -70");
+$textElement->setPosition(70, -70);
 $textElement->setText("This is a text field");
 $elements[]= $textElement;
 
-$signatureFile = new SignatureFile($file,$elements);
-
+///////////////
+// RECEIVERS //
+///////////////
+// Create the receivers
+$signer = new Signer("Signer","signer@email.com");
 $validator = new Validator("Validator","validator@email.com");
+$witness = new Witness("Witness","witness@email.com");
 
-$signer->addFile($signatureFile);
-$signTask->addReceiver($signer);
+// Add elements to the receivers that need it
+$signer->addElements($file, $elements);
 
-$signatureFile2 = new SignatureFile($file);
-$validator->addFile($signatureFile2);
+// Add all receivers to the Sign task
 $signTask->addReceiver($validator);
-
-$witness = new Witness("Witness","witness@emamil.com");
-$signatureFile3 = new SignatureFile($file);
-$witness->addFile($signatureFile3);
+$signTask->addReceiver($signer);
 $signTask->addReceiver($witness);
 
+// Lastly send the signature request
 $signature = $signTask->execute()->result;

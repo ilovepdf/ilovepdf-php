@@ -2,8 +2,7 @@
 
 namespace Ilovepdf;
 
-use Ilovepdf\Sign\Requester;
-use phpDocumentor\Reflection\Types\Boolean;
+use Ilovepdf\File;
 use Ilovepdf\Request\Body;
 use Ilovepdf\Sign\Receivers\ReceiverAbstract;
 
@@ -47,13 +46,29 @@ class SignTask extends Task
     public $signers = [];
 
     /**
-     * @var Boolean
+     * @var boolean
      */
     public $uuid_visible = true;
-    
+
+    /**
+     * @var int
+    */
     public $reminders = 0;
 
+    /**
+     * @var boolean
+    */
     public $verify_enabled = true;
+
+    /**
+     * @var string
+    */
+    public $brand_name = null;
+
+    /**
+     * @var File
+     */
+    public $brand_logo = null;
 
     /**
      * SignatureTask constructor.
@@ -81,10 +96,15 @@ class SignTask extends Task
     }
 
     protected function getFileFromResponse($response,$filepath){
-        $file = new File($response->body->server_filename, basename($filepath));
-        $file->setPdfPages($response->body->pdf_pages);
-        $file->setPdfPageNumber(intval($response->body->pdf_page_number));
-        return $file;
+        $isPdfFile = substr($filepath, -strlen(".pdf"))=== ".pdf";
+
+        if($isPdfFile){
+            $file = new File($response->body->server_filename, basename($filepath));
+            $file->setPdfPages($response->body->pdf_pages);
+            $file->setPdfPageNumber(intval($response->body->pdf_page_number));
+            return $file;
+        }
+        return parent::getFileFromResponse($response, $filepath);
     }
 
     /**
@@ -187,6 +207,17 @@ class SignTask extends Task
         $this->expiration_days = $expiration_days;
         return $this;
     }
+    
+    /**
+     * @param  string $brandName
+     * @param  File $brandLogo
+     * @return SignTask
+     */
+    function setBrand(string $brand_name, File $brand_logo){
+        $this->brand_name = $brand_name;
+        $this->brand_logo = $brand_logo->server_filename;
+        return $this;
+    }
 
     /**
      * @return string
@@ -242,7 +273,7 @@ class SignTask extends Task
     }
 
     /**
-     * @param Boolean $uuid_visible
+     * @param boolean $uuid_visible
      * @return SignTask
      */
     public function setUuidVisible(bool $uuid_visible): SignTask

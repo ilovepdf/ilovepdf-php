@@ -6,25 +6,21 @@ require_once('../vendor/autoload.php');
 
 use Ilovepdf\SignTask;
 use Ilovepdf\Sign\Receivers\Signer;
-use Ilovepdf\Sign\SignatureFile;
 use Ilovepdf\Sign\Elements\ElementSignature;
-$signTask = new SignTask("project_public_key",
-                            "private_secret_key");
+$signTask = new SignTask("project_public_key", "private_secret_key");
 
 // We first upload the file that we are going to use
 $file = $signTask->addFile('/path/to/file');
 
-
 // Add signers and their elements;
-$signer = new Signer("name","signeremail@email.com");
-$signatureFile = new SignatureFile($file);
-
 $signatureElement = new ElementSignature();
-$signatureElement->setPosition("20 -20");
-$signatureFile->addElement($signatureElement);
+$signatureElement->setPosition(20, -20);
 
+// Create a signer
+$signer = new Signer("name","signeremail@email.com");
 
-$signer->addFile($signatureFile);
+// Assign the signer an element to be signed
+$signer->addElements($file, $signatureElement);
 
 $signTask->addReceiver($signer);
 $signature = $signTask->execute()->result;

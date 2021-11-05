@@ -12,26 +12,24 @@ abstract class ElementAbstract
     public $type;
 
     /**
-     * @var string
+     * @var array
      */
-    public $position = '0 0';
+    public $position = ['x' => null, 'y' => null];
 
     /**
      * @var string
      */
-    public $pages = '1';
+    public $pages;
 
     /**
      * @var integer
      */
-    public $size = 40;
+    public $size;
 
     /**
      * @var
      */
     public $content;
-
-    protected $position_preg_match = '/(\d+\.?\d+) (-?\d+\.?\d+)/';
     
     /**
      * @var
@@ -75,15 +73,17 @@ abstract class ElementAbstract
      * @param string $position
      * @return Element
      */
-    public function setPosition(string $position)
-    {
-        list($left,$top) = explode(" ",$position);
-        $left = floatval($left);
-        $top = floatval($top);
-        if(floatval($top) > 0){
-            throw new \InvalidArgumentException("Invalid Top value, must be either negative or zero");
+    public function setPosition(float $x, float $y)
+    {   
+        if($y > 0){
+            throw new \InvalidArgumentException("Invalid Y value: it must be a number lower or equal to 0");
         }
-        $this->position = $position;
+        
+        if($x < 0){
+            throw new \InvalidArgumentException("Invalid X value: it must be a number greater or equal to 0");
+        }
+
+        $this->position = ['x' => $x, 'y' => $y];
         return $this;
     }
 
@@ -101,22 +101,21 @@ abstract class ElementAbstract
      */
     public function setPages($pages)
     {
-        var_dump(explode(",",$pages));
+        $this->pages = $pages; // DELETE THIS!!!
+        return $this;
          $pages = array_map(function($page){
             if(strpos($page,'-')){
                 list($firstpage,$lastpage) = explode("-",$page);
                 $firstpage = intval($firstpage);
                 $lastpage = intval($lastpage);
                 if($firstpage <=0 || $lastpage <=0 || ($lastpage < $firstpage)){
-                    throw new \InvalidArgumentException("Invalid page range {$page}, page is 0 or less, or range is switched");
+                    throw new \InvalidArgumentException("Invalid page range '{$page}'");
                 }
-                if($firstpage == $lastpage){
-                    $page = $firstpage;
-                }
-                $page = "{$firstpage}-{$lastpage}";
+
+                $page = ($firstpage == $lastpage) ? $firstpage : "{$firstpage}-{$lastpage}";
             }else{
                 if(intval($page) <=0){
-                    throw new \InvalidArgumentException("Invalid page {$page}, is 0 or less than 0");
+                    throw new \InvalidArgumentException("Invalid page '{$page}': it should be a value greater than 0");
                 }
                 $page = intval($page);
             }
@@ -141,29 +140,9 @@ abstract class ElementAbstract
     public function setSize(int $size)
     {
         if($size <= 0){
-            throw new \InvalidArgumentException("Invalid size, must be greater than 0");
+            throw new \InvalidArgumentException("Invalid size: must be a number greater than 0");
         }
         $this->size = $size;
-        return $this;
-    }
-
-    public function getTop(){
-        preg_match($this->position_preg_match,$this->position,$output_array);
-        return $output_array[2];
-    }
-
-    public function getLeft(){
-        preg_match($this->position_preg_match,$this->position,$output_array);
-        return $output_array[1];
-    }
-
-    public function setTop(float $top){
-        $this->setPosition($this->getLeft()." ".$top);
-        return $this;
-    }
-
-    public function setLeft(float $left){
-        $this->setPosition($left." ".$this->getTop());
         return $this;
     }
 
@@ -187,9 +166,11 @@ abstract class ElementAbstract
 
     public function __toArray(): array
     {
+        $pos = $this->getPosition();
+        $pos = trim($pos['x'] . ' ' . $pos['y']);
         return [
             'type' => $this->getType(),
-            'position' => $this->getPosition(),
+            'position' => $pos,
             'pages' => $this->getPages(),
             'size' => $this->getSize(),
             'content' => $this->getContent(),

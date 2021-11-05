@@ -8,7 +8,7 @@ class ElementInput extends ElementAbstract
     /**
      * @var
      */
-    public $info = ["label" => "input text","description" => null];
+    public $info = ["label" => "input text","text" => null];
 
     public function __construct()
     {
@@ -20,8 +20,8 @@ class ElementInput extends ElementAbstract
         return $this;
     }
 
-    public function setDescription(string $text){
-        $this->info["description"] = $text;
+    public function setText(string $text){
+        $this->info["text"] = $text;
         return $this;
     }
 }

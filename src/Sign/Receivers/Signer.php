@@ -22,17 +22,23 @@ class Signer extends ReceiverAbstract
 
     /**
      * @param File $file
-     * @param ElementAbstract $element
+     * @param ElementAbstract|ElementAbstract[]
      * 
      * @return Signer
      */
-    public function addElement(File $file, ElementAbstract $element){
+    public function addElements(File $file, $elements) : Signer {
         $serverFilename = $file->getServerFilename();
+        if(!is_array($elements)){
+            $elements = [$elements];
+        }
+        
         if(!array_key_exists($serverFilename, $this->_elements)){
             $this->_elements[$serverFilename] = ['file' => $file, 'elements' => []];
         }
 
-        array_push($this->_elements[$serverFilename]['elements'], $element);
+        foreach($elements as $elem){
+            array_push($this->_elements[$serverFilename]['elements'], $elem);
+        }
         return $this;
     }
 
