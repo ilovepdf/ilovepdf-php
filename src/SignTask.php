@@ -2,6 +2,7 @@
 
 namespace Ilovepdf;
 
+use Ilovepdf\Exceptions\NotImplementedException;
 use Ilovepdf\File;
 use Ilovepdf\Request\Body;
 use Ilovepdf\Sign\Receivers\ReceiverAbstract;
@@ -18,27 +19,27 @@ class SignTask extends Task
     /**
      * @var int
      */
-    public $lock_order = 0;
+    public $lock_order;
 
     /**
      * @var int
      */
-    public $expiration_days = 90;
+    public $expiration_days;
 
     /**
      * @var string
      */
-    public $language = 'en';
+    public $language;
 
     /**
      * @var string
      */
-    public $subject_signer = null;
+    public $subject_signer;
 
     /**
      * @var string
      */
-    public $message_signer = null;
+    public $message_signer;
 
     /**
      * @var array
@@ -48,17 +49,17 @@ class SignTask extends Task
     /**
      * @var boolean
      */
-    public $uuid_visible = true;
+    public $uuid_visible;
 
     /**
      * @var int
     */
-    public $reminders = 0;
+    public $reminders;
 
     /**
      * @var boolean
     */
-    public $verify_enabled = true;
+    public $verify_enabled;
 
     /**
      * @var string
@@ -164,11 +165,11 @@ class SignTask extends Task
     }
 
     /**
-     * @param int $reminders
+     * @param int $days_between
      */
-    public function setReminders(int $reminders): SignTask
+    public function setReminders(int $days_between): SignTask
     {
-        $this->reminders = $reminders;
+        $this->reminders = $days_between;
         return $this;
     }
 
@@ -325,5 +326,13 @@ class SignTask extends Task
         $this->result = $response->body;
 
         return $this;
+    }
+
+    /**
+     * @param null|string $path
+     * @param null|string $file
+     */
+    public function download($path = null){
+        throw new NotImplementedException("This API call is not available for a SignTask");
     }
 }

@@ -16,6 +16,7 @@ require_once __DIR__ . '/src/Exceptions/UploadException.php';
 require_once __DIR__ . '/src/Exceptions/StartException.php';
 require_once __DIR__ . '/src/Exceptions/AuthException.php';
 require_once __DIR__ . '/src/Exceptions/PathException.php';
+require_once __DIR__ . '/src/Exceptions/NotImplementedException.php';
 
 //Ilovepdf
 require_once __DIR__ . '/src/Ilovepdf.php';
@@ -40,3 +41,4 @@ require_once __DIR__ . '/src/UnlockTask.php';
 require_once __DIR__ . '/src/ValidatepdfaTask.php';
 require_once __DIR__ . '/src/WatermarkTask.php';
 require_once __DIR__ . '/src/EditpdfTask.php';
+require_once __DIR__ . '/src/SignTask.php';

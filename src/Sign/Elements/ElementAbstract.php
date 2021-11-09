@@ -101,8 +101,6 @@ abstract class ElementAbstract
      */
     public function setPages($pages)
     {
-        $this->pages = $pages; // DELETE THIS!!!
-        return $this;
          $pages = array_map(function($page){
             if(strpos($page,'-')){
                 list($firstpage,$lastpage) = explode("-",$page);

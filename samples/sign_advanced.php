@@ -50,38 +50,40 @@ $signTask->setBrand('My brand name', $brandLogo);
 $elements = [];
 
 $signatureElement = new ElementSignature();
-$signatureElement->setPosition(20, -20);
-//we can define the pages with a comma
-$signatureElement->setPages("1,2");
-$elements[]= $signatureElement;
+$signatureElement->setPosition(20, -20)
+                 ->setPages("1,2"); //we can define the pages with a comma
 
-// Now add a date element to that signer
 $dateElement = new ElementDate();
-$dateElement->setPosition(30, -30);
-//ranges can also be defined this way
-$dateElement->setPages("1-2");
-$elements[]= $dateElement;
+$dateElement->setPosition(30, -30)
+            ->setPages("1-2"); // ranges can also be defined this way
 
 $initialsElement = new ElementInitials();
-$initialsElement->setPosition(40, -40);
-//You can define multiple ranges
-$initialsElement->setPages("1,2,3-6");
-$elements[]= $initialsElement;
+$initialsElement->setPosition(40, -40)
+                ->setPages("1,2,3-6"); // You can define multiple ranges
 
 $inputElement = new ElementInput();
-$inputElement->setPosition(50, -50);
-$inputElement->setLabel("Passport Number");
-$inputElement->setText("Please put your passport number");
-$elements[]= $inputElement;
+$inputElement->setPosition(50, -50)
+             ->setLabel("Passport Number")
+             ->setText("Please put your passport number")
+             ->setPages("1");
 
-// If not specified, the default page is 1.
 $nameElement = new ElementName();
-$nameElement->setPosition(60, -60);
-$elements[]= $nameElement;
+$nameElement->setPosition(60, -60)
+            ->setSize(40)
+            ->setPages("1");
 
 $textElement = new ElementText();
-$textElement->setPosition(70, -70);
-$textElement->setText("This is a text field");
+$textElement->setPosition(70, -70)
+            ->setText("This is a text field")
+            ->setSize(40)
+            ->setPages("1");
+
+// Add Elements
+$elements[]= $signatureElement;
+$elements[]= $dateElement;
+$elements[]= $initialsElement;
+$elements[]= $inputElement;
+$elements[]= $nameElement;
 $elements[]= $textElement;
 
 ///////////////
@@ -102,3 +104,4 @@ $signTask->addReceiver($witness);
 
 // Lastly send the signature request
 $signature = $signTask->execute()->result;
+var_dump($signature);

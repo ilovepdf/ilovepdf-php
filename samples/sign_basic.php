@@ -14,13 +14,16 @@ $file = $signTask->addFile('/path/to/file');
 
 // Add signers and their elements;
 $signatureElement = new ElementSignature();
-$signatureElement->setPosition(20, -20);
+$signatureElement->setPosition(20, -20)
+                 ->setPages("1")
+                 ->setSize(40);
 
 // Create a signer
-$signer = new Signer("name","signeremail@email.com");
+$signer = new Signer("name","signer@email.com");
 
 // Assign the signer an element to be signed
 $signer->addElements($file, $signatureElement);
 
 $signTask->addReceiver($signer);
 $signature = $signTask->execute()->result;
+var_dump($signature);
