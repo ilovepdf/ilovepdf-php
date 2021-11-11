@@ -120,43 +120,43 @@ class SignatureManagement extends Ilovepdf
     }
 
     /**
-     * @param string $receiverTokenRequester
+     * @param string $signatureId
      * 
      * @return bool
      */
-    public function sendReminders(string $receiverTokenRequester): bool
+    public function sendReminders(string $signatureId): bool
     {
         $body = [];
-        $response = parent::sendRequest("post", "signature/sendReminder/{$receiverTokenRequester}", $body, false, true);
+        $response = parent::sendRequest("post", "signature/sendReminder/{$signatureId}", $body, false, true);
         //if above fails, it throws an exception
         return true;
     }
 
     /**
-     * @param string $receiverTokenRequester
+     * @param string $signatureId
      * 
      * @return bool
      */
-    public function voidSignature(string $receiverTokenRequester): bool
+    public function voidSignature(string $signatureId): bool
     {
         $body = [];
-        $response = parent::sendRequest("put", "signature/void/{$receiverTokenRequester}", $body, false, true);
+        $response = parent::sendRequest("put", "signature/void/{$signatureId}", $body, false, true);
         //if above fails, it throws an exception
         return true;
     }
 
     /**
-     * @param string $receiverTokenRequester
+     * @param string $signatureId
      * @param int $amountOfDays
      * 
      * @return bool
      */
-    public function increaseExpirationDays(string $receiverTokenRequester, int $amountOfDays): bool
+    public function increaseExpirationDays(string $signatureId, int $amountOfDays): bool
     {
         $body = [
             "days" => $amountOfDays
         ];
-        $response = parent::sendRequest("put", "signature/void/{$receiverTokenRequester}", $body, false, true);
+        $response = parent::sendRequest("put", "signature/void/{$signatureId}", $body, false, true);
         //if above fails, it throws an exception
         return true;
     }

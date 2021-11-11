@@ -38,10 +38,10 @@ $signatureRequest->fixReceiverEmail($receiverToken, "newemail@email.com");
 $signatureRequest->fixSignerPhone($receiverToken, "34666666666");
 
 // This endpoint sends an email reminder to pending receivers. It has a daily limit quota (check the docs to know the daily quota)
-$signatureRequest->sendReminders($receiverToken);
+$signatureRequest->sendReminders($signatureToken);
 
 // Increase the number of days to '4' in order to prevent the request from expiring and give receivers extra time to perform remaining actions.
-$signatureRequest->increaseExpirationDays($receiverToken, 4);
+$signatureRequest->increaseExpirationDays($signatureToken, 4);
 
 // Void a signature that is currently in progress
-$signatureRequest->voidSignature($receiverToken);
+$signatureRequest->voidSignature($signatureToken);
