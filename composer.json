@@ -21,10 +21,19 @@
         }
     },
     "require": {
-        "php": ">=7.3",
-        "ext-curl": "*"
+        "php": ">=7.4",
+        "ext-curl": "*",
+        "ext-openssl": "*",
+        "firebase/php-jwt": "^6.0",
+        "guzzlehttp/guzzle": "^7.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.4"
+        "phpunit/phpunit": "^9.5",
+        "vimeo/psalm": "^4.21"
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true
+        }
     }
 }

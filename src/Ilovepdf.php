@@ -8,10 +8,10 @@ use Ilovepdf\Exceptions\TaskException;
 use Ilovepdf\Exceptions\UploadException;
 use Ilovepdf\Exceptions\StartException;
 use Ilovepdf\Exceptions\AuthException;
+use Ilovepdf\Http\Client;
+use Ilovepdf\Http\ClientException;
 use Ilovepdf\IlovepdfTool;
-use Ilovepdf\Request\Body;
-use Ilovepdf\Request\Request;
-use Ilovepdf\Lib\JWT;
+use Firebase\JWT\JWT;
 
 /**
  * Class Ilovepdf
@@ -26,7 +26,6 @@ class Ilovepdf
     // @var string The Ilovepdf public API key to be used for requests.
     private $publicKey = null;
 
-    // @var string The base URL for the Ilovepdf API.
     private static $startServer = 'https://api.ilovepdf.com';
 
     private $workerServer = null;
@@ -34,7 +33,7 @@ class Ilovepdf
     // @var string|null The version of the Ilovepdf API to use for requests.
     public static $apiVersion = 'v1';
 
-    const VERSION = 'php.1.2.1';
+    const VERSION = 'php.1.2.2';
 
     public $token = null;
 
@@ -65,7 +64,7 @@ class Ilovepdf
      */
     public function getSecretKey()
     {
-        return $this->secretKey;
+        return $this->secretKey ?? '';
     }
 
     /**
@@ -117,7 +116,6 @@ class Ilovepdf
         $secret = $this->getSecretKey();
 
         $currentTime = time();
-        $request = '';
         $hostInfo = '';
 
         // Merge token with presets not to miss any params in custom
@@ -134,7 +132,7 @@ class Ilovepdf
         $token['jti'] = $this->getPublicKey();
 
         // Set encryptKey
-        if ($this->getFileEncryption()){
+        if ($this->getFileEncryption()) {
             $token['file_encryption_key'] = $this->getEncrytKey();
         }
 
@@ -152,11 +150,10 @@ class Ilovepdf
         return 'HS256';
     }
 
-
     /**
      * @param string $method
      * @param string $endpoint
-     * @param string $body
+     * @param mixed $body
      *
      * @return mixed response from server
      *
@@ -164,82 +161,97 @@ class Ilovepdf
      * @throws ProcessException
      * @throws UploadException
      */
-    public function sendRequest($method, $endpoint, $body=null, $start=false)
+    public function sendRequest($method, $endpoint, $params = [], $start = false)
     {
-        $to_server = self::$startServer;
+        $to_server = self::getStartServer();
         if (!$start && !is_null($this->getWorkerServer())) {
             $to_server = $this->workerServer;
         }
+        $timeout = ($endpoint == 'process' || $endpoint == 'upload' || strpos($endpoint, 'download/') === 0) ? $this->timeoutLarge : $this->timeout;
+        $requestConfig = [
+            'connect_timeout' => $timeout,
+            'headers' => ['Authorization' => 'Bearer ' . $this->getJWT(), 'Accept' => 'application/json'],
+        ];
 
-        if ($endpoint == 'process' || $endpoint == 'upload' || strpos($endpoint, 'download/') === 0) {
-            Request::timeout($this->timeoutLarge);
-        } else {
-            Request::timeout($this->timeout);
+        $requestParams = $requestConfig;
+        if($params) {
+            $requestParams = array_merge($requestConfig, $params);
         }
 
-        $response = Request::$method($to_server . '/v1/' . $endpoint, array(
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $this->getJWT()
-        ), $body);
+        $client = new Client($params);
+        $error = null;
 
-        if ($response->code != '200' && $response->code != '201') {
-            if ($response->code == 401) {
-                throw new AuthException($response->body->name, $response->code, null, $response);
+        try {
+            $response = $client->request($method, $to_server . '/v1/' . $endpoint, $requestParams);
+        } catch (ClientException $e) {
+            $response = $e->getResponse();
+            $error = $e;
+        }
+        $responseCode = $response->getStatusCode();
+        if ($responseCode != '200' && $responseCode != '201') {
+            $responseBody = json_decode($response->getBody());
+            if ($responseCode == 401) {
+                throw new AuthException($responseBody->name, $responseBody, $responseCode);
             }
             if ($endpoint == 'upload') {
-                if(is_string($response->body)){
-                    throw new UploadException("Upload error", $response, $response->code, null);
+                if (is_string($responseBody)) {
+                    throw new UploadException("Upload error", $responseBody, $responseCode);
                 }
-                throw new UploadException($response->body->error->message, $response, $response->code, null);
-            }
-            elseif ($endpoint == 'process') {
-                throw new ProcessException($response->body->error->message, $response, $response->code, null);
-            }
-            elseif (strpos($endpoint, 'download')===0) {
-                throw new DownloadException($response->body->error->message, $response, $response->code, null);
-            }
-            else{
-                if ($response->code == 429) {
+                throw new UploadException($responseBody->error->message, $responseBody, $responseCode);
+            } elseif ($endpoint == 'process') {
+                throw new ProcessException($responseBody->error->message, $responseBody, $responseCode);
+            } elseif (strpos($endpoint, 'download') === 0) {
+                throw new DownloadException($responseBody->error->message, $responseBody, $responseCode);
+            } else {
+                if ($response->getStatusCode() == 429) {
                     throw new \Exception('Too Many Requests');
                 }
-                if ($response->code == 400) {
-                    if(strpos($endpoint, 'task')!=-1){
+                if ($response->getStatusCode() == 400) {
+                    if (strpos($endpoint, 'task') != -1) {
                         throw new TaskException('Invalid task id');
                     }
                     throw new \Exception('Bad Request');
                 }
-                if(isset($response->body->error) && isset($response->body->error->message)) {
-                    throw new \Exception($response->body->error->message);
+                if (isset($responseBody->error) && isset($responseBody->error->message)) {
+                    throw new \Exception($responseBody->error->message);
                 }
                 throw new \Exception('Bad Request');
             }
         }
+
         return $response;
     }
 
     /**
-     * @param string $tool              Api tool to use
-     * @param bool $makeStart           Set to false for chained tasks, because we don't need the start
+     * @param string $tool Api tool to use
+     * @param bool $makeStart Set to false for chained tasks, because we don't need the start
      *
      * @return mixed Return implemented Task class for specified tool
      *
      * @throws \Exception
      */
-    public function newTask($tool='', $makeStart = true)
+    public function newTask($tool = '', $makeStart = true)
     {
         $classname = '\\Ilovepdf\\' . ucwords(strtolower($tool)) . 'Task';
         if (!class_exists($classname)) {
-            throw new \InvalidArgumentException();
+            throw new \InvalidArgumentException('Invalid tool');
         }
-        return new $classname($this->getPublicKey(), $this->getSecretKey(), $makeStart);
+
+        if($tool == ''){
+            $makeStart = false;
+        }
+
+        $task = new $classname($this->getPublicKey(), $this->getSecretKey(), $makeStart);
+        return $task;
     }
 
-    public static function setStartServer($server){
+    public static function setStartServer($server)
+    {
         self::$startServer = $server;
     }
 
-
-    public static function getStartServer(){
+    public function getStartServer()
+    {
         return self::$startServer;
     }
 
@@ -260,17 +272,15 @@ class Ilovepdf
     }
 
 
-
     /**
      * @param boolean $value
      */
-    public function setFileEncryption($value, $encryptKey=null)
+    public function setFileEncryption($value, $encryptKey = null)
     {
         $this->encrypted = $value;
-        if($this->encrypted){
+        if ($this->encrypted) {
             $this->setEncryptKey($encryptKey);
-        }
-        else{
+        } else {
             $this->encryptKey = null;
         }
     }
@@ -295,9 +305,9 @@ class Ilovepdf
     /**
      * @param mixed $encrytKey
      */
-    public function setEncryptKey($encryptKey=null)
+    public function setEncryptKey($encryptKey = null)
     {
-        if($encryptKey==null){
+        if ($encryptKey == null) {
             $encryptKey = IlovepdfTool::rand_sha1(32);
         }
         $len = strlen($encryptKey);
@@ -314,35 +324,35 @@ class Ilovepdf
     {
         $workerServer = $this->getWorkerServer();
         $this->setWorkerServer($server);
-        $response = $this->sendRequest('get', 'task/'.$taskId);
+        $response = $this->sendRequest('get', 'task/' . $taskId);
         $this->setWorkerServer($workerServer);
-
-        return $response->body;
+        return json_decode($response->getBody());
     }
 
     /**
      * @param $verify
      */
-    public function verifySsl($verify){
-        Request::verifyPeer($verify);
-        Request::verifyHost($verify);
+    public function verifySsl($verify)
+    {
+        Client::setVerify($verify);
     }
 
     /**
      * @param $follow
      */
-    public function followLocation($follow){
-        Request::followLocation($follow);
+    public function followLocation($follow)
+    {
+        Client::setAllowRedirects($follow);
     }
 
-    private function getUpdatedInfo(){
+    private function getUpdatedInfo()
+    {
         $data = array('v' => self::VERSION);
-        $body = Body::Form($data);
+        $body = ['form_params' => $data];
         $response = self::sendRequest('get', 'info', $body);
-        $this->info = $response->body;
+        $this->info = json_decode($response->getBody());
         return $this->info;
     }
-
 
 
     /**

@@ -23,7 +23,7 @@ class WatermarkTask extends Task
     public $text;
 
     /**
-     * @var strig
+     * @var string
      */
     public $image;
 
@@ -139,7 +139,7 @@ class WatermarkTask extends Task
     }
 
     /**
-     * @param strig $image
+     * @param string $image
      */
     public function setImage($image)
     {
@@ -290,7 +290,7 @@ class WatermarkTask extends Task
     public function addElement($element)
     {
 
-        if (is_a($element, 'Element')) {
+        if (is_a($element, \Ilovepdf\Element::class)) {
             $this->elements[] = $element;
         } elseif (is_array($element)) {
             $this->elements[] = new Element($element);

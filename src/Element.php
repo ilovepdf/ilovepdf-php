@@ -156,7 +156,7 @@ class Element
     }
 
     /**
-     * @param strig $image
+     * @param string $image
      */
     public function setImage($image)
     {
