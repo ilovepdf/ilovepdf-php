@@ -2,7 +2,7 @@ language: php
 
 branches:
   only:
-    - main
+    - master
 
 php:
   - '7.4'
