@@ -52,6 +52,9 @@ class ExtendedException extends Exception
             }
             parent::__construct($message . ' (' . $firstError . ')', $code, $previous);
         } else {
+            if($responseBody->message){
+                $message .= ' ('.$responseBody->message.')';
+            }
             parent::__construct($message, $code, $previous);
         }
     }
