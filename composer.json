@@ -22,8 +22,6 @@
     },
     "require": {
         "php": ">=7.4",
-        "ext-curl": "*",
-        "ext-openssl": "*",
         "firebase/php-jwt": "^6.0",
         "guzzlehttp/guzzle": "^7.4"
     },
