@@ -15,15 +15,16 @@ class ExtendedException extends Exception
      * @param string $message
      * @param int $code
      * @param Exception|null $previous
-     * @param $response
+     * @param $responseBody
      */
-    public function __construct($message, $code = 0, Exception $previous = null, $response)
+    public function __construct($message, $responseBody, $code = 0, $previous = null)
     {
-        if (isset($response->body->error) && $response->body->error->type) {
-            $this->type = $response->body->error->type;
+        if(!$code){$code = 0;}
+        if (isset($responseBody->error) && $responseBody->error->type) {
+            $this->type = $responseBody->error->type;
         }
-        if (isset($response->body->error->param)) {
-            $this->params = $response->body->error->param;
+        if (isset($responseBody->error->param)) {
+            $this->params = $responseBody->error->param;
         }
         if ($this->params) {
             if (is_array($this->params)) {
@@ -51,6 +52,9 @@ class ExtendedException extends Exception
             }
             parent::__construct($message . ' (' . $firstError . ')', $code, $previous);
         } else {
+            if($responseBody->message){
+                $message .= ' ('.$responseBody->message.')';
+            }
             parent::__construct($message, $code, $previous);
         }
     }
@@ -60,6 +64,9 @@ class ExtendedException extends Exception
      */
     public function getErrors()
     {
+        if(!is_countable($this->params)){
+            return [];
+        }
         return $this->params;
     }
 

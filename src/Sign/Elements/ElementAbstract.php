@@ -46,7 +46,7 @@ abstract class ElementAbstract
 
     /**
      * @param string $type
-     * @return Element
+     * @return ElementAbstract
      */
     protected function setType(string $type)
     {
@@ -71,7 +71,7 @@ abstract class ElementAbstract
 
     /**
      * @param string $position
-     * @return Element
+     * @return ElementAbstract
      */
     public function setPosition(float $x, float $y)
     {   
@@ -97,7 +97,7 @@ abstract class ElementAbstract
 
     /**
      * @param mixed $pages
-     * @return Element
+     * @return ElementAbstract
      */
     public function setPages($pages)
     {
@@ -133,7 +133,7 @@ abstract class ElementAbstract
 
     /**
      * @param mixed $size
-     * @return Element
+     * @return ElementAbstract
      */
     public function setSize(int $size)
     {
@@ -154,7 +154,7 @@ abstract class ElementAbstract
 
     /**
      * @param mixed $content
-     * @return Element
+     * @return ElementAbstract
      */
     protected function setContent(string $content)
     {

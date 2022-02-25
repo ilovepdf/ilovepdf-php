@@ -317,13 +317,11 @@ class SignTask extends Task
         unset($data['timeout']);
         unset($data['timeDelay']);
 
-        //$body = Body::multipart($data);
-        $body = Body::Json($data);
+        $body = ['form_params' => $data];
         
         //$response = parent::sendRequest('post', 'signature', http_build_query($body, null, '&', PHP_QUERY_RFC3986));
-        $response = parent::sendRequest('post', 'signature', $body,false,true);
-
-        $this->result = $response->body;
+        $response = parent::sendRequest('post', 'signature', $body,false);
+        $this->result = json_decode($response->getBody());
 
         return $this;
     }

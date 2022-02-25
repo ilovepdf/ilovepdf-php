@@ -1,7 +1,6 @@
 iLovePDF Api - Php Library
 --------------------------
 
-[![Build Status](https://travis-ci.org/ilovepdf/ilovepdf-php.svg?branch=master)](https://travis-ci.org/ilovepdf/ilovepdf-php)
 [![Latest Stable Version](https://poser.pugx.org/ilovepdf/ilovepdf-php/version)](https://packagist.org/packages/ilovepdf/ilovepdf-php)
 [![Total Downloads](https://poser.pugx.org/ilovepdf/ilovepdf-php/downloads.svg)](https://packagist.org/packages/ilovepdf/ilovepdf-php)
 [![License](https://poser.pugx.org/ilovepdf/ilovepdf-php/license)](https://packagist.org/packages/ilovepdf/ilovepdf-php)
@@ -14,11 +13,9 @@ Develop and automate PDF processing tasks like Compress PDF, Merge PDF, Split PD
 
 ## Requirements
 
-PHP 7.3 and later.
+PHP 7.4 and later.
 
 ## Install
-
-### Using composer
 
 You can install the library via [Composer](http://getcomposer.org/). Run the following command:
 
@@ -30,15 +27,6 @@ To use the library, use Composer's [autoload](https://getcomposer.org/doc/00-int
 
 ```php
 require_once('vendor/autoload.php');
-```
-
-
-### Manual Installation
-
-If you do not wish to use Composer, you can download the [latest release](https://github.com/ilovepdf/ilovepdf-php/releases). Then, to use the library, include the `init.php` file.
-
-```php
-require_once('/path/to/ilovepdf-php/init.php');
 ```
 
 ## Getting Started

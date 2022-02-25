@@ -2,11 +2,11 @@
 
 namespace Ilovepdf;
 
-use http\Exception\InvalidArgumentException;
+use Ilovepdf\Exceptions\AuthException;
+use Ilovepdf\Exceptions\ProcessException;
 use Ilovepdf\Exceptions\StartException;
 use Ilovepdf\Exceptions\PathException;
-use Ilovepdf\Request\Body;
-use Ilovepdf\Request\Request;
+use Ilovepdf\Exceptions\UploadException;
 
 /**
  * Class Ilovepdf
@@ -17,7 +17,6 @@ class Task extends Ilovepdf
 {
     // @var string The Ilovepdf API Task ID.
     public $task = null;
-    //private $server = null;
     public $files = [];
     public $tool;
     public $packaged_filename;
@@ -60,24 +59,26 @@ class Task extends Ilovepdf
      * @param null $publicKey
      * @param null $secretKey
      */
-    function __construct($publicKey, $secretKey, $makeStart=false)
+    function __construct($publicKey, $secretKey, $makeStart = false)
     {
         parent::__construct($publicKey, $secretKey);
 
-        if($makeStart) {
+        if ($makeStart) {
             $this->start();
         }
     }
 
-    public function start(){
-        $data = array('v' => self::VERSION);
-        $body = Body::Form($data);
-        $response = parent::sendRequest('get', 'start/' . $this->tool, $body);
-        if (empty($response->body->server)) {
+    public function start()
+    {
+        $data = ['v' => self::VERSION];
+
+        $response = parent::sendRequest('get', 'start/' . $this->tool, $data);
+        $responseBody = json_decode($response->getBody());
+        if (empty($responseBody->server)) {
             throw new StartException('no server assigned on start');
         };
-        $this->setWorkerServer('https://' . $response->body->server);
-        $this->setTask($response->body->task);
+        $this->setWorkerServer('https://' . $responseBody->server);
+        $this->setTask($responseBody->task);
     }
 
     public function next($nextTool): Task
@@ -87,12 +88,12 @@ class Task extends Ilovepdf
             'task' => $this->getTaskId(),
             'tool' => $nextTool
         ];
-        $body = Body::Form($data);
+        $body = ['form_params' => $data];
 
         try {
             $response = parent::sendRequest('post', 'task/next', $body);
-
-            if (empty($response->body->task)) {
+            $responseBody = json_decode($response->getBody());
+            if (empty($responseBody->task)) {
                 throw new StartException('No task assigned on chained start');
             };
         } catch (\Exception $e) {
@@ -101,10 +102,11 @@ class Task extends Ilovepdf
 
         $next = $this->newTask($nextTool);
         $next->setWorkerServer($this->getWorkerServer());
-        $next->setTask($response->body->task);
+
+        $next->setTask($responseBody->task);
 
         //add files chained
-        foreach ($response->body->files as $serverFilename => $fileName) {
+        foreach ($responseBody->files as $serverFilename => $fileName) {
             $next->files[] = new File($serverFilename, $fileName);
         }
 
@@ -141,12 +143,12 @@ class Task extends Ilovepdf
         return $filesArray;
     }
 
-    public function getStatus($server=null, $taskId=null)
+    public function getStatus($server = null, $taskId = null)
     {
         $server = $server ? $server : $this->getWorkerServer();
         $taskId = $taskId ? $taskId : $this->getTaskId();
 
-        if($server==null || $taskId==null){
+        if ($server == null || $taskId == null) {
             throw new \Exception('Cannot get status if no file is uploaded');
         }
         return parent::getStatus($this->getWorkerServer(), $this->getTaskId());
@@ -181,28 +183,32 @@ class Task extends Ilovepdf
      *
      * @return File
      *
-     * @throws Exceptions\AuthException
-     * @throws Exceptions\ProcessException
+     * @throws AuthException
+     * @throws ProcessException
      * @throws UploadException
      */
     public function uploadFile($task, $filepath)
     {
-        if(!file_exists($filepath)){
-            throw new \InvalidArgumentException('File '.$filepath.' does not exists');
+        if (!file_exists($filepath)) {
+            throw new \InvalidArgumentException('File ' . $filepath . ' does not exists');
         }
-        $data = $this->getFileData($task);
-        $files = array('file' => $filepath);
-        $body = Body::multipart($data, $files);
+
+        $body = [
+            'multipart' => [
+                [
+                    'Content-type' => 'multipart/form-data',
+                    'name' => 'file',
+                    'contents' => fopen($filepath, 'r'),
+                    'filename' => basename($filepath)
+                ],
+                ['name' => 'task', 'contents' => $task],
+                ['name' => 'v', 'contents' => self::VERSION]
+            ],
+        ];
+
         $response = $this->sendRequest('post', 'upload', $body);
-        return $this->getFileFromResponse($response,$filepath);
-    }
-
-    protected function getFileData(string $task){
-        return array('task' => $task, 'v'=> self::VERSION);
-    }
-
-    protected function getFileFromResponse($response,$filepath){
-        return new File($response->body->server_filename, basename($filepath));
+        $responseBody = json_decode($response->getBody());
+        return new File($responseBody->server_filename, basename($filepath));
     }
 
     /**
@@ -228,7 +234,8 @@ class Task extends Ilovepdf
      */
     public function delete()
     {
-        $response = $this->sendRequest('delete', 'task/'.$this->getTaskId());
+        $response = $this->sendRequest('delete', 'task/' . $this->getTaskId());
+        $this->result = json_decode($response->getBody());
         return $this;
     }
 
@@ -238,16 +245,24 @@ class Task extends Ilovepdf
      *
      * @return File
      *
-     * @throws Exceptions\AuthException
-     * @throws Exceptions\ProcessException
+     * @throws AuthException
+     * @throws ProcessException
      * @throws UploadException
      */
     public function uploadUrl($task, $url)
     {
-        $data = array('task' => $task, 'cloud_file' => $url, 'v'=> self::VERSION);
-        $body = Body::Form($data);
+        //$data = ['task' => $task, 'cloud_file' => $url, 'v' => self::VERSION];
+        //$body = ['form_data' => $data];
+        $body = [
+            'multipart' => [
+                ['name' => 'task', 'contents' => $task],
+                ['name' => 'v', 'contents' => self::VERSION],
+                ['name' => 'cloud_file', 'contents' => $url]
+            ],
+        ];
         $response = parent::sendRequest('post', 'upload', $body);
-        return new File($response->body->server_filename, basename($url));
+        $responseBody = json_decode($response->getBody());
+        return new File($responseBody->server_filename, basename($url));
     }
 
     /**
@@ -256,8 +271,8 @@ class Task extends Ilovepdf
      */
     public function download($path = null)
     {
-        if($path!=null && !is_dir($path)){
-            if(pathinfo($path, PATHINFO_EXTENSION) == ''){
+        if ($path != null && !is_dir($path)) {
+            if (pathinfo($path, PATHINFO_EXTENSION) == '') {
                 throw new PathException('Invalid download path. Use method setOutputFilename() to set the output file name.');
             }
             throw new PathException('Invalid download path. Set a valid folder path to download the file.');
@@ -280,7 +295,7 @@ class Task extends Ilovepdf
     public function blob()
     {
         $this->downloadFile($this->task);
-        return  $this->outputFile;
+        return $this->outputFile;
     }
 
     /**
@@ -294,27 +309,24 @@ class Task extends Ilovepdf
         // Try to change headers.
         try {
 
-            if($this->outputFileType == 'pdf'){
+            if ($this->outputFileType == 'pdf') {
                 header("Content-type:application/pdf");
-                header("Content-Disposition:attachment;filename=\"".$this->outputFileName."\"");
-            }
-            else{
+                header("Content-Disposition:attachment;filename=\"" . $this->outputFileName . "\"");
+            } else {
                 if (function_exists('mb_strlen')) {
                     $size = mb_strlen($this->outputFile, '8bit');
                 } else {
                     $size = strlen($this->outputFile);
                 }
                 header('Content-Type: application/zip');
-                header("Content-Disposition: attachment; filename=\"".$this->outputFileName."\"");
-                header("Content-Length: ".$size);
+                header("Content-Disposition: attachment; filename=\"" . $this->outputFileName . "\"");
+                header("Content-Length: " . $size);
             }
-        }
-        catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             // Do nothing.
             // This happens when output stream is opened and headers
             // are changed.
-        }
-        finally {
+        } finally {
             echo $this->outputFile;
         }
     }
@@ -323,25 +335,25 @@ class Task extends Ilovepdf
      * @param string $task
      * @param string $path
      *
-     * @throws Exceptions\AuthException
-     * @throws Exceptions\ProcessException
-     * @throws Exceptions\UploadException
+     * @throws AuthException
+     * @throws ProcessException
+     * @throws UploadException
      */
     private function downloadFile($task)
     {
-        $data = array('v'=> self::VERSION);
-        $body = Body::Form($data);
+        $data = array('v' => self::VERSION);
+        $body = ['form_params' => $data];
         $response = parent::sendRequest('get', 'download/' . $task, $body);
+        $responseHeaders = $response->getHeaders();
 
-        if(preg_match("/filename\*\=utf-8\'\'([\W\w]+)/", $response->headers['Content-Disposition'], $matchesUtf)){
+
+        if (preg_match("/filename\*\=utf-8\'\'([\W\w]+)/", $responseHeaders['Content-Disposition'][0], $matchesUtf)) {
             $filename = urldecode(str_replace('"', '', $matchesUtf[1]));
-        }
-        else {
-            preg_match('/ .*filename=\"([\W\w]+)\"/', $response->headers['Content-Disposition'], $matches);
+        } else {
+            preg_match('/ .*filename=\"([\W\w]+)\"/', $responseHeaders['Content-Disposition'][0], $matches);
             $filename = str_replace('"', '', $matches[1]);
         }
-
-        $this->outputFile = $response->raw_body;
+        $this->outputFile = $response->getBody()->getContents();
         $this->outputFileName = $filename;
         $this->outputFileType = pathinfo($this->outputFileName, PATHINFO_EXTENSION);
     }
@@ -371,13 +383,13 @@ class Task extends Ilovepdf
      */
     public function execute()
     {
-        if($this->task===null){
+        if ($this->task === null) {
             throw new \Exception('Current task not exists');
         }
 
         $data = array_merge(
             $this->__toArray(),
-            array('task' => $this->task, 'files' => $this->files, 'v'=> self::VERSION)
+            ['task' => $this->task, 'files' => $this->files, 'v' => self::VERSION]
         );
 
         //clean unwanted vars to be sent
@@ -385,16 +397,18 @@ class Task extends Ilovepdf
         unset($data['timeout']);
         unset($data['timeDelay']);
 
-        $body = Body::multipart($data);
+        $body = ['form_params' => $data];
 
-        $response = parent::sendRequest('post', 'process', http_build_query($body, null, '&', PHP_QUERY_RFC3986));
+        //$response = parent::sendRequest('post', 'process', http_build_query($body, null, '&', PHP_QUERY_RFC3986));
+        $response = parent::sendRequest('post', 'process', $body);
 
-        $this->result = $response->body;
+        $this->result = json_decode($response->getBody());
 
         return $this;
     }
 
-    public function __toArray () {
+    public function __toArray()
+    {
         return call_user_func('get_object_vars', $this);
     }
 
@@ -428,10 +442,11 @@ class Task extends Ilovepdf
      * @throws Exceptions\UploadException
      * @throws \Exception
      */
-    public function deleteFile($file){
+    public function deleteFile($file)
+    {
         if (($key = array_search($file, $this->files)) !== false) {
-            $body = Body::multipart(['task'=>$this->getTaskId(), 'server_filename'=>$file->server_filename, 'v'=> self::VERSION]);
-            $this->sendRequest('delete', 'upload/'.$this->getTaskId().'/'.$file->server_filename, $body);
+            $body = ['form_params' => ['task' => $this->getTaskId(), 'server_filename' => $file->server_filename, 'v' => self::VERSION]];
+            $this->sendRequest('delete', 'upload/' . $this->getTaskId() . '/' . $file->server_filename, $body);
             unset($this->files[$key]);
         }
         return $this;
@@ -443,9 +458,10 @@ class Task extends Ilovepdf
      *
      * @return Task
      */
-    public function checkValues($value, $allowedValues){
-        if(!in_array($value, $allowedValues)){
-            throw new \InvalidArgumentException('Invalid '.$this->tool.' value "'.$value.'". Must be one of: '.implode(',', $allowedValues));
+    public function checkValues($value, $allowedValues)
+    {
+        if (!in_array($value, $allowedValues)) {
+            throw new \InvalidArgumentException('Invalid ' . $this->tool . ' value "' . $value . '". Must be one of: ' . implode(',', $allowedValues));
         }
     }
 
@@ -516,9 +532,9 @@ class Task extends Ilovepdf
      * @param boolean $value
      * @return Task
      */
-    public function setFileEncryption($value, $encryptKey=null)
+    public function setFileEncryption($value, $encryptKey = null)
     {
-        if(count($this->files)>0){
+        if (count($this->files) > 0) {
             throw new \Exception('Encrypth mode cannot be set after file upload');
         }
 
@@ -569,7 +585,8 @@ class Task extends Ilovepdf
      *
      * @throws \Exception
      */
-    public function listTasks($tool=null, $status=null, $customInt=null, $page=null){
+    public function listTasks($tool = null, $status = null, $customInt = null, $page = null)
+    {
 
         $this->checkValues($status, $this->statusValues);
 
@@ -578,15 +595,14 @@ class Task extends Ilovepdf
             'status' => $status,
             'custom_int' => $customInt,
             'page' => $page,
-            'v'=> self::VERSION,
-            'secret_key'=>$this->getSecretKey()
+            'v' => self::VERSION,
+            'secret_key' => $this->getSecretKey()
         ];
 
-        $body = Body::multipart($data);
+        $body = ['form_params' => $data];
 
         $response = parent::sendRequest('post', 'task', $body, true);
-
-        $this->result = $response->body;
+        $this->result = json_decode($response->getBody());
 
         return $this->result;
     }
