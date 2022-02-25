@@ -21,7 +21,7 @@
         }
     },
     "require": {
-        "php": ">=7.4",
+        "php": ">=7.3",
         "firebase/php-jwt": "^6.0",
         "guzzlehttp/guzzle": "^7.4"
     },
