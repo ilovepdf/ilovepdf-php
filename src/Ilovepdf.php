@@ -53,7 +53,7 @@ class Ilovepdf
     public $info = null;
 
 
-    public function __construct($publicKey = null, $secretKey = null)
+    public function __construct(?string $publicKey = null, ?string $secretKey = null)
     {
         if ($publicKey && $secretKey)
             $this->setApiKeys($publicKey, $secretKey);

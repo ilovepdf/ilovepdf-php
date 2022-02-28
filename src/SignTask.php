@@ -3,6 +3,7 @@
 namespace Ilovepdf;
 
 use Ilovepdf\Exceptions\NotImplementedException;
+use Ilovepdf\Exceptions\ProcessException;
 use Ilovepdf\File;
 use Ilovepdf\Request\Body;
 use Ilovepdf\Sign\Receivers\ReceiverAbstract;
@@ -321,8 +322,12 @@ class SignTask extends Task
         
         //$response = parent::sendRequest('post', 'signature', http_build_query($body, null, '&', PHP_QUERY_RFC3986));
         $response = parent::sendRequest('post', 'signature', $body,false);
-        $this->result = json_decode($response->getBody());
-
+        try {
+            $this->result = json_decode($response->getBody());
+        }
+        catch(\Exception $e){
+            throw new ProcessException('Bad request');
+        }
         return $this;
     }
 

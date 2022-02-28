@@ -13,6 +13,7 @@ class ElementText extends ElementAbstract
 
     public function setText(string $text){
         $this->setContent($text);
+        return $this;
     }
 
 }

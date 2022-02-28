@@ -56,8 +56,8 @@ class Task extends Ilovepdf
 
     /**
      * Task constructor.
-     * @param null $publicKey
-     * @param null $secretKey
+     * @param string $publicKey
+     * @param string $secretKey
      */
     function __construct($publicKey, $secretKey, $makeStart = false)
     {
