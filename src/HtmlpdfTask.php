@@ -16,7 +16,7 @@ class HtmlpdfTask extends Task
 
     /**
      * Viewer height
-     * @var integer
+     * @var integer|null
      */
     public $view_height;
 
@@ -38,17 +38,23 @@ class HtmlpdfTask extends Task
     public $delay = 2;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $page_size;
 
+    /**
+     * @var string[]
+     */
     private $pageSizeValues = ['A3', 'A4', 'A5', 'A6', 'Letter'];
 
     /**
-     * @var string
+     * @var string|null
      */
     public $page_orientation;
 
+    /**
+     * @var string[]
+     */
     private $pageOrientationyValues = ['portrait', 'landscape'];
 
     /**
@@ -60,12 +66,12 @@ class HtmlpdfTask extends Task
     /**
      * Remove z-index (high value) based elements
      *
-     * @var boolean
+     * @var bool|null
      */
     public $remove_popups;
 
     /**
-     * @var boolean
+     * @var bool|null
      */
     public $single_page;
 
@@ -88,7 +94,7 @@ class HtmlpdfTask extends Task
      * @param int $view_width
      * @return HtmlpdfTask
      */
-    public function setViewWidth(int $view_width): HtmlpdfTask
+    public function setViewWidth(int $view_width): self
     {
         $this->view_width = $view_width;
         return $this;
@@ -98,7 +104,7 @@ class HtmlpdfTask extends Task
      * @param int $view_height
      * @return HtmlpdfTask
      */
-    public function setViewHeight(int $view_height): HtmlpdfTask
+    public function setViewHeight(int $view_height): self
     {
         $this->view_height = $view_height;
         return $this;
@@ -108,10 +114,10 @@ class HtmlpdfTask extends Task
      * @param int $navigation_timeout
      * @return HtmlpdfTask
      */
-    public function setNavigationTimeout(int $navigation_timeout): HtmlpdfTask
+    public function setNavigationTimeout(int $navigation_timeout): self
     {
-        if ($navigation_timeout < 0 && $navigation_timeout > 20) {
-            new \InvalidArgumentException('Delay must be under 5 seconds');
+        if ($navigation_timeout < 0 || $navigation_timeout > 20) {
+            throw new \InvalidArgumentException('Delay must be under 5 seconds');
         }
         $this->navigation_timeout = $navigation_timeout;
         return $this;
@@ -123,7 +129,7 @@ class HtmlpdfTask extends Task
      */
     public function setDelay(int $delay): HtmlpdfTask
     {
-        if ($delay < 0 && $delay > 5) {
+        if ($delay < 0 || $delay > 5) {
             new \InvalidArgumentException('Delay must be under 5 seconds');
         }
         $this->delay = $delay;

@@ -12,19 +12,19 @@ use Ilovepdf\Lib\Helper;
 class Element
 {
     private const VALIDATION_ERROR_MESSAGE = [
-      'required'  => 'This parameter is required',
-      'custom'    => '%message'
+        'required' => 'This parameter is required',
+        'custom' => '%message'
     ];
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $type = null;
+    private $type;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $pages = null;
+    private $pages;
 
     /**
      * @var integer
@@ -37,115 +37,191 @@ class Element
     private $opacity = 100;
 
     /**
-     * @var array
+     * @var array|null
      */
-    private $coordinates = null;
+    private $coordinates;
 
     /**
      * @var array
      */
     private $errors = [];
 
-    public function __construct(){
-      $className = explode("\\", (string)static::class);
-      $className = array_pop($className);
-      $className = str_replace("Element", "", $className);
-      $this->type = strtolower($className);
+
+    public function __construct()
+    {
+        $className = explode("\\", static::class);
+        $className = array_pop($className);
+        $className = str_replace("Element", "", $className);
+        $this->type = strtolower($className);
     }
 
-    public function getType(){
-      return $this->type;
+    /**
+     * @return string|null
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 
-    public function getPages(){
-      return $this->pages;
+    /**
+     * @return string|null
+     */
+    public function getPages()
+    {
+        return $this->pages;
     }
 
-    public function setPages($pages){
-      $this->pages = (string)$pages;
-      return $this;
+    /**
+     * @param string $pages
+     * @return $this
+     */
+    public function setPages(string $pages)
+    {
+        $this->pages = $pages;
+        return $this;
     }
 
-    public function getRotation(){
-      return $this->rotation;
+    /**
+     * @return int
+     */
+    public function getRotation()
+    {
+        return $this->rotation;
     }
 
-    public function setRotation(int $rotation){
-      $isValid = (is_int($rotation) && $rotation >= 0 && $rotation <= 360);
-      if(!$isValid){
-        throw new \InvalidArgumentException("Rotation must be an integer between 0 and 360");
-      }
-      return $this->rotation = $rotation;
-      return $this;
+    /**
+     * @param int $rotation
+     * @return $this
+     */
+    public function setRotation(int $rotation)
+    {
+        $isValid = $rotation >= 0 && $rotation <= 360;
+        if (!$isValid) {
+            throw new \InvalidArgumentException("Rotation must be an integer between 0 and 360");
+        }
+        $this->rotation = $rotation;
+        return $this;
     }
 
-    public function getOpacity(){
-      return $this->opacity;
+    /**
+     * @return int
+     */
+    public function getOpacity()
+    {
+        return $this->opacity;
     }
 
-    public function setOpacity(int $opacity){
-      $isValid = (is_int($opacity) && $opacity >= 0 && $opacity <= 100);
-      if(!$isValid){
-        throw new \InvalidArgumentException("Opacity must be an integer between 0 and 100");
-      }
-      $this->opacity = $opacity;
-      return $this;
+    /**
+     * @param int $opacity
+     * @return $this
+     */
+    public function setOpacity(int $opacity)
+    {
+        $isValid = $opacity >= 0 && $opacity <= 100;
+        if (!$isValid) {
+            throw new \InvalidArgumentException("Opacity must be an integer between 0 and 100");
+        }
+        $this->opacity = $opacity;
+        return $this;
     }
 
-    public function getCoordinates(){
-      return $this->coordinates;
+    /**
+     * @return array|null
+     */
+    public function getCoordinates()
+    {
+        return $this->coordinates;
     }
 
-    public function setCoordinates(float $x, float $y){
-      $isValid = $x >= 0 && $y >= 0;
-      if(!$isValid) {
-        throw new \InvalidArgumentException("x and y must be greater than 0");
-      }
-      
-      $this->coordinates = ['x' => $x, 'y' => $y];
-      return $this;
+    /**
+     * @param float $x
+     * @param float $y
+     * @return $this
+     */
+    public function setCoordinates(float $x, float $y)
+    {
+        $isValid = $x >= 0 && $y >= 0;
+        if (!$isValid) {
+            throw new \InvalidArgumentException("x and y must be greater than 0");
+        }
+
+        $this->coordinates = ['x' => $x, 'y' => $y];
+        return $this;
     }
 
-    static public function createText(){
-      $instance = new TextElement();
-    }
-    
-    static public function createImage(){
-      $instance = new ImageElement();
-    }
-
-    static public function createSvg(){
-      $instance = new SvgElement();
+    /**
+     * @return TextElement
+     */
+    static public function createText()
+    {
+        $instance = new TextElement();
+        return $instance;
     }
 
-    public function validate(){
-      $this->errors = [];
-
-      return empty($this->errors);
+    /**
+     * @return ImageElement
+     */
+    static public function createImage()
+    {
+        $instance = new ImageElement();
+        return $instance;
     }
 
-    public function getErrors(){
-      return $this->errors;
+    /**
+     * @return SvgElement
+     */
+    static public function createSvg()
+    {
+        $instance = new SvgElement();
+        return $instance;
     }
 
-    private function addError(string $attrName, string $errorType, array $params=[]){
-      $msg = @self::VALIDATION_ERROR_MESSAGE[$errorType];
-      if($msg === null) throw new \InvalidArgumentException("Unknown errorType '{$errorType}'");
-      $formattedMsg = Helper::namedSprintf($msg, $params);
+    /**
+     * @return bool
+     */
+    public function validate()
+    {
+        $this->errors = [];
 
-      if(!array_key_exists($attrName, $this->errors)) $this->errors[$attrName] = [];
-
-      $this->errors[$attrName][] = $formattedMsg;
+        return empty($this->errors);
     }
 
+    /**
+     * @return array
+     */
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+
+    /**
+     * @param string $attrName
+     * @param string $errorType
+     * @param array $params
+     * @return void
+     */
+    function addError(string $attrName, string $errorType, array $params = [])
+    {
+        $msg = self::VALIDATION_ERROR_MESSAGE[$errorType] ?? null;
+        if ($msg === null) throw new \InvalidArgumentException("Unknown errorType '{$errorType}'");
+        $formattedMsg = Helper::namedSprintf($msg, $params);
+
+        if (!array_key_exists($attrName, $this->errors)) $this->errors[$attrName] = [];
+
+        $this->errors[$attrName][] = $formattedMsg;
+    }
+
+    /**
+     * @return array
+     */
     public function __toArray()
     {
-      return [
-        'type'        => $this->type,
-        'pages'       => $this->pages,
-        'rotation'    => $this->rotation,
-        'opacity'     => $this->opacity,
-        'coordinates' => $this->coordinates,
-      ];
+        return [
+            'type' => $this->type,
+            'pages' => $this->pages,
+            'rotation' => $this->rotation,
+            'opacity' => $this->opacity,
+            'coordinates' => $this->coordinates,
+        ];
     }
 }

@@ -13,12 +13,14 @@ class PdfaTask extends Task
      */
     public $conformance = "pdfa-2b";
 
-
     /**
      * @var boolean
      */
     public $allow_downgrade = true;
 
+    /**
+     * @var string[]
+     */
     private $conformanceValues = ['pdfa-1b', 'pdfa-1a', 'pdfa-2b', 'pdfa-2u', 'pdfa-2a', 'pdfa-3b', 'pdfa-3u', 'pdfa-3a'];
 
     /**
@@ -36,9 +38,9 @@ class PdfaTask extends Task
 
     /**
      * @param string $conformance
-     * @return Task
+     * @return $this
      */
-    public function setConformance($conformance)
+    public function setConformance($conformance): self
     {
         $this->checkValues($conformance, $this->conformanceValues);
 
@@ -46,20 +48,14 @@ class PdfaTask extends Task
         return $this;
     }
 
-    /**
-     * @param null $processData
-     * @return mixed
-     */
-    public function execute($processData = null)
-    {
-        return parent::execute(get_object_vars($this));
-    }
 
     /**
-     * @param boolean $allowDowngrade
+     * @param bool $allowDowngrade
+     * @return $this
      */
-    public function setAllowDowngrade($allowDowngrade)
+    public function setAllowDowngrade(bool $allowDowngrade): self
     {
         $this->allow_downgrade = $allowDowngrade;
+        return $this;
     }
 }

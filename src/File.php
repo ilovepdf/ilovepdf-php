@@ -9,22 +9,22 @@ namespace Ilovepdf;
 class File
 {
     /**
-     * @var string
+     * @var string|null
      */
     public $server_filename;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $filename;
 
     /**
-     * @var integer
+     * @var int|null
      */
     public $rotate;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $password;
 
@@ -45,60 +45,71 @@ class File
      */
     function getFileOptions()
     {
-        return array(
+        return [
             'server_filename' => $this->server_filename,
             'filename' => $this->filename,
             'rotate' => $this->rotate,
             'password' => $this->password
-        );
+        ];
     }
 
 
     /**
      * @param integer $degrees [0|90|180|270]
-     * @return bool
+     * @return File
      */
-    function setRotation($degrees)
+    function setRotation($degrees): self
     {
         if($degrees!=0 && $degrees!=90 && $degrees!=180 && $degrees!=270){
             throw new \InvalidArgumentException;
         }
         $this->rotate = $degrees;
-        return true;
+        return $this;
     }
 
     /**
-     * @param $password
-     * @return bool
+     * @param string $password
+     * @return File
      */
-    function setPassword($password)
+    function setPassword(string $password): self
     {
         $this->password = $password;
-        return true;
+        return $this;
     }
 
     /**
      * @return string
      */
-    function getServerFilename()
+    function getServerFilename(): ?string
     {
         return $this->server_filename;
     }
 
-    function setServerFilename($server_filename)
+    /**
+     * @param string $server_filename
+     * @return File
+     */
+    function setServerFilename(string $server_filename): self
     {
         if($server_filename == '') {
             throw new \InvalidArgumentException;
         }
         $this->server_filename = $server_filename;
+
+        return $this;
     }
 
-
-    function setFilename($filename)
+    /**
+     * @param string $filename
+     * @return File
+     */
+    function setFilename(string $filename): self
     {
         if($filename == '') {
             throw new \InvalidArgumentException;
         }
         $this->filename = $filename;
+
+        return $this;
     }
 }

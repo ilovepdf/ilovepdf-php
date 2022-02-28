@@ -9,73 +9,82 @@ namespace Ilovepdf;
 class PagenumberTask extends Task
 {
     /**
-     * @var boolean
+     * @var bool|null
      */
     public $facing_pages;
 
     /**
-     * @var boolean
+     * @var boolean|null
      */
     public $first_cover;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $pages;
 
     /**
-     * @var integer
+     * @var integer|null
      */
     public $starting_number;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $vertical_position;
 
+    /**
+     * @var string[]
+     */
     private $verticalPositionValues = ['bottom', 'top'];
 
     /**
-     * @var string
+     * @var string|null
      */
     public $horizontal_position;
 
+    /**
+     * @var string[]
+     */
     private $horizontalPositionValues = ['left', 'center', 'right'];
 
     /**
-     * @var integer
+     * @var integer|null
      */
     public $vertical_position_adjustment;
 
     /**
-     * @var integer
+     * @var integer|null
      */
     public $horizontal_position_adjustment;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $font_family;
 
+    /**
+     * @var string[]
+     */
     private $fontFamilyValues = ['Arial', 'Arial Unicode MS', 'Verdana', 'Courier', 'Times New Roman', 'Comic Sans MS', 'WenQuanYi Zen Hei', 'Lohit Marathi'];
 
     /**
-     * @var string
+     * @var string|null
      */
     public $font_style;
 
     /**
-     * @var integer
+     * @var integer|null
      */
     public $font_size;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $font_color;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $text;
 
@@ -95,18 +104,20 @@ class PagenumberTask extends Task
     }
 
     /**
-     * @param boolean $facing_pages
+     * @param bool $facing_pages
+     * @return $this
      */
-    public function setFacingPages($facing_pages)
+    public function setFacingPages(bool $facing_pages): self
     {
         $this->facing_pages = $facing_pages;
         return $this;
     }
 
     /**
-     * @param boolean $first_cover
+     * @param bool $first_cover
+     * @return $this
      */
-    public function setFirstCover($first_cover)
+    public function setFirstCover(bool $first_cover): self
     {
         $this->first_cover = $first_cover;
         return $this;
@@ -114,8 +125,9 @@ class PagenumberTask extends Task
 
     /**
      * @param string $pages
+     * @return $this
      */
-    public function setPages($pages)
+    public function setPages(string $pages): self
     {
         $this->pages = $pages;
         return $this;
@@ -123,9 +135,9 @@ class PagenumberTask extends Task
 
     /**
      * @param int $starting_number
-     * @return Task
+     * @return $this
      */
-    public function setStartingNumber($starting_number)
+    public function setStartingNumber(int $starting_number): self
     {
         $this->starting_number = $starting_number;
         return $this;
@@ -133,9 +145,9 @@ class PagenumberTask extends Task
 
     /**
      * @param string $vertical_position
-     * @return Task
+     * @return $this
      */
-    public function setVerticalPosition($vertical_position)
+    public function setVerticalPosition(string $vertical_position): self
     {
         $this->checkValues($vertical_position, $this->verticalPositionValues);
 
@@ -145,9 +157,9 @@ class PagenumberTask extends Task
 
     /**
      * @param string $horizontal_position
-     * @return Task
+     * @return $this
      */
-    public function setHorizontalPosition($horizontal_position)
+    public function setHorizontalPosition(string $horizontal_position): self
     {
         $this->checkValues($horizontal_position, $this->horizontalPositionValues);
 
@@ -167,8 +179,9 @@ class PagenumberTask extends Task
 
     /**
      * @param int $vertical_position_adjustment
+     * @return $this
      */
-    public function setVerticalPositionAdjustment($vertical_position_adjustment)
+    public function setVerticalPositionAdjustment(int $vertical_position_adjustment): self
     {
         $this->vertical_position_adjustment = $vertical_position_adjustment;
         return $this;
@@ -176,8 +189,9 @@ class PagenumberTask extends Task
 
     /**
      * @param string $font_family
+     * @return $this
      */
-    public function setFontFamily($font_family)
+    public function setFontFamily(string $font_family): self
     {
         $this->checkValues($font_family, $this->fontFamilyValues);
 
@@ -185,10 +199,12 @@ class PagenumberTask extends Task
         return $this;
     }
 
+
     /**
      * @param string $font_style
+     * @return $this
      */
-    public function setFontStyle($font_style)
+    public function setFontStyle(string $font_style): self
     {
         $this->font_style = $font_style;
         return $this;
@@ -196,8 +212,9 @@ class PagenumberTask extends Task
 
     /**
      * @param int $font_size
+     * @return $this
      */
-    public function setFontSize($font_size)
+    public function setFontSize(int $font_size): self
     {
         $this->font_size = $font_size;
         return $this;
@@ -205,8 +222,9 @@ class PagenumberTask extends Task
 
     /**
      * @param string $font_color
+     * @return $this
      */
-    public function setFontColor($font_color)
+    public function setFontColor(string $font_color): self
     {
         $this->font_color = $font_color;
         return $this;
@@ -214,20 +232,11 @@ class PagenumberTask extends Task
 
     /**
      * @param string $text
+     * @return $this
      */
-    public function setText($text)
+    public function setText(string $text): self
     {
         $this->text = $text;
         return $this;
-    }
-
-
-    /**
-     * @param null $processData
-     * @return mixed
-     */
-    public function execute($processData = null)
-    {
-        return parent::execute(get_object_vars($this));
     }
 }
