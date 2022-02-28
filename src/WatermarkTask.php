@@ -12,97 +12,113 @@ use Ilovepdf\Element;
 class WatermarkTask extends Task
 {
     /**
-     * @var string
+     * @var string|null
      */
     public $mode;
+
+    /**
+     * @var string[]
+     */
     private $modeValues = ['image', 'text', 'multi'];
 
     /**
-     * @var string
+     * @var string|null
      */
     public $text;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $image;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $pages;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $vertical_position;
 
+    /**
+     * @var string[]
+     */
     private $verticalPositionValues = ['bottom', 'middle', 'top'];
     /**
-     * @var string
+     * @var string|null
      */
     public $horizontal_position;
 
+    /**
+     * @var string[]
+     */
     private $horizontalPositionValues = ['left', 'center', 'right'];
 
     /**
-     * @var integer
+     * @var integer|null
      */
     public $vertical_position_adjustment;
 
     /**
-     * @var integer
+     * @var integer|null
      */
     public  $horizontal_position_adjustment;
 
     /**
-     * @var boolean
+     * @var boolean|null
      */
     public $mosaic;
 
     /**
-     * @var integer
+     * @var integer|null
      */
     public $rotation;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $font_family;
 
+    /**
+     * @var string[]
+     */
     private $fontFamilyValues = ['Arial', 'Arial Unicode MS', 'Verdana', 'Courier', 'Times New Roman', 'Comic Sans MS', 'WenQuanYi Zen Hei', 'Lohit Marathi'];
 
     /**
-     * @var string
+     * @var string|null
      */
     public $font_style;
 
     /**
-     * @var integer
+     * @var integer|null
      */
     public $font_size;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $font_color;
 
     /**
-     * @var integer
+     * @var integer|null
      */
     public $transparency;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $layer;
 
+    /**
+     * @var string[]
+     */
     private $layerValues = ['above', 'below'];
 
     /**
      * @var array
      */
-    public $elements;
+    public $elements = [];
 
 
     /**
@@ -112,7 +128,7 @@ class WatermarkTask extends Task
      * @param null|string $secretKey    Your secret key
      * @param bool $makeStart           Set to false for chained tasks, because we don't need the start
      */
-    function __construct($publicKey, $secretKey, $makeStart = true)
+    function __construct(?string $publicKey, ?string $secretKey, $makeStart = true)
     {
         $this->tool='watermark';
         parent::__construct($publicKey, $secretKey, $makeStart);
@@ -123,7 +139,7 @@ class WatermarkTask extends Task
     /**
      * @param string $mode
      */
-    public function setMode($mode)
+    public function setMode(string $mode): self
     {
         $this->mode = $mode;
         return $this;
@@ -132,7 +148,7 @@ class WatermarkTask extends Task
     /**
      * @param string $text
      */
-    public function setText($text)
+    public function setText(string $text): self
     {
         $this->text = $text;
         return $this;
@@ -141,7 +157,7 @@ class WatermarkTask extends Task
     /**
      * @param string $image
      */
-    public function setImage($image)
+    public function setImage(string $image): self
     {
         $this->image = $image;
         return $this;
@@ -150,7 +166,7 @@ class WatermarkTask extends Task
     /**
      * @param File $image
      */
-    public function setImageFile(File $imageFile)
+    public function setImageFile(File $imageFile): self
     {
         $this->image = $imageFile->getServerFilename();
         return $this;
@@ -159,7 +175,7 @@ class WatermarkTask extends Task
     /**
      * @param string $pages
      */
-    public function setPages($pages)
+    public function setPages(string $pages): self
     {
         $this->pages = $pages;
         return $this;
@@ -168,7 +184,7 @@ class WatermarkTask extends Task
     /**
      * @param string $vertical_position
      */
-    public function setVerticalPosition($vertical_position)
+    public function setVerticalPosition(string $vertical_position): self
     {
         $this->checkValues($vertical_position, $this->verticalPositionValues);
 
@@ -179,7 +195,7 @@ class WatermarkTask extends Task
     /**
      * @param string $horizontal_position
      */
-    public function setHorizontalPosition($horizontal_position)
+    public function setHorizontalPosition(string $horizontal_position): self
     {
         $this->checkValues($horizontal_position, $this->horizontalPositionValues);
 
@@ -190,7 +206,7 @@ class WatermarkTask extends Task
     /**
      * @param int $vertical_position_adjustment
      */
-    public function setVerticalPositionAdjustment($vertical_position_adjustment)
+    public function setVerticalPositionAdjustment(int $vertical_position_adjustment): self
     {
         $this->vertical_position_adjustment = $vertical_position_adjustment;
         return $this;
@@ -199,16 +215,16 @@ class WatermarkTask extends Task
     /**
      * @param int $horizontal_position_adjustment
      */
-    public function setHorizontalPositionAdjustment($horizontal_position_adjustment)
+    public function setHorizontalPositionAdjustment(int $horizontal_position_adjustment): self
     {
         $this->horizontal_position_adjustment = $horizontal_position_adjustment;
         return $this;
     }
 
     /**
-     * @param boolean $mosaic
+     * @param bool $mosaic
      */
-    public function setMosaic($mosaic)
+    public function setMosaic(bool $mosaic): self
     {
         $this->mosaic = $mosaic;
         return $this;
@@ -217,7 +233,7 @@ class WatermarkTask extends Task
     /**
      * @param int $rotation
      */
-    public function setRotation($rotation)
+    public function setRotation(int $rotation): self
     {
         $this->rotation = $rotation;
         return $this;
@@ -226,7 +242,7 @@ class WatermarkTask extends Task
     /**
      * @param string $font_family
      */
-    public function setFontFamily($font_family)
+    public function setFontFamily(string $font_family): self
     {
         $this->checkValues($font_family, $this->fontFamilyValues);
 
@@ -237,7 +253,7 @@ class WatermarkTask extends Task
     /**
      * @param string $font_style
      */
-    public function setFontStyle($font_style)
+    public function setFontStyle(string $font_style): self
     {
         $this->font_style = $font_style;
         return $this;
@@ -246,7 +262,7 @@ class WatermarkTask extends Task
     /**
      * @param int $font_size
      */
-    public function setFontSize($font_size)
+    public function setFontSize($font_size): self
     {
         $this->font_size = $font_size;
         return $this;
@@ -255,7 +271,7 @@ class WatermarkTask extends Task
     /**
      * @param string $font_color
      */
-    public function setFontColor($font_color)
+    public function setFontColor(string $font_color): self
     {
         $this->font_color = $font_color;
         return $this;
@@ -264,7 +280,7 @@ class WatermarkTask extends Task
     /**
      * @param int $transparency
      */
-    public function setTransparency($transparency)
+    public function setTransparency(int $transparency): self
     {
         $this->transparency = $transparency;
         return $this;
@@ -273,7 +289,7 @@ class WatermarkTask extends Task
     /**
      * @param string $layer
      */
-    public function setLayer($layer)
+    public function setLayer(string $layer): self
     {
         $this->checkValues($layer, $this->layerValues);
 
@@ -284,13 +300,13 @@ class WatermarkTask extends Task
     /**
      * adds a watermark element
      *
-     * @param $element
+     * @param Element|array $element
      * @return $this
      */
-    public function addElement($element)
+    public function addElement($element): self
     {
 
-        if (is_a($element, \Ilovepdf\Element::class)) {
+        if (is_a($element, Element::class)) {
             $this->elements[] = $element;
         } elseif (is_array($element)) {
             $this->elements[] = new Element($element);

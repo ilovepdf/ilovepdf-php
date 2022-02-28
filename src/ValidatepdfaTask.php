@@ -1,6 +1,8 @@
 <?php
 
 namespace Ilovepdf;
+use Ilovepdf\Exceptions\DownloadException;
+
 /**
  * Class ValidatepdfaTask
  *
@@ -13,6 +15,9 @@ class ValidatepdfaTask extends Task
      */
     public $conformance = "pdfa-2b";
 
+    /**
+     * @var string[]
+     */
     private $conformanceValues = ['pdfa-1b', 'pdfa-1a', 'pdfa-2b', 'pdfa-2u', 'pdfa-2a', 'pdfa-3b', 'pdfa-3u', 'pdfa-3a'];
 
     /**
@@ -41,24 +46,20 @@ class ValidatepdfaTask extends Task
     }
 
     /**
-     * @param null $processData
-     * @return mixed
+     * @param string|null $path
+     * @return void
+     * @throws DownloadException
      */
-    public function execute($processData = null)
-    {
-        return parent::execute(get_object_vars($this));
-    }
-
     public function download($path = null)
     {
-        return;
+        throw new DownloadException('This task have no files to download');
     }
 
     public function blob(){
-        $this->download();
+        throw new DownloadException('This task have no files to download');
     }
 
     public function toBrowser(){
-        $this->download();
+        throw new DownloadException('This task have no files to download');
     }
 }

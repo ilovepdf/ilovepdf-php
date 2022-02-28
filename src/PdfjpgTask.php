@@ -9,13 +9,12 @@ namespace Ilovepdf;
 class PdfjpgTask extends Task
 {
     /**
-     * @var string
+     * @var string|null
      */
     public $pdfjpg_mode;
 
-
     /**
-     * @var integer
+     * @var integer|null
      */
     public $dpi;
 
@@ -36,9 +35,9 @@ class PdfjpgTask extends Task
      * Set the process mode: convert each page to image or extract all images in pdf
      *
      * @param string $mode values:["pages"|"extract"] default: "pages"
-     * @return PdfjpgTask
+     * @return $this
      */
-    public function setMode($mode)
+    public function setMode($mode): self
     {
         if($mode!="pages" && $mode!="extract"){
             throw new \InvalidArgumentException();
@@ -52,9 +51,9 @@ class PdfjpgTask extends Task
      * Set image quality for output
      *
      * @param int $dpi
-     * @return PdfjpgTask
+     * @return $this
      */
-    public function setDpi($dpi)
+    public function setDpi(int $dpi): self
     {
         if($dpi<24 || $dpi>500){
             throw new \InvalidArgumentException('Invalid dpi value');

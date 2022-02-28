@@ -20,39 +20,75 @@ use Firebase\JWT\JWT;
  */
 class Ilovepdf
 {
-    // @var string The Ilovepdf secret API key to be used for requests.
+    /**
+     * @var string|null The Ilovepdf secret API key to be used for requests.
+     */
     private $secretKey = null;
 
-    // @var string The Ilovepdf public API key to be used for requests.
+    /**
+     * @var string|null The Ilovepdf public API key to be used for requests.
+     */
     private $publicKey = null;
 
+    /**
+     * @var string
+     */
     private static $startServer = 'https://api.ilovepdf.com';
 
+    /**
+     * @var string|null
+     */
     private $workerServer = null;
 
-    // @var string|null The version of the Ilovepdf API to use for requests.
+    /**
+     * @var string|null The version of the Ilovepdf API to use for requests.
+     */
     public static $apiVersion = 'v1';
 
     const VERSION = 'php.1.2.2';
 
+    /**
+     * @var string|null
+     */
     public $token = null;
 
-    /*
+    /**
      * @var int delay in seconds, for timezone exceptions.
      * Time sholud be UTC, but some servers maybe are not using NAT.
      * This var is here to correct this delay. Currently 5400 seconds : 1h:30'
      */
     public $timeDelay = 5400;
 
+    /**
+     * @var bool
+     */
     private $encrypted = false;
+
+    /**
+     * @var string|null
+     */
     private $encryptKey;
 
+    /**
+     * @var int
+     */
     public $timeout = 10;
+
+    /**
+     * @var int|null
+     */
     public $timeoutLarge = null;
 
+
+    /**
+     * @var mixed|null
+     */
     public $info = null;
 
-
+    /**
+     * @param string|null $publicKey
+     * @param string|null $secretKey
+     */
     public function __construct(?string $publicKey = null, ?string $secretKey = null)
     {
         if ($publicKey && $secretKey)
@@ -70,17 +106,19 @@ class Ilovepdf
     /**
      * @return string The API secret key used for requests.
      */
-    public function getPublicKey()
+    public function getPublicKey(): string
     {
-        return $this->publicKey;
+        return $this->secretKey ?? '';
     }
 
     /**
      * Sets the API key to be used for requests.
      *
-     * @param string $apiKey
+     * @param string $publicKey
+     * @param string $secretKey
+     * @return void
      */
-    public function setApiKeys($publicKey, $secretKey)
+    public function setApiKeys(string $publicKey, string $secretKey): void
     {
         $this->publicKey = $publicKey;
         $this->secretKey = $secretKey;
@@ -90,7 +128,7 @@ class Ilovepdf
      * @return string The API version used for requests. null if we're using the
      *    latest version.
      */
-    public static function getApiVersion()
+    public static function getApiVersion(): ?string
     {
         return self::$apiVersion;
     }
@@ -98,7 +136,7 @@ class Ilovepdf
     /**
      * @param string $apiVersion The API version to use for requests.
      */
-    public static function setApiVersion($apiVersion)
+    public static function setApiVersion($apiVersion): void
     {
         self::$apiVersion = $apiVersion;
     }
@@ -132,7 +170,7 @@ class Ilovepdf
         $token['jti'] = $this->getPublicKey();
 
         // Set encryptKey
-        if ($this->getFileEncryption()) {
+        if ($this->isFileEncryption() == true) {
             $token['file_encryption_key'] = $this->getEncrytKey();
         }
 
@@ -153,7 +191,8 @@ class Ilovepdf
     /**
      * @param string $method
      * @param string $endpoint
-     * @param mixed $body
+     * @param array $params
+     * @param bool $start
      *
      * @return mixed response from server
      *
@@ -161,20 +200,25 @@ class Ilovepdf
      * @throws ProcessException
      * @throws UploadException
      */
-    public function sendRequest($method, $endpoint, $params = [], $start = false)
+    public function sendRequest(string $method, string $endpoint, array $params = [], bool $start = false)
     {
         $to_server = self::getStartServer();
         if (!$start && !is_null($this->getWorkerServer())) {
             $to_server = $this->workerServer;
         }
+
+        /** @psalm-suppress PossiblyNullOperand */
         $timeout = ($endpoint == 'process' || $endpoint == 'upload' || strpos($endpoint, 'download/') === 0) ? $this->timeoutLarge : $this->timeout;
         $requestConfig = [
             'connect_timeout' => $timeout,
-            'headers' => ['Authorization' => 'Bearer ' . $this->getJWT(), 'Accept' => 'application/json'],
+            'headers' => [
+                'Authorization' => 'Bearer ' . $this->getJWT(),
+                'Accept' => 'application/json'
+            ],
         ];
 
         $requestParams = $requestConfig;
-        if($params) {
+        if ($params) {
             $requestParams = array_merge($requestConfig, $params);
         }
 
@@ -182,6 +226,7 @@ class Ilovepdf
         $error = null;
 
         try {
+            /** @psalm-suppress PossiblyNullOperand */
             $response = $client->request($method, $to_server . '/v1/' . $endpoint, $requestParams);
         } catch (ClientException $e) {
             $response = $e->getResponse();
@@ -189,7 +234,7 @@ class Ilovepdf
         }
         $responseCode = $response->getStatusCode();
         if ($responseCode != '200' && $responseCode != '201') {
-            $responseBody = json_decode($response->getBody());
+            $responseBody = json_decode((string)$response->getBody());
             if ($responseCode == 401) {
                 throw new AuthException($responseBody->name, $responseBody, $responseCode);
             }
@@ -230,14 +275,14 @@ class Ilovepdf
      *
      * @throws \Exception
      */
-    public function newTask($tool = '', $makeStart = true)
+    public function newTask(string $tool = '', ?bool $makeStart = true)
     {
         $classname = '\\Ilovepdf\\' . ucwords(strtolower($tool)) . 'Task';
         if (!class_exists($classname)) {
             throw new \InvalidArgumentException('Invalid tool');
         }
 
-        if($tool == ''){
+        if ($tool == '') {
             $makeStart = false;
         }
 
@@ -245,82 +290,115 @@ class Ilovepdf
         return $task;
     }
 
-    public static function setStartServer($server)
+    /**
+     * @param string $server
+     * @return void
+     */
+    public static function setStartServer(string $server)
     {
         self::$startServer = $server;
     }
 
-    public static function getStartServer()
+    /**
+     * @return string
+     */
+    public function getStartServer(): string
     {
         return self::$startServer;
     }
 
     /**
-     * @return string Return url
+     * @return string|null
      */
-    public function getWorkerServer()
+    public function getWorkerServer(): ?string
     {
         return $this->workerServer;
     }
 
     /**
-     * @param null $workerServer
+     * @param string|null $workerServer
+     * @return void
      */
-    public function setWorkerServer($workerServer)
+    public function setWorkerServer(?string $workerServer): void
     {
         $this->workerServer = $workerServer;
     }
 
 
     /**
-     * @param boolean $value
+     * @param bool $value
+     * @param string|null $encryptKey
+     * @return $this
      */
-    public function setFileEncryption($value, $encryptKey = null)
+    public function setFileEncryption(?string $encryptKey = null)
     {
-        $this->encrypted = $value;
-        if ($this->encrypted) {
-            $this->setEncryptKey($encryptKey);
-        } else {
-            $this->encryptKey = null;
-        }
+        $this->setEncryption($encryptKey == null);
+        $this->setEncryptKey($encryptKey);
+
+        return $this;
     }
 
+    /**
+     * @param bool $enable
+     * @return void
+     */
+    public function enableEncryption(bool $enable)
+    {
+        $this->encrypted = $enable;
+    }
+
+    /**
+     * Compat, this will be removed
+     *
+     * @param bool $enable
+     * @return void
+     */
+    public function setEncryption(bool $enable): void
+    {
+        $this->enableEncryption($enable);
+    }
 
     /**
      * @return bool
      */
-    public function getFileEncryption()
+    public function isFileEncryption(): bool
     {
         return $this->encrypted;
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getEncrytKey()
+    public function getEncrytKey(): ?string
     {
         return $this->encryptKey;
     }
 
     /**
-     * @param mixed $encrytKey
+     * @param string|null $encryptKey
+     * @return void
      */
-    public function setEncryptKey($encryptKey = null)
+    public function setEncryptKey(?string $encryptKey = null): void
     {
         if ($encryptKey == null) {
             $encryptKey = IlovepdfTool::rand_sha1(32);
         }
         $len = strlen($encryptKey);
         if ($len != 16 && $len != 24 && $len != 32) {
-            throw new \InvalidArgumentException('Encrypt key shold have 16, 14 or 32 chars length');
+            throw new \InvalidArgumentException('Encrypt key should have 16, 14 or 32 chars length');
         }
         $this->encryptKey = $encryptKey;
     }
 
     /**
-     * @return Task
+     * @param string $server
+     * @param string $taskId
+     * @return mixed
+     * @throws AuthException
+     * @throws ProcessException
+     * @throws UploadException
      */
-    public function getStatus($server, $taskId)
+    public function getStatus(string $server, string $taskId)
     {
         $workerServer = $this->getWorkerServer();
         $this->setWorkerServer($server);
@@ -330,22 +408,28 @@ class Ilovepdf
     }
 
     /**
-     * @param $verify
+     * @param bool $verify
      */
-    public function verifySsl($verify)
+    public function verifySsl(bool $verify): void
     {
         Client::setVerify($verify);
     }
 
     /**
-     * @param $follow
+     * @param bool $follow
      */
-    public function followLocation($follow)
+    public function followLocation(bool $follow): void
     {
         Client::setAllowRedirects($follow);
     }
 
-    private function getUpdatedInfo()
+    /**
+     * @return object
+     * @throws AuthException
+     * @throws ProcessException
+     * @throws UploadException
+     */
+    private function getUpdatedInfo(): object
     {
         $data = array('v' => self::VERSION);
         $body = ['form_params' => $data];

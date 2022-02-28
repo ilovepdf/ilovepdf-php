@@ -12,8 +12,11 @@ class CompressTask extends Task
     /**
      * @var string
      */
-    public $compression_level;
+    public $compression_level = 'recommended';
 
+    /**
+     * @var string[]
+     */
     private $compressionLevelValues = ["extreme", "recommended", "low"];
 
     /**
@@ -30,12 +33,14 @@ class CompressTask extends Task
     }
 
     /**
-     * @param $level string
+     * @param string $level
      *
      * values: ["extreme"|"recommended"|"low"]
      * default: "recommended"
+     *
+     * @return CompressTask
      */
-    public function setCompressionLevel($level)
+    public function setCompressionLevel(string $level): self
     {
         $this->checkValues($level, $this->compressionLevelValues);
 

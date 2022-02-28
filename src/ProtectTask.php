@@ -10,7 +10,7 @@ class ProtectTask extends Task
 {
 
     /**
-     * @var string
+     * @var string|null
      */
     public $password;
 
@@ -29,9 +29,11 @@ class ProtectTask extends Task
 
     /**
      * @param string $password
+     * @return $this
      */
-    public function setPassword($password)
+    public function setPassword(string $password): self
     {
         $this->password = $password;
+        return $this;
     }
 }

@@ -3,6 +3,7 @@
 namespace Ilovepdf;
 
 use Ilovepdf\Exceptions\AuthException;
+use Ilovepdf\Exceptions\DownloadException;
 use Ilovepdf\Exceptions\ProcessException;
 use Ilovepdf\Exceptions\StartException;
 use Ilovepdf\Exceptions\PathException;
@@ -15,25 +16,71 @@ use Ilovepdf\Exceptions\UploadException;
  */
 class Task extends Ilovepdf
 {
-    // @var string The Ilovepdf API Task ID.
+    /**
+     * @var string|null  The Ilovepdf API Task ID.
+     */
     public $task = null;
+
+    /**
+     * @var array
+     */
     public $files = [];
+
+    /**
+     * @var string|null
+     */
     public $tool;
+
+    /**
+     * @var string|null
+     */
     public $packaged_filename;
+
+    /**
+     * @var string|null
+     */
     public $output_filename;
+
+    /**
+     * @var bool
+     */
     public $ignore_errors = true;
+
+    /**
+     * @var bool
+     */
     public $ignore_password = true;
+
+    /**
+     * @var bool
+     */
     public $try_pdf_repair = true;
+
+    /**
+     * @var array
+     */
     public $meta = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     public $webhook;
 
     //custom data
+
+    /**
+     * @var int|null
+     */
     public $custom_int = null;
+
+    /**
+     * @var string|null
+     */
     public $custom_string = null;
+
+    /**
+     * @var string[]
+     */
     private $statusValues = [
         '',
         'TaskSuccess',
@@ -46,20 +93,35 @@ class Task extends Ilovepdf
     ];
 
     //results from execute()
+    /**
+     * @var string|null
+     */
     public $result;
 
     //downloaded file
+
+    /**
+     * @var string|null
+     */
     public $outputFile;
+
+    /**
+     * @var string|null
+     */
     public $outputFileName;
+
+    /**
+     * @var string|null
+     */
     public $outputFileType;
 
 
     /**
      * Task constructor.
-     * @param string $publicKey
-     * @param string $secretKey
+     * @param string|null $publicKey
+     * @param string|null $secretKey
      */
-    function __construct($publicKey, $secretKey, $makeStart = false)
+    function __construct(?string $publicKey, ?string $secretKey, bool $makeStart = false)
     {
         parent::__construct($publicKey, $secretKey);
 
@@ -68,12 +130,26 @@ class Task extends Ilovepdf
         }
     }
 
-    public function start()
+    /**
+     * @return void
+     * @throws AuthException
+     * @throws ProcessException
+     * @throws StartException
+     * @throws UploadException
+     */
+    public function start(): void
     {
+        if($this->tool == null){
+            throw new StartException('Tool must be set');
+        }
         $data = ['v' => self::VERSION];
-
-        $response = parent::sendRequest('get', 'start/' . $this->tool, $data);
-        $responseBody = json_decode($response->getBody());
+        $body = ['form_params' => $data];
+        $response = parent::sendRequest('get', 'start/' . $this->tool, $body);
+        try {
+            $responseBody = json_decode($response->getBody());
+        } catch (\Exception $e) {
+            throw new StartException('Invalid response');
+        }
         if (empty($responseBody->server)) {
             throw new StartException('no server assigned on start');
         };
@@ -81,7 +157,12 @@ class Task extends Ilovepdf
         $this->setTask($responseBody->task);
     }
 
-    public function next($nextTool): Task
+    /**
+     * @param $nextTool
+     * @return $this
+     * @throws StartException
+     */
+    public function next(string $nextTool): self
     {
         $data = [
             'v' => self::VERSION,
@@ -113,27 +194,44 @@ class Task extends Ilovepdf
         return $next;
     }
 
-    public function setTask($task)
+    /**
+     * @param string|null $task
+     * @return $this
+     */
+    public function setTask(?string $task): self
     {
         $this->task = $task;
+        return $this;
     }
 
-    public function getTaskId()
+    /**
+     * @return string|null
+     */
+    public function getTaskId(): ?string
     {
         return $this->task;
     }
 
-    public function setFiles($files)
+    /**
+     * @param array $files
+     * @return void
+     */
+    public function setFiles(array $files): void
     {
         $this->files = $files;
     }
 
-
-    public function getFiles()
+    /**
+     * @return array
+     */
+    public function getFiles(): array
     {
         return $this->files;
     }
 
+    /**
+     * @return array
+     */
     public function getFilesArray()
     {
         $filesArray = [];
@@ -143,7 +241,13 @@ class Task extends Ilovepdf
         return $filesArray;
     }
 
-    public function getStatus($server = null, $taskId = null)
+    /**
+     * @param string|null $server
+     * @param string|null $taskId
+     * @return Task
+     * @throws \Exception
+     */
+    public function getStatus(?string $server = null, ?string $taskId = null)
     {
         $server = $server ? $server : $this->getWorkerServer();
         $taskId = $taskId ? $taskId : $this->getTaskId();
@@ -151,7 +255,7 @@ class Task extends Ilovepdf
         if ($server == null || $taskId == null) {
             throw new \Exception('Cannot get status if no file is uploaded');
         }
-        return parent::getStatus($this->getWorkerServer(), $this->getTaskId());
+        return parent::getStatus($server, $taskId);
     }
 
     /**
@@ -160,7 +264,8 @@ class Task extends Ilovepdf
      */
     public function addFile($filePath)
     {
-
+        $this->validateTaskStarted();
+        /** @psalm-suppress PossiblyNullArgument */
         $file = $this->uploadFile($this->task, $filePath);
         array_push($this->files, $file);
         return end($this->files);
@@ -172,6 +277,8 @@ class Task extends Ilovepdf
      */
     public function addFileFromUrl($url)
     {
+        $this->validateTaskStarted();
+        /** @psalm-suppress PossiblyNullArgument */
         $file = $this->uploadUrl($this->task, $url);
         array_push($this->files, $file);
         return end($this->files);
@@ -187,7 +294,7 @@ class Task extends Ilovepdf
      * @throws ProcessException
      * @throws UploadException
      */
-    public function uploadFile($task, $filepath)
+    public function uploadFile(string $task, string $filepath)
     {
         if (!file_exists($filepath)) {
             throw new \InvalidArgumentException('File ' . $filepath . ' does not exists');
@@ -207,7 +314,12 @@ class Task extends Ilovepdf
         ];
 
         $response = $this->sendRequest('post', 'upload', $body);
-        $responseBody = json_decode($response->getBody());
+        try {
+            $responseBody = json_decode($response->getBody());
+        }
+        catch(\Exception $e){
+            throw new UploadException('Upload response error');
+        }
         return new File($responseBody->server_filename, basename($filepath));
     }
 
@@ -217,6 +329,8 @@ class Task extends Ilovepdf
      */
     public function addElementFile($filePath)
     {
+        $this->validateTaskStarted();
+        /** @psalm-suppress PossiblyNullArgument */
         return $this->uploadFile($this->task, $filePath);
     }
 
@@ -226,6 +340,8 @@ class Task extends Ilovepdf
      */
     public function addElementFileFromUrl($url)
     {
+        $this->validateTaskStarted();
+        /** @psalm-suppress PossiblyNullArgument */
         return $this->uploadUrl($this->task, $url);
     }
 
@@ -234,6 +350,8 @@ class Task extends Ilovepdf
      */
     public function delete()
     {
+        $this->validateTaskStarted();
+        /** @psalm-suppress PossiblyNullOperand */
         $response = $this->sendRequest('delete', 'task/' . $this->getTaskId());
         $this->result = json_decode($response->getBody());
         return $this;
@@ -266,31 +384,42 @@ class Task extends Ilovepdf
     }
 
     /**
-     * @param null|string $path
-     * @param null|string $file
+     * @param string|null $path
+     * @return void
+     * @throws AuthException
+     * @throws PathException
+     * @throws ProcessException
+     * @throws UploadException
+     * @throws DownloadException
      */
     public function download($path = null)
     {
+        $this->validateTaskStarted();
+
         if ($path != null && !is_dir($path)) {
             if (pathinfo($path, PATHINFO_EXTENSION) == '') {
                 throw new PathException('Invalid download path. Use method setOutputFilename() to set the output file name.');
             }
             throw new PathException('Invalid download path. Set a valid folder path to download the file.');
         }
-
+        /** @psalm-suppress PossiblyNullOperand */
         $this->downloadFile($this->task);
 
         if (is_null($path)) $path = '.';
+        /** @psalm-suppress PossiblyNullOperand */
         $destination = $path . '/' . $this->outputFileName;
         $file = fopen($destination, "w+");
+        /** @psalm-suppress PossiblyNullArgument */
         fputs($file, $this->outputFile);
         fclose($file);
         return;
     }
 
     /**
-     * @param null|string $path
-     * @param null|string $file
+     * @return string|null
+     * @throws AuthException
+     * @throws ProcessException
+     * @throws UploadException
      */
     public function blob()
     {
@@ -299,16 +428,21 @@ class Task extends Ilovepdf
     }
 
     /**
-     * @param null|string $path
-     * @param null|string $file
+     * @return void
+     * @throws AuthException
+     * @throws ProcessException
+     * @throws UploadException
      */
     public function toBrowser()
     {
         $this->downloadFile($this->task);
 
+        if ($this->outputFileName == null || $this->outputFile == null) {
+            throw new DownloadException('No output filename');
+        }
+
         // Try to change headers.
         try {
-
             if ($this->outputFileType == 'pdf') {
                 header("Content-type:application/pdf");
                 header("Content-Disposition:attachment;filename=\"" . $this->outputFileName . "\"");
@@ -332,17 +466,19 @@ class Task extends Ilovepdf
     }
 
     /**
-     * @param string $task
+     * @param string|null $task
      * @param string $path
      *
      * @throws AuthException
      * @throws ProcessException
      * @throws UploadException
+     * @throws DownloadException
      */
-    private function downloadFile($task)
+    private function downloadFile($task): void
     {
         $data = array('v' => self::VERSION);
         $body = ['form_params' => $data];
+        /** @psalm-suppress PossiblyNullOperand */
         $response = parent::sendRequest('get', 'download/' . $task, $body);
         $responseHeaders = $response->getHeaders();
 
@@ -353,26 +489,39 @@ class Task extends Ilovepdf
             preg_match('/ .*filename=\"([\W\w]+)\"/', $responseHeaders['Content-Disposition'][0], $matches);
             $filename = str_replace('"', '', $matches[1]);
         }
-        $this->outputFile = $response->getBody()->getContents();
+        try {
+            $this->outputFile = $response->getBody()->getContents();
+        } catch (\Exception $e) {
+            throw new DownloadException('No file content for download');
+        }
         $this->outputFileName = $filename;
         $this->outputFileType = pathinfo($this->outputFileName, PATHINFO_EXTENSION);
     }
 
     /**
-     * @param $value
+     * Enable or disable file encryption
+     * @param bool $value
      */
-    public function sendEncryptedFiles($value)
+    public function sendEncryptedFiles(bool $value): void
     {
-        self::$encrypted = $value;
+        $this->setEncryption($value);
     }
 
     /**
-     * @param $value
      * @return bool
      */
-    public function getEncrypted($value)
+    public function isEncrypted()
     {
-        return self::$encrypted;
+        return $this->isFileEncryption();
+    }
+
+    /**
+     * Keep compat
+     * @return bool
+     */
+    public function getEncrypted()
+    {
+        return $this->isEncrypted();
     }
 
     /**
@@ -383,9 +532,7 @@ class Task extends Ilovepdf
      */
     public function execute()
     {
-        if ($this->task === null) {
-            throw new \Exception('Current task not exists');
-        }
+        $this->validateTaskStarted();
 
         $data = array_merge(
             $this->__toArray(),
@@ -434,18 +581,19 @@ class Task extends Ilovepdf
     }
 
     /**
-     * @param $file File
-     * @return Task
-     * @throws Exceptions\AuthException
-     * @throws Exceptions\DownloadException
-     * @throws Exceptions\ProcessException
-     * @throws Exceptions\UploadException
-     * @throws \Exception
+     * @param File $file
+     * @return $this
+     * @throws AuthException
+     * @throws ProcessException
+     * @throws UploadException
      */
-    public function deleteFile($file)
+    public function deleteFile(File $file)
     {
+        $this->validateTaskStarted();
+
         if (($key = array_search($file, $this->files)) !== false) {
             $body = ['form_params' => ['task' => $this->getTaskId(), 'server_filename' => $file->server_filename, 'v' => self::VERSION]];
+            /** @psalm-suppress PossiblyNullOperand */
             $this->sendRequest('delete', 'upload/' . $this->getTaskId() . '/' . $file->server_filename, $body);
             unset($this->files[$key]);
         }
@@ -454,22 +602,26 @@ class Task extends Ilovepdf
 
     /**
      * @param mixed $value
-     * @param array $allowed
-     *
-     * @return Task
+     * @param mixed $allowedValues
+     * @return bool
      */
-    public function checkValues($value, $allowedValues)
+    public function checkValues($value, $allowedValues): bool
     {
         if (!in_array($value, $allowedValues)) {
-            throw new \InvalidArgumentException('Invalid ' . $this->tool . ' value "' . $value . '". Must be one of: ' . implode(',', $allowedValues));
+            if ($this->tool) {
+                throw new \InvalidArgumentException('Invalid ' . $this->tool . ' value "' . $value . '". Must be one of: ' . implode(',', $allowedValues));
+            }
+            throw new \InvalidArgumentException('No tool is set');
         }
+
+        return true;
     }
 
     /**
      * @param boolean $try_pdf_repair
      * @return Task
      */
-    public function setTryPdfRepair($try_pdf_repair)
+    public function setTryPdfRepair($try_pdf_repair): self
     {
         $this->try_pdf_repair = $try_pdf_repair;
 
@@ -479,7 +631,7 @@ class Task extends Ilovepdf
     /**
      * @param boolean $ignore_errors
      */
-    public function setIgnoreErrors($ignore_errors)
+    public function setIgnoreErrors($ignore_errors): self
     {
         $this->ignore_errors = $ignore_errors;
 
@@ -490,7 +642,7 @@ class Task extends Ilovepdf
      * @param boolean $ignore_password
      * @return Task
      */
-    public function setIgnorePassword($ignore_password)
+    public function setIgnorePassword($ignore_password): self
     {
         $this->ignore_password = $ignore_password;
 
@@ -506,7 +658,7 @@ class Task extends Ilovepdf
      * @param boolean $value If true, and multiple archives are processed it will ignore files with errors and continue process for all others
      * @return Task
      */
-    public function ignoreErrors($value)
+    public function ignoreErrors($value): self
     {
         $this->ignore_errors = $value;
 
@@ -521,24 +673,26 @@ class Task extends Ilovepdf
      * @param boolean $value
      * @return Task
      */
-    public function ignorePassword($value)
+    public function ignorePassword($value): self
     {
         $this->ignore_password = $value;
 
         return $this;
     }
 
+
     /**
-     * @param boolean $value
-     * @return Task
+     * @param string|null $encryptKey
+     * @return $this
+     * @throws \Exception
      */
-    public function setFileEncryption($value, $encryptKey = null)
+    public function setFileEncryption(?string $encryptKey = null): self
     {
         if (count($this->files) > 0) {
             throw new \Exception('Encrypth mode cannot be set after file upload');
         }
 
-        parent::setFileEncryption($value, $encryptKey);
+        parent::setFileEncryption($encryptKey);
 
         return $this;
     }
@@ -546,8 +700,8 @@ class Task extends Ilovepdf
     /**
      * set meta values as http://www.adobe.com/content/dam/Adobe/en/devnet/acrobat/pdfs/pdf_reference_1-7.pdf (page 844)
      *
-     * @param $key
-     * @param $value
+     * @param int|string $key
+     * @param int|string|null $value
      * @return Task
      */
     public function setMeta($key, $value)
@@ -558,34 +712,36 @@ class Task extends Ilovepdf
     }
 
     /**
-     * @param null $custom_int
+     * @param int|null $custom_int
      * @return $this
      */
-    public function setCustomInt($customInt)
+    public function setCustomInt(?int $customInt): self
     {
         $this->custom_int = $customInt;
         return $this;
     }
 
     /**
-     * @param null $custom_string
+     * @param string|null $custom_string
      * @return $this
      */
-    public function setCustomString($customString)
+    public function setCustomString(?string $customString): self
     {
         $this->custom_string = $customString;
         return $this;
     }
 
     /**
-     * @param null $tool
-     * @param null $status
-     * @param null $customInt
-     * @param null $page
-     *
-     * @throws \Exception
+     * @param string|null $tool
+     * @param string|null $status
+     * @param int|null $customInt
+     * @param int|null $page
+     * @return mixed|string|null
+     * @throws AuthException
+     * @throws ProcessException
+     * @throws UploadException
      */
-    public function listTasks($tool = null, $status = null, $customInt = null, $page = null)
+    public function listTasks(?string $tool = null, ?string $status = null, ?int $customInt = null, ?int $page = null): array
     {
 
         $this->checkValues($status, $this->statusValues);
@@ -608,12 +764,23 @@ class Task extends Ilovepdf
     }
 
     /**
-     * @param string $webhook
+     * @param string|null $webhook
      * @return $this
      */
-    public function setWebhook($webhook)
+    public function setWebhook(?string $webhook): self
     {
         $this->webhook = $webhook;
         return $this;
+    }
+
+    /**
+     * @return void
+     * @throws \Exception
+     */
+    private function validateTaskStarted(): void
+    {
+        if ($this->task === null) {
+            throw new \Exception('Current task does not exists. You must start your task');
+        }
     }
 }

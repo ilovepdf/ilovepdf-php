@@ -11,22 +11,22 @@ namespace Ilovepdf;
 class SplitTask extends Task
 {
     /**
-     * @var string
+     * @var string|null
      */
     public $ranges;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $split_mode;
 
     /**
-     * @var integer
+     * @var integer|null
      */
     public $fixed_range;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $remove_pages;
 
@@ -53,7 +53,7 @@ class SplitTask extends Task
     /**
      * @param int $range
      */
-    public function setFixedRange($range = 1)
+    public function setFixedRange($range = 1): self
     {
         $this->split_mode = 'fixed_range';
         $this->fixed_range = $range;
@@ -63,7 +63,7 @@ class SplitTask extends Task
     /**
      * @param string $pages
      */
-    public function setRemovePages($pages)
+    public function setRemovePages(string $pages): self
     {
         $this->split_mode = 'remove_pages';
         $this->remove_pages = $pages;
@@ -71,9 +71,9 @@ class SplitTask extends Task
     }
 
     /**
-     * @param $pages string      example: "1,5,10-14", default null
+     * @param string $pages       example: "1,5,10-14", default null
      */
-    public function setRanges($pages)
+    public function setRanges(string $pages): self
     {
         $this->split_mode = 'ranges';
         $this->ranges = $pages;
@@ -81,21 +81,11 @@ class SplitTask extends Task
     }
 
     /**
-     * @param boolean $value
+     * @param bool $value
      */
-    public function setMergeAfter($value)
+    public function setMergeAfter(bool $value): self
     {
         $this->merge_after = $value;
         return $this;
-    }
-
-    /**
-     * @param null $processData
-     * @return mixed
-     */
-    public function execute($processData = null)
-    {
-        $this->tool = 'split';
-        return parent::execute(get_object_vars($this));
     }
 }

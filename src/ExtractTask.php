@@ -10,12 +10,12 @@ namespace Ilovepdf;
 class ExtractTask extends Task
 {
     /**
-     * @var boolean
+     * @var bool
      */
     public $detailed = false;
 
     /**
-     * @var boolean
+     * @var bool
      */
     public $by_word = false;
 
@@ -36,27 +36,19 @@ class ExtractTask extends Task
      * @param boolean $detailed
      * @return $this
      */
-    public function setDetailed($detailed)
+    public function setDetailed($detailed): self
     {
         $this->detailed = $detailed;
         return $this;
     }
 
-    /**
-     * @param null $processData
-     * @return mixed
-     */
-    public function execute($processData = null)
-    {
-        return parent::execute(get_object_vars($this));
-    }
 
     /**
-     * @param boolean $by_word
+     * @param bool $by_word
      */
-    public function setByWord($by_word)
+    public function setByWord(bool $by_word): self
     {
         $this->by_word = $by_word;
+        return $this;
     }
-
 }

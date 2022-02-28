@@ -11,27 +11,33 @@ namespace Ilovepdf;
 class ImagepdfTask extends Task
 {
     /**
-     * @var string
+     * @var string|null
      */
     public $orientation;
 
+    /**
+     * @var string[]
+     */
     private $orientationValues = ['portrait', 'landscape'];
 
     /**
-     * @var integer
+     * @var integer|null
      */
     public $margin;
 
     /**
-     * @var boolean
+     * @var bool|null
      */
     public $merge_after = true;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $pagesize;
 
+    /**
+     * @var string[]
+     */
     private $pagesizeValues = ['fit', 'A4', 'letter'];
 
 
@@ -50,8 +56,9 @@ class ImagepdfTask extends Task
 
     /**
      * @param string $orientation
+     * @return $this
      */
-    public function setOrientation($orientation)
+    public function setOrientation(string $orientation): self
     {
         $this->checkValues($orientation, $this->orientationValues);
 
@@ -60,10 +67,10 @@ class ImagepdfTask extends Task
     }
 
     /**
-     * @param integer $margin
-     * @return Task
+     * @param int $margin
+     * @return $this
      */
-    public function setMargin($margin)
+    public function setMargin(int $margin): self
     {
         $this->margin = $margin;
         return $this;
@@ -71,9 +78,9 @@ class ImagepdfTask extends Task
 
     /**
      * @param string $pagesize
-     * @return Task
+     * @return $this
      */
-    public function setPagesize($pagesize)
+    public function setPagesize(string $pagesize): self
     {
         $this->checkValues($pagesize, $this->pagesizeValues);
         $this->pagesize = $pagesize;
@@ -81,20 +88,13 @@ class ImagepdfTask extends Task
     }
 
     /**
-     * @param boolean $merge_after
+     * @param bool $merge_after
+     * @return $this
      */
-    public function setMergeAfter($merge_after)
+    public function setMergeAfter(bool $merge_after): self
     {
         $this->merge_after = $merge_after;
         return $this;
     }
 
-    /**
-     * @param null $processData
-     * @return mixed
-     */
-    public function execute($processData = null)
-    {
-        return parent::execute(get_object_vars($this));
-    }
 }
