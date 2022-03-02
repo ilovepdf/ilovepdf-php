@@ -6,11 +6,9 @@ use Ilovepdf\Exceptions\DownloadException;
 use Ilovepdf\Exceptions\ProcessException;
 use Ilovepdf\Exceptions\TaskException;
 use Ilovepdf\Exceptions\UploadException;
-use Ilovepdf\Exceptions\StartException;
 use Ilovepdf\Exceptions\AuthException;
 use Ilovepdf\Http\Client;
 use Ilovepdf\Http\ClientException;
-use Ilovepdf\IlovepdfTool;
 use Firebase\JWT\JWT;
 
 /**
@@ -23,12 +21,12 @@ class Ilovepdf
     /**
      * @var string|null The Ilovepdf secret API key to be used for requests.
      */
-    private $secretKey = null;
+    private $secretKey;
 
     /**
      * @var string|null The Ilovepdf public API key to be used for requests.
      */
-    private $publicKey = null;
+    private $publicKey;
 
     /**
      * @var string
@@ -38,7 +36,7 @@ class Ilovepdf
     /**
      * @var string|null
      */
-    private $workerServer = null;
+    private $workerServer;
 
     /**
      * @var string|null The version of the Ilovepdf API to use for requests.
@@ -50,7 +48,7 @@ class Ilovepdf
     /**
      * @var string|null
      */
-    public $token = null;
+    public $token;
 
     /**
      * @var int delay in seconds, for timezone exceptions.
@@ -77,13 +75,13 @@ class Ilovepdf
     /**
      * @var int|null
      */
-    public $timeoutLarge = null;
+    public $timeoutLarge;
 
 
     /**
      * @var mixed|null
      */
-    public $info = null;
+    public $info;
 
     /**
      * @param string|null $publicKey
@@ -91,14 +89,15 @@ class Ilovepdf
      */
     public function __construct(?string $publicKey = null, ?string $secretKey = null)
     {
-        if ($publicKey && $secretKey)
+        if ($publicKey && $secretKey) {
             $this->setApiKeys($publicKey, $secretKey);
+        }
     }
 
     /**
      * @return string The API secret key used for requests.
      */
-    public function getSecretKey()
+    public function getSecretKey(): string
     {
         return $this->secretKey ?? '';
     }
@@ -108,7 +107,7 @@ class Ilovepdf
      */
     public function getPublicKey(): string
     {
-        return $this->secretKey ?? '';
+        return $this->publicKey ?? '';
     }
 
     /**
