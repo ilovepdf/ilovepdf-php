@@ -556,7 +556,21 @@ class Task extends Ilovepdf
 
     public function __toArray()
     {
-        return call_user_func('get_object_vars', $this);
+        $props = [];
+        $reflection = new \ReflectionClass($this);
+        $properties =  array_filter(
+            $reflection->getProperties(\ReflectionProperty::IS_PUBLIC),
+            function ($property) {
+                return !$property->isStatic();
+            }
+        );
+        foreach($properties as $property) {
+            $name = $property->name;
+            $props[$name] = $this->$name;
+        }
+
+        return $props;
+        // return call_user_func('get_object_vars', $this);
     }
 
 
