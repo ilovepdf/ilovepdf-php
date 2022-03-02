@@ -251,8 +251,14 @@ class Ilovepdf
                     throw new \Exception('Too Many Requests');
                 }
                 if ($response->getStatusCode() == 400) {
+                    //common process exception
                     if (strpos($endpoint, 'task') !== false) {
                         throw new TaskException('Invalid task id');
+                    }
+                    //signature exception
+                    if(strpos($endpoint, 'signature') !== false){
+                        var_dump($requestParams['form_params']);
+                        throw new ProcessException($responseBody->error->type, $responseBody, $response->getStatusCode());
                     }
                     throw new \Exception('Bad Request');
                 }
