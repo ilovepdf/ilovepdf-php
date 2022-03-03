@@ -257,7 +257,6 @@ class Ilovepdf
                     }
                     //signature exception
                     if(strpos($endpoint, 'signature') !== false){
-                        var_dump($requestParams['form_params']);
                         throw new ProcessException($responseBody->error->type, $responseBody, $response->getStatusCode());
                     }
                     throw new \Exception('Bad Request');
