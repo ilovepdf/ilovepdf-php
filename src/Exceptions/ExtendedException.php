@@ -7,56 +7,60 @@ use Exception;
 class ExtendedException extends Exception
 {
 
+    /**
+     * @var mixed|null
+     */
     private $params;
+
+    /**
+     * @var string|null
+     */
     private $type;
 
     /**
      * ExtendedException constructor.
+     *
      * @param string $message
+     * @param mixed $responseBody
      * @param int $code
-     * @param Exception|null $previous
-     * @param $responseBody
+     * @param \Throwable $previous
      */
-    public function __construct($message, $responseBody, $code = 0, $previous = null)
+    public function __construct($message, $responseBody = null, $code = 0, $previous = null)
     {
-        if(!$code){$code = 0;}
-        if (isset($responseBody->error) && $responseBody->error->type) {
+        if (!$code) {
+            $code = 0;
+        }
+        if ($responseBody && isset($responseBody->error) && $responseBody->error->type) {
             $this->type = $responseBody->error->type;
         }
-        if (isset($responseBody->error->param)) {
+        if ($responseBody && isset($responseBody->error) && isset($responseBody->error->param)) {
             $this->params = $responseBody->error->param;
         }
         if ($this->params) {
             if (is_array($this->params)) {
-                if(is_object($this->params[0])){
+                if (is_object($this->params[0])) {
                     $firstError = $this->params[0]->error;  //test unlock fail
-                }
-                else{
+                } else {
                     $firstError = $this->params[0];
                 }
             } else {
                 $params = json_decode(json_encode($this->params), true);
-
-                if(is_string($params)){
-                    $firstError = $params; //download exception
-                }
-                else{
-                    $error = array_values($params);
-                    if (is_array($error[0])) {
-                        $error[0] = array_values($error[0]);
-                        $firstError = $error[0][0];    //task deleted before execute
-                    } else {
-                        $firstError = $error[0];
-                    }
-                }
+                $firstError = $this->getFirstErrorString($params);
             }
             parent::__construct($message . ' (' . $firstError . ')', $code, $previous);
         } else {
-            if($responseBody->message){
-                $message .= ' ('.$responseBody->message.')';
+            if ($responseBody && $responseBody->message) {
+                $message .= ' (' . $responseBody->message . ')';
             }
             parent::__construct($message, $code, $previous);
         }
+    }
+
+    private function getFirstErrorString($error){
+        if (!is_string($error)) {
+            return $this->getFirstErrorString(array_values($error)[0]);
+        }
+        return $error;
     }
 
     /**
@@ -64,7 +68,7 @@ class ExtendedException extends Exception
      */
     public function getErrors()
     {
-        if(!is_countable($this->params)){
+        if (!is_countable($this->params)) {
             return [];
         }
         return $this->params;
