@@ -4,6 +4,7 @@ namespace Ilovepdf;
 
 use Ilovepdf\Exceptions\DownloadException;
 use Ilovepdf\Exceptions\ProcessException;
+use Ilovepdf\Exceptions\StartException;
 use Ilovepdf\Exceptions\TaskException;
 use Ilovepdf\Exceptions\UploadException;
 use Ilovepdf\Exceptions\AuthException;
@@ -232,7 +233,7 @@ class Ilovepdf
             $error = $e;
         }
         $responseCode = $response->getStatusCode();
-        if ($responseCode != '200' && $responseCode != '201') {
+        if ($responseCode != 200 && $responseCode != 201) {
             $responseBody = json_decode((string)$response->getBody());
             if ($responseCode == 401) {
                 throw new AuthException($responseBody->name, $responseBody, $responseCode);
@@ -246,6 +247,8 @@ class Ilovepdf
                 throw new ProcessException($responseBody->error->message, $responseBody, $responseCode);
             } elseif (strpos($endpoint, 'download') === 0) {
                 throw new DownloadException($responseBody->error->message, $responseBody, $responseCode);
+            } elseif (strpos($endpoint, 'start') === 0) {
+                throw new StartException($responseBody->error->message, $responseBody, $responseCode);
             } else {
                 if ($response->getStatusCode() == 429) {
                     throw new \Exception('Too Many Requests');
@@ -258,6 +261,10 @@ class Ilovepdf
                     //signature exception
                     if(strpos($endpoint, 'signature') !== false){
                         throw new ProcessException($responseBody->error->type, $responseBody, $response->getStatusCode());
+                    }
+
+                    if (isset($responseBody->error) && isset($responseBody->error->type)) {
+                        throw new \Exception($responseBody->error->message);
                     }
                     throw new \Exception('Bad Request');
                 }
