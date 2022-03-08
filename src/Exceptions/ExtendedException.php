@@ -45,18 +45,7 @@ class ExtendedException extends Exception
                 }
             } else {
                 $params = json_decode(json_encode($this->params), true);
-
-                if (is_string($params)) {
-                    $firstError = $params; //download exception
-                } else {
-                    $error = array_values($params);
-                    if (is_array($error[0])) {
-                        $error[0] = array_values($error[0]);
-                        $firstError = $error[0][0];    //task deleted before execute
-                    } else {
-                        $firstError = $error[0];
-                    }
-                }
+                $firstError = $this->getFirstErrorString($params);
             }
             parent::__construct($message . ' (' . $firstError . ')', $code, $previous);
         } else {
@@ -65,6 +54,13 @@ class ExtendedException extends Exception
             }
             parent::__construct($message, $code, $previous);
         }
+    }
+
+    private function getFirstErrorString($error){
+        if (!is_string($error)) {
+            return $this->getFirstErrorString(array_values($error)[0]);
+        }
+        return $error;
     }
 
     /**
