@@ -248,7 +248,10 @@ class Ilovepdf
             } elseif (strpos($endpoint, 'download') === 0) {
                 throw new DownloadException($responseBody->error->message, $responseBody, $responseCode);
             } elseif (strpos($endpoint, 'start') === 0) {
-                throw new StartException($responseBody->error->message, $responseBody, $responseCode);
+                if (isset($responseBody->error) && isset($responseBody->error->type)) {
+                    throw new StartException($responseBody->error->message, $responseBody, $responseCode);
+                }
+                throw new \Exception('Bad Request');
             } else {
                 if ($response->getStatusCode() == 429) {
                     throw new \Exception('Too Many Requests');
