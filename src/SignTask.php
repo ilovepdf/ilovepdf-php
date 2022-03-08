@@ -338,4 +338,23 @@ class SignTask extends Task
     public function download($path = null){
         throw new NotImplementedException("This API call is not available for a SignTask");
     }
+
+
+    /**
+     * @param bool $enable
+     * @return void
+     */
+    public function enableEncryption(bool $enable)
+    {
+        throw new NotImplementedException("This method is not available for a SignTask");
+    }
+
+    /**
+     * @param string|null $encryptKey
+     * @return Task
+     */
+    public function setFileEncryption(?string $encryptKey = null): Task
+    {
+        throw new NotImplementedException("This method is not available for a SignTask");
+    }
 }
