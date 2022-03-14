@@ -16,7 +16,7 @@ class ElementDate extends ElementAbstract
     public function setContent(string $content)
     {
         if (!in_array($content, $this->dateFormats)) {
-            throw new \InvalidArgumentException("invalid date format, formats must be one of the following: " . $this->dateFormats);
+            throw new \InvalidArgumentException("invalid date format, formats must be one of the following: " . implode(",",$this->dateFormats));
         }
 
         $this->content = $content;
