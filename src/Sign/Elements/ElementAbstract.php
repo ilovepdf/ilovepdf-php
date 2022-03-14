@@ -24,7 +24,7 @@ abstract class ElementAbstract
     /**
      * @var integer
      */
-    public $size = 40;
+    public $size = 18;
 
     /**
      * @var
