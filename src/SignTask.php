@@ -212,10 +212,11 @@ class SignTask extends Task
     
     /**
      * @param  string $brandName
-     * @param  File $brandLogo
+     * @param  string $brandLogo
      * @return SignTask
      */
-    function setBrand(string $brand_name, File $brand_logo){
+    function setBrand(string $brand_name, string $brandLogoPath){
+        $brand_logo =$this->uploadBrandLogo($brandLogoPath);
         $this->brand_name = $brand_name;
         $this->brand_logo = $brand_logo->server_filename;
         return $this;
@@ -297,6 +298,19 @@ class SignTask extends Task
             array('signers' => $this->getSignersData())
         );
         return $data;
+    }
+
+    /**
+     * @param string $filePath
+     * @return File
+     */
+    public function uploadBrandLogo($filePath)
+    {
+        $file = parent::addFile($filePath);
+        if (($key = array_search($file, $this->files)) !== false) {
+            unset($this->files[$key]);
+        }
+        return $file;
     }
 
     /**
