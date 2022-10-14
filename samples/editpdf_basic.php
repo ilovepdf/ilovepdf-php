@@ -20,7 +20,7 @@ $imageFile = $editpdfTask->addFile('your_image.jpg');
 
 // Create ImageElement
 $imageElem = new ImageElement();
-$imageElem->setImage($imageFile);
+$imageElem->setFile($imageFile);
 
 // Add image element to Editpdf task
 $editpdfTask->addElement($imageElem);
