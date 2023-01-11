@@ -340,7 +340,6 @@ class Ilovepdf
 
 
     /**
-     * @param bool $value
      * @param string|null $encryptKey
      * @return $this
      */
