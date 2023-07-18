@@ -117,6 +117,11 @@ class Task extends Ilovepdf
 
 
     /**
+     * @var int|null
+     */
+    public $remainingFiles;
+
+    /**
      * Task constructor.
      * @param string|null $publicKey
      * @param string|null $secretKey
@@ -153,6 +158,7 @@ class Task extends Ilovepdf
         if (empty($responseBody->server)) {
             throw new StartException('no server assigned on start');
         };
+        $this->_setRemainingFiles($responseBody->remaining_files ?? null);
         $this->setWorkerServer('https://' . $responseBody->server);
         $this->setTask($responseBody->task);
     }
@@ -275,11 +281,11 @@ class Task extends Ilovepdf
      * @param string $url
      * @return File
      */
-    public function addFileFromUrl($url)
+    public function addFileFromUrl($url, $bearerToken = null)
     {
         $this->validateTaskStarted();
         /** @psalm-suppress PossiblyNullArgument */
-        $file = $this->uploadUrl($this->task, $url);
+        $file = $this->uploadUrl($this->task, $url, $bearerToken);
         array_push($this->files, $file);
         return end($this->files);
     }
@@ -367,7 +373,7 @@ class Task extends Ilovepdf
      * @throws ProcessException
      * @throws UploadException
      */
-    public function uploadUrl($task, $url)
+    public function uploadUrl($task, $url, $bearerToken = null)
     {
         //$data = ['task' => $task, 'cloud_file' => $url, 'v' => self::VERSION];
         //$body = ['form_data' => $data];
@@ -378,6 +384,11 @@ class Task extends Ilovepdf
                 ['name' => 'cloud_file', 'contents' => $url]
             ],
         ];
+
+        if($bearerToken){
+            $body['multipart'][] = ['name' => 'cloud_token', 'contents' => $bearerToken];
+        }
+
         $response = parent::sendRequest('post', 'upload', $body);
         $responseBody = json_decode($response->getBody());
         return new File($responseBody->server_filename, basename($url));
@@ -796,5 +807,14 @@ class Task extends Ilovepdf
         if ($this->task === null) {
             throw new \Exception('Current task does not exists. You must start your task');
         }
+    }
+
+    /**
+     * @param $remainingFiles
+     * @return void
+     */
+    private function _setRemainingFiles($remainingFiles): void
+    {
+        $this->remainingFiles = $remainingFiles;
     }
 }

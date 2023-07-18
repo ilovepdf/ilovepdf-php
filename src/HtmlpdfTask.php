@@ -45,7 +45,7 @@ class HtmlpdfTask extends Task
     /**
      * @var string[]
      */
-    private $pageSizeValues = ['A3', 'A4', 'A5', 'A6', 'Letter'];
+    private $pageSizeValues = ['A3', 'A4', 'A5', 'A6', 'Letter', 'Auto'];
 
     /**
      * @var string|null
