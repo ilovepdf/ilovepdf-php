@@ -22,8 +22,8 @@ $imageFile = $editpdfTask->addFile('your_image.jpg');
 $svgFile = $editpdfTask->addFile('your_svg.svg');
 
 // Create ImageElement
-$imageElem = new ImageElement();
-$imageElem->setCoordinates(300, 600)
+$imageElement = new ImageElement();
+$imageElement->setCoordinates(300, 600)
           ->setPages(3)
           ->setOpacity(40)
           ->setFile($imageFile);
@@ -43,8 +43,8 @@ $svgElement = new SvgElement();
 $svgElement->setFile($svgFile);
 
 // Add elements to Editpdf task in order of drawing (important if elements overlap!)
-$editpdfTask->addElement($imageElem);
-$editpdfTask->addElement($textElem);
+$editpdfTask->addElement($imageElement);
+$editpdfTask->addElement($textElement);
 $editpdfTask->addElement($svgElement);
 
 foreach($editpdfTask->getElements() as $editpdfElement){

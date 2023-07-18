@@ -44,7 +44,7 @@ class Ilovepdf
      */
     public static $apiVersion = 'v1';
 
-    const VERSION = 'php.1.2.2';
+    const VERSION = 'php.1.2.3';
 
     /**
      * @var string|null
