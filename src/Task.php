@@ -501,9 +501,9 @@ class Task extends Ilovepdf
      * @param string $task
      * @return ResponseInterface
      */
-    public function downloadStream(string $task): ResponseInterface
+    public function downloadStream(): ResponseInterface
     {
-        $response = $this->downloadRequestData($task);
+        $response = $this->downloadRequestData($this->task);
 
         return $response;
     }
