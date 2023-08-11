@@ -8,6 +8,7 @@ use Ilovepdf\Exceptions\ProcessException;
 use Ilovepdf\Exceptions\StartException;
 use Ilovepdf\Exceptions\PathException;
 use Ilovepdf\Exceptions\UploadException;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class Ilovepdf
@@ -144,7 +145,7 @@ class Task extends Ilovepdf
      */
     public function start(): void
     {
-        if($this->tool == null){
+        if ($this->tool == null) {
             throw new StartException('Tool must be set');
         }
         $data = ['v' => self::VERSION];
@@ -322,8 +323,7 @@ class Task extends Ilovepdf
         $response = $this->sendRequest('post', 'upload', $body);
         try {
             $responseBody = json_decode($response->getBody());
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             throw new UploadException('Upload response error');
         }
         return new File($responseBody->server_filename, basename($filepath));
@@ -385,7 +385,7 @@ class Task extends Ilovepdf
             ],
         ];
 
-        if($bearerToken){
+        if ($bearerToken) {
             $body['multipart'][] = ['name' => 'cloud_token', 'contents' => $bearerToken];
         }
 
@@ -438,6 +438,7 @@ class Task extends Ilovepdf
         return $this->outputFile;
     }
 
+
     /**
      * @return void
      * @throws AuthException
@@ -487,12 +488,41 @@ class Task extends Ilovepdf
      */
     private function downloadFile($task): void
     {
+        $response = $this->downloadRequestData($task);
+
+        try {
+            $this->outputFile = $response->getBody()->getContents();
+        } catch (\Exception $e) {
+            throw new DownloadException('No file content for download');
+        }
+    }
+
+    /**
+     * @param string $task
+     * @return ResponseInterface
+     */
+    public function downloadStream(string $task): ResponseInterface
+    {
+        $response = $this->downloadRequestData($task);
+
+        return $response;
+    }
+
+
+    /**
+     * @param string $task
+     * @return ResponseInterface
+     * @throws AuthException
+     * @throws ProcessException
+     * @throws UploadException
+     */
+    private function downloadRequestData(string $task): ResponseInterface
+    {
         $data = array('v' => self::VERSION);
         $body = ['form_params' => $data];
         /** @psalm-suppress PossiblyNullOperand */
         $response = parent::sendRequest('get', 'download/' . $task, $body);
         $responseHeaders = $response->getHeaders();
-
 
         if (preg_match("/filename\*\=utf-8\'\'([\W\w]+)/", $responseHeaders['Content-Disposition'][0], $matchesUtf)) {
             $filename = urldecode(str_replace('"', '', $matchesUtf[1]));
@@ -500,13 +530,11 @@ class Task extends Ilovepdf
             preg_match('/ .*filename=\"([\W\w]+)\"/', $responseHeaders['Content-Disposition'][0], $matches);
             $filename = str_replace('"', '', $matches[1]);
         }
-        try {
-            $this->outputFile = $response->getBody()->getContents();
-        } catch (\Exception $e) {
-            throw new DownloadException('No file content for download');
-        }
+
         $this->outputFileName = $filename;
         $this->outputFileType = pathinfo($this->outputFileName, PATHINFO_EXTENSION);
+
+        return $response;
     }
 
     /**
@@ -569,13 +597,13 @@ class Task extends Ilovepdf
     {
         $props = [];
         $reflection = new \ReflectionClass($this);
-        $properties =  array_filter(
+        $properties = array_filter(
             $reflection->getProperties(\ReflectionProperty::IS_PUBLIC),
             function ($property) {
                 return !$property->isStatic();
             }
         );
-        foreach($properties as $property) {
+        foreach ($properties as $property) {
             $name = $property->name;
             $props[$name] = $this->$name;
         }
