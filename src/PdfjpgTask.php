@@ -13,6 +13,12 @@ class PdfjpgTask extends Task
      */
     public $pdfjpg_mode;
 
+
+    /**
+     * @var string|null
+     */
+    public $pages;
+    
     /**
      * @var integer|null
      */
@@ -43,6 +49,19 @@ class PdfjpgTask extends Task
             throw new \InvalidArgumentException();
         }
         $this->pdfjpg_mode = $mode;
+
+        return $this;
+    }
+
+    /**
+     * Set pages for extract pages
+     *
+     * @param string $mode values:["1-5, 7,12"] default: null
+     * @return $this
+     */
+    public function setPages($pages): self
+    {
+        $this->pages = $pages;
 
         return $this;
     }
