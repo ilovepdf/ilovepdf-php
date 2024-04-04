@@ -11,6 +11,7 @@ use Ilovepdf\Exceptions\AuthException;
 use Ilovepdf\Http\Client;
 use Ilovepdf\Http\ClientException;
 use Firebase\JWT\JWT;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class Ilovepdf
@@ -194,13 +195,13 @@ class Ilovepdf
      * @param array $params
      * @param bool $start
      *
-     * @return mixed response from server
+     * @return ResponseInterface response from server
      *
      * @throws AuthException
      * @throws ProcessException
      * @throws UploadException
      */
-    public function sendRequest(string $method, string $endpoint, array $params = [], bool $start = false)
+    public function sendRequest(string $method, string $endpoint, array $params = [], bool $start = false): ResponseInterface
     {
         $to_server = self::getStartServer();
         if (!$start && !is_null($this->getWorkerServer())) {

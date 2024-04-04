@@ -524,10 +524,12 @@ class Task extends Ilovepdf
         $response = parent::sendRequest('get', 'download/' . $task, $body);
         $responseHeaders = $response->getHeaders();
 
-        if (preg_match("/filename\*\=utf-8\'\'([\W\w]+)/", $responseHeaders['Content-Disposition'][0], $matchesUtf)) {
+        $contentDisposition = isset($responseHeaders['Content-Disposition']) ? $responseHeaders['Content-Disposition'] : $responseHeaders['content-disposition'];
+
+        if (preg_match("/filename\*\=utf-8\'\'([\W\w]+)/", $contentDisposition[0], $matchesUtf)) {
             $filename = urldecode(str_replace('"', '', $matchesUtf[1]));
         } else {
-            preg_match('/ .*filename=\"([\W\w]+)\"/', $responseHeaders['Content-Disposition'][0], $matches);
+            preg_match('/ .*filename=\"([\W\w]+)\"/', $contentDisposition[0], $matches);
             $filename = str_replace('"', '', $matches[1]);
         }
 
