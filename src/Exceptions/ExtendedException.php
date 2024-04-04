@@ -25,7 +25,7 @@ class ExtendedException extends Exception
      * @param int $code
      * @param \Throwable $previous
      */
-    public function __construct($message, $responseBody = null, $code = 0, $previous = null)
+    public function __construct($message,  $responseBody = null, $code = 0, $previous = null)
     {
         if (!$code) {
             $code = 0;
