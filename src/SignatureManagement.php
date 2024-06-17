@@ -2,6 +2,7 @@
 
 namespace Ilovepdf;
 
+use Psr\Http\Message\ResponseInterface;
 use stdClass;
 use Ilovepdf\Exceptions\DownloadException;
 
@@ -18,6 +19,7 @@ class SignatureManagement extends Ilovepdf
      * @param int $per_page
      * 
      * @return array
+     * @throws \Exception
      */
     public function getSignaturesList($page = 0, $per_page = 20): array
     {
@@ -26,26 +28,26 @@ class SignatureManagement extends Ilovepdf
             "per-page" => $per_page
         ];
         $response = parent::sendRequest("get", "signature/list", $data);
-        $headers = $response->headers;
-        $return = [
-            "signatures" => $response->body,
+        $headers = $response->getHeaders();
+        return [
+            "signatures" => $response->getBody()->getContents(),
             "pagination" => [
                 'totalCount' => $headers && isset($headers['X-Pagination-Total-Count']) ? $headers['X-Pagination-Total-Count'] : '',
-                'page' => $headers && isset($headers['X-Pagination-Current-Page']) ? $headers['X-Pagination-Current-Page'] - 1 : '',
+                'page' => $headers && isset($headers['X-Pagination-Current-Page']) ? (int)$headers['X-Pagination-Current-Page'] - 1 : '',
                 'pageSize' => $headers && isset($headers['X-Pagination-Per-Page']) ? $headers['X-Pagination-Per-Page'] : ''
             ]
         ];
-        return $return;
     }
 
     /**
      * @param string $signatureId
      * 
      * @return stdClass
+     * @throws \Exception
      */
     public function getSignatureStatus(string $signatureId): stdClass
     {
-        return parent::sendRequest("get", "signature/requesterview/{$signatureId}")->body;
+        return json_decode(parent::sendRequest("get", "signature/requesterview/{$signatureId}")->getBody()->getContents());
     }
 
     /**
@@ -95,10 +97,10 @@ class SignatureManagement extends Ilovepdf
      */
     public function fixReceiverEmail(string $receiverTokenRequester, string $newEmail): bool
     {
-        $body = [
+        $body = ['form_params' => [
             "email" => $newEmail
-        ];
-        $response = parent::sendRequest("put", "signature/signer/fix-email/{$receiverTokenRequester}", $body, false, true);
+        ]];
+        parent::sendRequest("put", "signature/signer/fix-email/{$receiverTokenRequester}", $body, false, true);
         //if above fails, it throws an exception
         return true;
     }
@@ -111,9 +113,9 @@ class SignatureManagement extends Ilovepdf
      */
     public function fixSignerPhone(string $signerTokenRequester, string $newPhone): bool
     {
-        $body = [
+        $body = ['form_params' => [
             "phone" => $newPhone
-        ];
+        ]];
         $response = parent::sendRequest("put", "signature/signer/fix-phone/{$signerTokenRequester}", $body, false, true);
         //if above fails, it throws an exception
         return true;
@@ -127,7 +129,7 @@ class SignatureManagement extends Ilovepdf
     public function sendReminders(string $signatureId): bool
     {
         $body = [];
-        $response = parent::sendRequest("post", "signature/sendReminder/{$signatureId}", $body, false, true);
+        parent::sendRequest("post", "signature/sendReminder/{$signatureId}", $body, false, true);
         //if above fails, it throws an exception
         return true;
     }
@@ -136,11 +138,12 @@ class SignatureManagement extends Ilovepdf
      * @param string $signatureId
      * 
      * @return bool
+     * @throws \Exception
      */
     public function voidSignature(string $signatureId): bool
     {
         $body = [];
-        $response = parent::sendRequest("put", "signature/void/{$signatureId}", $body, false, true);
+        parent::sendRequest("put", "signature/void/{$signatureId}", $body, false, true);
         //if above fails, it throws an exception
         return true;
     }
@@ -150,13 +153,14 @@ class SignatureManagement extends Ilovepdf
      * @param int $amountOfDays
      * 
      * @return bool
+     * @throws \Exception
      */
     public function increaseExpirationDays(string $signatureId, int $amountOfDays): bool
     {
         $body = [
             "days" => $amountOfDays
         ];
-        $response = parent::sendRequest("put", "signature/void/{$signatureId}", $body, false, true);
+        parent::sendRequest("put", "signature/void/{$signatureId}", $body, false, true);
         //if above fails, it throws an exception
         return true;
     }
@@ -165,10 +169,11 @@ class SignatureManagement extends Ilovepdf
      * @param string $receiverTokenRequester
      * 
      * @return stdClass
+     * @throws \Exception
      */
     public function getReceiverInfo(string $receiverTokenRequester): stdClass
     {
-        return parent::sendRequest("get", "signature/receiver/info/{$receiverTokenRequester}")->body;
+        return json_decode(parent::sendRequest("get", "signature/receiver/info/{$receiverTokenRequester}")->getBody()->getContents());
     }
 
     /**
@@ -189,15 +194,16 @@ class SignatureManagement extends Ilovepdf
         return explode("/", $mime_type)[1];
     }
 
-    protected function downloadResponseToFile($response, string $pathToSave, string $filename): string
+    protected function downloadResponseToFile(ResponseInterface $response, string $pathToSave, string $filename): string
     {
         if (!is_dir($pathToSave)) {
             throw new \Exception("{$pathToSave} is not a directory");
         }
-        $mime_type = $response->headers["Content-Type"];
-        $filePath = "{$pathToSave}/{$filename}." . $this->getExtensionFromMime($mime_type);
-        if (!file_put_contents($filePath, $response->raw_body)) {
-            throw new DownloadException("Download success, but could not save the contents of the file to {$filePath}. Check permissions of the directory", 1, null, $response);
+        $mime_type = $response->getHeaders()["Content-Type"];
+        $filePath = "{$pathToSave}/{$filename}." . $this->getExtensionFromMime($mime_type[0]);
+        $fileContent = $response->getBody()->getContents();
+        if (!file_put_contents($filePath, $fileContent)) {
+            throw new DownloadException("Download success, but could not save the contents of the file to {$filePath}. Check permissions of the directory", 1, null, $fileContent);
         }
         return $filePath;
     }

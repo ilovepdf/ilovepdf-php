@@ -4,6 +4,7 @@ namespace Ilovepdf;
 
 use Ilovepdf\Exceptions\DownloadException;
 use Ilovepdf\Exceptions\ProcessException;
+use Ilovepdf\Exceptions\SignatureException;
 use Ilovepdf\Exceptions\StartException;
 use Ilovepdf\Exceptions\TaskException;
 use Ilovepdf\Exceptions\UploadException;
@@ -45,7 +46,7 @@ class Ilovepdf
      */
     public static $apiVersion = 'v1';
 
-    const VERSION = 'php.1.2.3';
+    const VERSION = 'php.1.2.5';
 
     /**
      * @var string|null
@@ -264,7 +265,7 @@ class Ilovepdf
                     }
                     //signature exception
                     if(strpos($endpoint, 'signature') !== false){
-                        throw new ProcessException($responseBody->error->type, $responseBody, $response->getStatusCode());
+                        throw new SignatureException($responseBody->error->type, $responseBody, $response->getStatusCode());
                     }
 
                     if (isset($responseBody->error) && isset($responseBody->error->type)) {
