@@ -7,7 +7,7 @@ require_once('../vendor/autoload.php');
 use Ilovepdf\SignatureManagement;
 
 $signatureRequest = new SignatureManagement("publickey", "secretkey");
-$signatureToken = "signaturetoken";
+$signatureToken = "token_requester";
 $receiverToken = "receivertoken";
 
 // Get a list of all created signature requests

@@ -337,7 +337,7 @@ class SignTask extends Task
         //$response = parent::sendRequest('post', 'signature', http_build_query($body, null, '&', PHP_QUERY_RFC3986));
         $response = parent::sendRequest('post', 'signature', $body,false);
         try {
-            $this->result = json_decode($response->getBody());
+            $this->result = json_decode($response->getBody()->getContents());
         }
         catch(\Exception $e){
             throw new ProcessException('Bad request');
