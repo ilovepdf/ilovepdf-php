@@ -123,6 +123,16 @@ class Task extends Ilovepdf
     public $remainingFiles;
 
     /**
+     * @var int|null
+     */
+    public $remainingPages;
+
+    /**
+     * @var int|null
+     */
+    public $remainingCredits;
+
+    /**
      * Task constructor.
      * @param string|null $publicKey
      * @param string|null $secretKey
@@ -160,6 +170,8 @@ class Task extends Ilovepdf
             throw new StartException('no server assigned on start');
         };
         $this->_setRemainingFiles($responseBody->remaining_files ?? null);
+        $this->_setRemainingPages($responseBody->remaining_pages ?? null);
+        $this->_setRemainingCredits($responseBody->remaining_credits ?? null);
         $this->setWorkerServer('https://' . $responseBody->server);
         $this->setTask($responseBody->task);
     }
@@ -840,11 +852,29 @@ class Task extends Ilovepdf
     }
 
     /**
+     * @param $remainingCredits
+     * @return void
+     */
+    private function _setRemainingCredits($remainingCredits): void
+    {
+        $this->remainingCredits = $remainingCredits;
+    }
+
+    /**
      * @param $remainingFiles
      * @return void
      */
     private function _setRemainingFiles($remainingFiles): void
     {
         $this->remainingFiles = $remainingFiles;
+    }
+
+    /**
+     * @param $remainingFiles
+     * @return void
+     */
+    private function _setRemainingPages($remainingPages): void
+    {
+        $this->remainingPages = $remainingPages;
     }
 }
