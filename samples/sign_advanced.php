@@ -64,7 +64,7 @@ $inputElement = new ElementInput();
 $inputElement->setPosition(50, -50)
              ->setLabel("Passport Number")
              ->setText("Please put your passport number")
-             ->setPages("1");
+             ->setPages("-2,-1"); // Set the last and second to last page
 
 $nameElement = new ElementName();
 $nameElement->setPosition(60, -60)
