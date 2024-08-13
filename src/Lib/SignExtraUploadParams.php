@@ -10,6 +10,7 @@ class SignExtraUploadParams extends BaseExtraUploadParams
     }
 
     public function setPdfForms(bool $activate = true){
+        $this->setPdfInfo(true);
         $this->extraParams['pdfforms'] = $activate ? '1' : '0';
         return $this;
     }
