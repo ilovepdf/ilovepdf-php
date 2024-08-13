@@ -197,8 +197,7 @@ class SignTask extends Task
      * @param  string $brandLogo
      * @return SignTask
      */
-    function setBrand(string $brand_name, string $brandLogoPath){
-        $brand_logo =$this->uploadBrandLogo($brandLogoPath);
+    function setBrand(string $brand_name, File $brand_logo){
         $this->brand_name = $brand_name;
         $this->brand_logo = $brand_logo->server_filename;
         return $this;

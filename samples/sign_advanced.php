@@ -40,7 +40,8 @@ $signTask = $signTask->
 $file = $signTask->addFile('/path/to/file/document.pdf');
 
 // Set brand
-$signTask->setBrand('My brand name', '/path/to/file/brand_logo.png');
+$brandLogoFile = $signTask->addFile('/path/to/file/image.png');
+$signTask->setBrand('My brand name', $brandLogoFile);
 
 //////////////
 // ELEMENTS //
