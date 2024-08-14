@@ -40,7 +40,9 @@ $signTask = $signTask->
 $file = $signTask->addFile('/path/to/file/document.pdf');
 
 // Set brand
-$brandLogoFile = $signTask->addFile('/path/to/file/image.png');
+$brandLogoFile = $signTask->uploadBrandLogo('/path/to/file/image.png');
+# Additionaly we can download it from the cloud
+#$brandLogoFile = $signTask->uploadBrandLogo('https://urltoimage/image.png');
 $signTask->setBrand('My brand name', $brandLogoFile);
 
 //////////////
