@@ -361,7 +361,10 @@ class Task extends Ilovepdf
             $file->setPdfPages($responseBody->pdf_pages);
         }
         if(property_exists($responseBody,'pdf_page_number')){
-            $file->setPdfPageNumber($responseBody->pdf_page_number);
+            $file->setPdfPageNumber((int)$responseBody->pdf_page_number);
+        }
+        if(property_exists($responseBody,'pdf_forms')){
+            $file->setPdfForms(json_decode(json_encode($responseBody->pdf_forms), true));
         }
         return $file;
     }

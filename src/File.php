@@ -135,7 +135,7 @@ class File
         return $this->pdf_page_number;
     }
 
-    function getPdfPageInfo(int $pageNumber): ?\stdClass
+    function getPdfPageInfo(int $pageNumber): ?array
     {
         $pdfPages = $this->getSanitizedPdfPages();
         if (is_null($pdfPages)) {
@@ -150,7 +150,7 @@ class File
             return;
         }
         foreach ($this->pdf_forms as $pdfFormElement) {
-            // Call the callback function for each element, passing the key and value
+            // Call the callback function for each element, passing the key and val
             $pdfPageInfo = $this->getPdfPageInfo($pdfFormElement['page']);
             $callback($pdfFormElement, $pdfPageInfo);
         }
@@ -175,7 +175,7 @@ class File
      * @param array $formParams
      * @return File
      */
-    function setFormParams(?array $formParams): self
+    function setPdfForms(?array $formParams): self
     {
         if (empty($formParams)) {
             throw new \InvalidArgumentException;
