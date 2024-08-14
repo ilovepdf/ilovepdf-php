@@ -295,6 +295,19 @@ class SignTask extends Task
     }
 
     /**
+     * @param string $filePath
+     * @return File
+     */
+    public function uploadBrandLogoFromUrl($url, $bearerToken = null)
+    {
+        $file = parent::addFileFromUrl($url,$bearerToken);
+        if (($key = array_search($file, $this->files)) !== false) {
+            unset($this->files[$key]);
+        }
+        return $file;
+    }
+
+    /**
      * @return Task
      * @throws Exceptions\AuthException
      * @throws Exceptions\ProcessException
