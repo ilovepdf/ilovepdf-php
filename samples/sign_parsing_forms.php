@@ -28,13 +28,13 @@ $file->eachPdfFormElement(function($formElement, $pdfPageInfo){
         return;
     }
     $fieldId = $formElement['fieldId'];
-    $widgets = $formElement["widgets"]; 
+    $widgets = $formElement["widgetsInformation"]; 
     $position = $widgets[0];
     $currentPage = $position['page'];
     
     $leftPos = $position['left'];
     $topPosition = $position['top'] - $pdfPageInfo['height'];
-    $size = floor($position['left'] - $pdfPageInfo['bottom']);
+    $size = floor($position['left'] - $position['bottom']);
     # This is an array of the position of each related elements, specially useful when dealing with 
     
 
