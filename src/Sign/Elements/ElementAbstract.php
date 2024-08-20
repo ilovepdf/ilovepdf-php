@@ -6,6 +6,8 @@ use Ilovepdf\File;
 
 abstract class ElementAbstract
 {
+    const VALID_X_GRAVITY_POSITIONS = ['left','center','right'];
+    const VALID_Y_GRAVITY_POSITIONS = ['top','middle','bottom'];
     /**
      * @var string
      */
@@ -15,6 +17,16 @@ abstract class ElementAbstract
      * @var array
      */
     public $position = ['x' => null, 'y' => null];
+
+    /**
+     * @var int
+     */
+    public $horizontal_adjustment = 0;
+
+    /**
+     * @var int
+     */
+    public $vertical_adjustment = 0;
 
     /**
      * @var string
@@ -67,6 +79,44 @@ abstract class ElementAbstract
     public function getPosition()
     {
         return $this->position;
+    }
+
+    /**
+     * @param string $positionX
+     * @param string $positionY
+     * @param int $horizontal_adjustment
+     * @param int $vertical_adjustment
+     * @return ElementAbstract
+     */
+    public function setGravityPosition(string $positionX, string $positionY, int $horizontal_adjustment = 0, int $vertical_adjustment = 0)
+    {
+        if(!in_array($positionX,self::VALID_X_GRAVITY_POSITIONS)){
+            throw new \InvalidArgumentException("Invalid X value, valid positions are: ".implode(", ",self::VALID_X_GRAVITY_POSITIONS));
+        }
+        
+        if(!in_array($positionY,self::VALID_Y_GRAVITY_POSITIONS)){
+            throw new \InvalidArgumentException("Invalid Y value, valid positions are: ".implode(", ",self::VALID_Y_GRAVITY_POSITIONS));
+        }
+        $this->position = ['x' => $positionX, 'y' => $positionY];
+        $this->horizontal_adjustment = $horizontal_adjustment;
+        $this->vertical_adjustment = $vertical_adjustment;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVerticalAdjustment()
+    {
+        return $this->vertical_adjustment;
+    }
+
+    /**
+     * @return int
+     */
+    public function getHorizontalAdjustment()
+    {
+        return $this->horizontal_adjustment;
     }
 
     /**
@@ -169,6 +219,8 @@ abstract class ElementAbstract
         return [
             'type' => $this->getType(),
             'position' => $pos,
+            'horizontal_position_adjustment' => $this->getHorizontalAdjustment(),
+            'vertical_position_adjustment' => $this->getVerticalAdjustment(),
             'pages' => $this->getPages(),
             'size' => $this->getSize(),
             'content' => $this->getContent(),

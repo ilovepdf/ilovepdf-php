@@ -51,8 +51,13 @@ $signTask->setBrand('My brand name', $brandLogoFile);
 // Let's define the elements to be placed in the documents
 $elements = [];
 
+# Gravity positioning
+# Xvalues: ['left','center','right']
+# YValues: ['top','middle','bottom']
+# horizontal_position_adjustment: integer
+# vertical_position_adjustment: integer
 $signatureElement = new ElementSignature();
-$signatureElement->setPosition(20, -20)
+$signatureElement->setGravityPosition("left", "top",3,-2) 
                  ->setPages("1,2"); //we can define the pages with a comma
 
 $dateElement = new ElementDate();
