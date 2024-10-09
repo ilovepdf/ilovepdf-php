@@ -91,24 +91,6 @@ class SignTask extends Task
         return $this;
     }
 
-    protected function getFileData(string $task){
-        $data = parent::getFileData($task);
-        $data["pdfinfo"] = "1";
-        return $data;
-    }
-
-    protected function getFileFromResponse($response,$filepath){
-        $isPdfFile = substr($filepath, -strlen(".pdf"))=== ".pdf";
-
-        if($isPdfFile){
-            $file = new File($response->body->server_filename, basename($filepath));
-            $file->setPdfPages($response->body->pdf_pages);
-            $file->setPdfPageNumber(intval($response->body->pdf_page_number));
-            return $file;
-        }
-        return parent::getFileFromResponse($response, $filepath);
-    }
-
     /**
      * @return string
      */
@@ -215,8 +197,7 @@ class SignTask extends Task
      * @param  string $brandLogo
      * @return SignTask
      */
-    function setBrand(string $brand_name, string $brandLogoPath){
-        $brand_logo =$this->uploadBrandLogo($brandLogoPath);
+    function setBrand(string $brand_name, File $brand_logo){
         $this->brand_name = $brand_name;
         $this->brand_logo = $brand_logo->server_filename;
         return $this;
@@ -307,6 +288,19 @@ class SignTask extends Task
     public function uploadBrandLogo($filePath)
     {
         $file = parent::addFile($filePath);
+        if (($key = array_search($file, $this->files)) !== false) {
+            unset($this->files[$key]);
+        }
+        return $file;
+    }
+
+    /**
+     * @param string $filePath
+     * @return File
+     */
+    public function uploadBrandLogoFromUrl($url, $bearerToken = null)
+    {
+        $file = parent::addFileFromUrl($url,$bearerToken);
         if (($key = array_search($file, $this->files)) !== false) {
             unset($this->files[$key]);
         }

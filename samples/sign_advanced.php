@@ -40,7 +40,10 @@ $signTask = $signTask->
 $file = $signTask->addFile('/path/to/file/document.pdf');
 
 // Set brand
-$signTask->setBrand('My brand name', '/path/to/file/brand_logo.png');
+$brandLogoFile = $signTask->uploadBrandLogo('/path/to/file/image.png');
+# Additionaly we can download it from the cloud
+#$brandLogoFile = $signTask->uploadBrandLogo('https://urltoimage/image.png');
+$signTask->setBrand('My brand name', $brandLogoFile);
 
 //////////////
 // ELEMENTS //
@@ -48,8 +51,13 @@ $signTask->setBrand('My brand name', '/path/to/file/brand_logo.png');
 // Let's define the elements to be placed in the documents
 $elements = [];
 
+# Gravity positioning
+# Xvalues: ['left','center','right']
+# YValues: ['top','middle','bottom']
+# horizontal_position_adjustment: integer
+# vertical_position_adjustment: integer
 $signatureElement = new ElementSignature();
-$signatureElement->setPosition(20, -20)
+$signatureElement->setGravityPosition("left", "top",3,-2) 
                  ->setPages("1,2"); //we can define the pages with a comma
 
 $dateElement = new ElementDate();
@@ -64,7 +72,7 @@ $inputElement = new ElementInput();
 $inputElement->setPosition(50, -50)
              ->setLabel("Passport Number")
              ->setText("Please put your passport number")
-             ->setPages("1");
+             ->setPages("-2,-1"); // Set the last and second to last page
 
 $nameElement = new ElementName();
 $nameElement->setPosition(60, -60)

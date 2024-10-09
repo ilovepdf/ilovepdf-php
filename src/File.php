@@ -34,6 +34,8 @@ class File
 
     public $pdf_page_number;
 
+    public $pdf_forms;
+
 
     /**
      * File constructor.
@@ -57,7 +59,8 @@ class File
             'rotate' => $this->rotate,
             'password' => $this->password,
             'pdf_pages' => $this->pdf_pages,
-            'pdf_page_number' => $this->pdf_page_number
+            'pdf_page_number' => $this->pdf_page_number,
+            'pdf_forms' => $this->pdf_forms
         ];
     }
 
@@ -132,13 +135,25 @@ class File
         return $this->pdf_page_number;
     }
 
-    function getPdfPageInfo(int $pageNumber): ?\stdClass
+    function getPdfPageInfo(int $pageNumber): ?array
     {
         $pdfPages = $this->getSanitizedPdfPages();
         if (is_null($pdfPages)) {
             return null;
         }
         return $pdfPages[$pageNumber - 1];
+    }
+
+    function eachPdfFormElement(callable  $callback): void
+    {
+        if(empty($this->pdf_forms)){
+            return;
+        }
+        foreach ($this->pdf_forms as $pdfFormElement) {
+            // Call the callback function for each element, passing the key and val
+            $pdfPageInfo = $this->getPdfPageInfo($pdfFormElement['page']);
+            $callback($pdfFormElement, $pdfPageInfo);
+        }
     }
 
 
@@ -152,6 +167,20 @@ class File
             throw new \InvalidArgumentException;
         }
         $this->server_filename = $server_filename;
+
+        return $this;
+    }
+
+    /**
+     * @param array $formParams
+     * @return File
+     */
+    function setPdfForms(?array $formParams): self
+    {
+        if (empty($formParams)) {
+            throw new \InvalidArgumentException;
+        }
+        $this->pdf_forms = $formParams;
 
         return $this;
     }

@@ -8,6 +8,7 @@ use Ilovepdf\Exceptions\ProcessException;
 use Ilovepdf\Exceptions\StartException;
 use Ilovepdf\Exceptions\PathException;
 use Ilovepdf\Exceptions\UploadException;
+use Ilovepdf\Lib\BaseExtraUploadParams;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -281,11 +282,11 @@ class Task extends Ilovepdf
      * @param string $filePath
      * @return File
      */
-    public function addFile($filePath)
+    public function addFile($filePath, BaseExtraUploadParams $extraParams = null)
     {
         $this->validateTaskStarted();
         /** @psalm-suppress PossiblyNullArgument */
-        $file = $this->uploadFile($this->task, $filePath);
+        $file = $this->uploadFile($this->task, $filePath,$extraParams);
         array_push($this->files, $file);
         return end($this->files);
     }
@@ -294,11 +295,11 @@ class Task extends Ilovepdf
      * @param string $url
      * @return File
      */
-    public function addFileFromUrl($url, $bearerToken = null)
+    public function addFileFromUrl($url, $bearerToken = null,BaseExtraUploadParams $extraParams = null)
     {
         $this->validateTaskStarted();
         /** @psalm-suppress PossiblyNullArgument */
-        $file = $this->uploadUrl($this->task, $url, $bearerToken);
+        $file = $this->uploadUrl($this->task, $url, $bearerToken,$extraParams);
         array_push($this->files, $file);
         return end($this->files);
     }
@@ -313,54 +314,72 @@ class Task extends Ilovepdf
      * @throws ProcessException
      * @throws UploadException
      */
-    public function uploadFile(string $task, string $filepath)
+    public function uploadFile(string $task, string $filepath, BaseExtraUploadParams $extraParams = null)
     {
         if (!file_exists($filepath)) {
             throw new \InvalidArgumentException('File ' . $filepath . ' does not exists');
         }
+        $body = $this->getBodyForUploadFile($task,$filepath, $extraParams);
+        $response = $this->sendRequest('post', 'upload', $body);
+        return $this->getFileFromUploadResponse($response, $filepath);
+    }
 
+    protected function getBodyForUploadFile(string $task, string $filePath, BaseExtraUploadParams $extraParams = null){
         $body = [
             'multipart' => [
-                [
-                    'Content-type' => 'multipart/form-data',
-                    'name' => 'file',
-                    'contents' => fopen($filepath, 'r'),
-                    'filename' => basename($filepath)
-                ],
-                ['name' => 'task', 'contents' => $task],
-                ['name' => 'v', 'contents' => self::VERSION]
+                $this->getMultipartFileParam('file',$filePath),
+                $this->getMultipartContentParam('task',$task),
+                $this->getMultipartContentParam('v',self::VERSION)
             ],
         ];
-
-        $response = $this->sendRequest('post', 'upload', $body);
+        if(!is_null($extraParams)){
+            foreach ($extraParams->getValues() as $key => $value) {
+                $body['multipart'][]=$this->getMultipartContentParam($key,$value);
+            }
+        }
+        
+        return $body;
+    }
+    /**
+     * @param string $task
+     * @param string $filepath
+     *
+     * @return File
+     *
+     * @throws AuthException
+     * @throws ProcessException
+     * @throws UploadException
+     */
+    protected function getFileFromUploadResponse(ResponseInterface $response, string $filePath): File{
         try {
             $responseBody = json_decode($response->getBody());
         } catch (\Exception $e) {
             throw new UploadException('Upload response error');
         }
-        return new File($responseBody->server_filename, basename($filepath));
+        $file = new File($responseBody->server_filename, basename($filePath));
+        if(property_exists($responseBody,'pdf_pages')){
+            $file->setPdfPages($responseBody->pdf_pages);
+        }
+        if(property_exists($responseBody,'pdf_page_number')){
+            $file->setPdfPageNumber((int)$responseBody->pdf_page_number);
+        }
+        if(property_exists($responseBody,'pdf_forms')){
+            $file->setPdfForms(json_decode(json_encode($responseBody->pdf_forms), true));
+        }
+        return $file;
     }
 
-    /**
-     * @param string $filePath
-     * @return File
-     */
-    public function addElementFile($filePath)
-    {
-        $this->validateTaskStarted();
-        /** @psalm-suppress PossiblyNullArgument */
-        return $this->uploadFile($this->task, $filePath);
+    protected function getMultipartFileParam(string $name,string $filePath): array{
+        return [
+            'Content-type' => 'multipart/form-data',
+            'name' => $name,
+            'contents' => fopen($filePath, 'r'),
+            'filename' => basename($filePath)
+        ];
     }
 
-    /**
-     * @param string $url
-     * @return File
-     */
-    public function addElementFileFromUrl($url)
-    {
-        $this->validateTaskStarted();
-        /** @psalm-suppress PossiblyNullArgument */
-        return $this->uploadUrl($this->task, $url);
+    protected function getMultipartContentParam(string $name,string $value): array{
+        return ['name' => $name, 'contents' => $value];
     }
 
     /**
@@ -385,25 +404,32 @@ class Task extends Ilovepdf
      * @throws ProcessException
      * @throws UploadException
      */
-    public function uploadUrl($task, $url, $bearerToken = null)
+    public function uploadUrl($task, $url, $bearerToken = null, BaseExtraUploadParams $extraParams = null)
     {
-        //$data = ['task' => $task, 'cloud_file' => $url, 'v' => self::VERSION];
-        //$body = ['form_data' => $data];
+        $body = $this->getBodyForUploadUrlFile($task, $url, $bearerToken,$extraParams);
+        $response = $this->sendRequest('post', 'upload', $body);
+        return $this->getFileFromUploadResponse($response, $url);
+    }
+
+    protected function getBodyForUploadUrlFile(string $task, string $url,$bearerToken = null, BaseExtraUploadParams $extraParams = null){
         $body = [
             'multipart' => [
-                ['name' => 'task', 'contents' => $task],
-                ['name' => 'v', 'contents' => self::VERSION],
-                ['name' => 'cloud_file', 'contents' => $url]
+                $this->getMultipartFileParam('cloud_file',$url),
+                $this->getMultipartContentParam('task',$task),
+                $this->getMultipartContentParam('v',self::VERSION)
             ],
         ];
-
         if ($bearerToken) {
-            $body['multipart'][] = ['name' => 'cloud_token', 'contents' => $bearerToken];
+            $body['multipart'][] = $this->getMultipartContentParam('cloud_token',$bearerToken);
         }
 
-        $response = parent::sendRequest('post', 'upload', $body);
-        $responseBody = json_decode($response->getBody());
-        return new File($responseBody->server_filename, basename($url));
+        if(!is_null($extraParams)){
+            foreach ($extraParams->getValues() as $key => $value) {
+                $body['multipart'][]=$this->getMultipartContentParam($key,$value);
+            }
+        }
+        
+        return $body;
     }
 
     /**
@@ -418,7 +444,6 @@ class Task extends Ilovepdf
     public function download($path = null)
     {
         $this->validateTaskStarted();
-
         if ($path != null && !is_dir($path)) {
             if (pathinfo($path, PATHINFO_EXTENSION) == '') {
                 throw new PathException('Invalid download path. Use method setOutputFilename() to set the output file name.');
