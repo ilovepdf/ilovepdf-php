@@ -148,9 +148,9 @@ class Ilovepdf
      */
     public function getJWT()
     {
-//        if (!is_null($this->token) && !$this->getFileEncryption()) {
-//            return $this->token;
-//        }
+        //        if (!is_null($this->token) && !$this->getFileEncryption()) {
+        //            return $this->token;
+        //        }
 
         // Collect all the data
         $secret = $this->getSecretKey();
@@ -264,7 +264,7 @@ class Ilovepdf
                         throw new TaskException('Invalid task id');
                     }
                     //signature exception
-                    if(strpos($endpoint, 'signature') !== false){
+                    if (strpos($endpoint, 'signature') !== false) {
                         throw new SignatureException($responseBody->error->type, $responseBody, $response->getStatusCode());
                     }
 
@@ -469,6 +469,6 @@ class Ilovepdf
     public function getRemainingFiles()
     {
         $info = $this->getUpdatedInfo();
-        return $info->remaining_files;
+        return $info->remaining_credits;
     }
 }
