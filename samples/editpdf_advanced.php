@@ -55,7 +55,6 @@ foreach($editpdfTask->getElements() as $editpdfElement){
     
     // Output what went wrong
     echo "{$editpdfElement->getType()} element has errors:\n";
-    var_dump($validationErrors);
     exit(1);
   }
 }
