@@ -464,11 +464,23 @@ class Ilovepdf
     }
 
     /**
+     * @deprecated
+     * Use getRemainingCredits() instead
      * @return integer
      */
-    public function getRemainingFiles()
+    public function getRemainingFiles(): int
     {
         $info = $this->getUpdatedInfo();
-        return $info->remaining_files;
+        return (int)($info->remaining_credits / 10);
+    }
+
+
+    /**
+     * @return integer
+     */
+    public function getRemainingCredits(): int
+    {
+        $info = $this->getUpdatedInfo();
+        return $info->remaining_credits;
     }
 }
