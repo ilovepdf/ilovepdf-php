@@ -57,7 +57,7 @@ class ExtendedException extends Exception
     }
 
     private function getFirstErrorString($error){
-        if (!is_string($error)) {
+        if (is_array($error)) {
             return $this->getFirstErrorString(array_values($error)[0]);
         }
         return $error;
