@@ -85,15 +85,12 @@ class SignTask extends Task
         parent::__construct($publicKey, $secretKey, $makeStart);
     }
 
-    function addReceiver(ReceiverAbstract $signer)
+    function addReceiver(ReceiverAbstract $signer): static
     {
         $this->signers[] = $signer;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getVerifySignatureVerification(): bool
     {
         return $this->verify_enabled;
@@ -165,7 +162,8 @@ class SignTask extends Task
     }
 
     /**
-     * @param int $lock_order
+     * @param bool $lock_order
+     *
      * @return SignTask
      */
     public function setLockOrder(bool $lock_order): SignTask

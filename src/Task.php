@@ -325,7 +325,12 @@ class Task extends Ilovepdf
         return $this->getFileFromUploadResponse($response, $filepath);
     }
 
-    protected function getBodyForUploadFile(string $task, string $filePath, BaseExtraUploadParams $extraParams = null)
+    /**
+     * @return array[][]
+     *
+     * @psalm-return array{multipart: list{0: array, 1?: array, 2?: array, 3?: array,...}}
+     */
+    protected function getBodyForUploadFile(string $task, string $filePath, BaseExtraUploadParams $extraParams = null): array
     {
         $body = [
             'multipart' => [
@@ -417,7 +422,12 @@ class Task extends Ilovepdf
         return $this->getFileFromUploadResponse($response, $url);
     }
 
-    protected function getBodyForUploadUrlFile(string $task, string $url, $bearerToken = null, BaseExtraUploadParams $extraParams = null)
+    /**
+     * @return array[][]
+     *
+     * @psalm-return array{multipart: list{0: array, 1?: array, 2?: array, 3?: array,...}}
+     */
+    protected function getBodyForUploadUrlFile(string $task, string $url, $bearerToken = null, BaseExtraUploadParams $extraParams = null): array
     {
         $body = [
             'multipart' => [
