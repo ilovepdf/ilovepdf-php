@@ -43,6 +43,7 @@ class SplitSmartTask extends Task
         return $this;
     }
 
+    #[\Override]
     function validate(): void
     {
         // Check if prompt is empty

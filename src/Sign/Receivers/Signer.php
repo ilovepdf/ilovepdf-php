@@ -81,6 +81,7 @@ class Signer extends ReceiverAbstract
         return $this;
     }
 
+    #[\Override]
     public function __toArray()
     {
         $array = parent::__toArray();

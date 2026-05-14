@@ -267,6 +267,7 @@ class Task extends Ilovepdf
      * @return Task
      * @throws \Exception
      */
+    #[\Override]
     public function getStatus(?string $server = null, ?string $taskId = null)
     {
         $server = $server ? $server : $this->getWorkerServer();
@@ -343,8 +344,8 @@ class Task extends Ilovepdf
     }
 
     /**
-     * @param string $task
-     * @param string $filepath
+     * @param ResponseInterface $response
+     * @param string $filePath
      *
      * @return File
      *
@@ -522,7 +523,6 @@ class Task extends Ilovepdf
 
     /**
      * @param string|null $task
-     * @param string $path
      *
      * @throws AuthException
      * @throws ProcessException
@@ -541,7 +541,6 @@ class Task extends Ilovepdf
     }
 
     /**
-     * @param string $task
      * @return ResponseInterface
      */
     public function downloadStream(): ResponseInterface
@@ -789,6 +788,7 @@ class Task extends Ilovepdf
      * @return $this
      * @throws \Exception
      */
+    #[\Override]
     public function setFileEncryption(?string $encryptKey = null): self
     {
         if (count($this->files) > 0) {
@@ -815,7 +815,7 @@ class Task extends Ilovepdf
     }
 
     /**
-     * @param int|null $custom_int
+     * @param int|null $customInt
      * @return $this
      */
     public function setCustomInt(?int $customInt): self
@@ -825,7 +825,7 @@ class Task extends Ilovepdf
     }
 
     /**
-     * @param string|null $custom_string
+     * @param string|null $customString
      * @return $this
      */
     public function setCustomString(?string $customString): self

@@ -66,7 +66,7 @@ class PdfExtractTask extends Task
     }
 
     /**
-     * @param string $format
+     * @param string $category
      *
      * @return $this
      */
@@ -87,6 +87,7 @@ class PdfExtractTask extends Task
         return $this;
     }
 
+    #[\Override]
     public function validate(): void
     {
         if($this->category=='custom' & count($this->items)==0){

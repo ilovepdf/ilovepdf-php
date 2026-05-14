@@ -277,9 +277,10 @@ class TextElement extends Element
     /**
      * @return bool
      */
+    #[\Override]
     public function validate()
     {
-        $parentIsValid = parent::validate();
+        parent::validate();
 
         if ($this->text === null) $this->addError('text', 'required');
 
@@ -289,6 +290,7 @@ class TextElement extends Element
     /**
      * @return array
      */
+    #[\Override]
     public function __toArray()
     {
         $data = array_merge(

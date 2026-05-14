@@ -91,7 +91,7 @@ class TranslateTask extends Task
     }
 
     /**
-     * @param string $format
+     * @param string $language
      *
      *  values: ["eng", "afr", "amh", "ara", "asm", "aze", "aze_cyrl", "bel", "ben",
      * "bod", "bos", "bre", "bul", "cat", "ceb", "ces", "chi_sim", "chi_tra",
@@ -123,7 +123,7 @@ class TranslateTask extends Task
     }
 
     /**
-     * @param string $format
+     * @param string $language
      *
      *  values: ["eng", "afr", "amh", "ara", "asm", "aze", "aze_cyrl", "bel", "ben",
      * "bod", "bos", "bre", "bul", "cat", "ceb", "ces", "chi_sim", "chi_tra",

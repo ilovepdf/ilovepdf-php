@@ -45,7 +45,7 @@ class SummarizeTask extends Task
     }
 
     /**
-     * @param string $format
+     * @param string $language
      *
      *  values: ["en", "es", "fr", "de", "it", "pt", "ja", "ru", "ko", "zh-cn",
      * "zh-tw", "ar", "bg", "ca", "nl", "el", "hi", "id", "ms", "pl",
