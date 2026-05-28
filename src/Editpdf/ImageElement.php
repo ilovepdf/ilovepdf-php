@@ -26,6 +26,7 @@ class ImageElement extends Element
     /**
      * @return bool
      */
+    #[\Override]
     public function validate()
     {
         parent::validate();
@@ -41,6 +42,7 @@ class ImageElement extends Element
     /**
      * @return array
      */
+    #[\Override]
     public function __toArray()
     {
         $data = array_merge(

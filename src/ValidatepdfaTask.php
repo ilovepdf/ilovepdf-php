@@ -50,15 +50,18 @@ class ValidatepdfaTask extends Task
      * @return void
      * @throws DownloadException
      */
+    #[\Override]
     public function download($path = null)
     {
         throw new DownloadException('This task have no files to download');
     }
 
+    #[\Override]
     public function blob(){
         throw new DownloadException('This task have no files to download');
     }
 
+    #[\Override]
     public function toBrowser(){
         throw new DownloadException('This task have no files to download');
     }

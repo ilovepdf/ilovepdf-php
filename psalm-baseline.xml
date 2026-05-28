@@ -1,0 +1,644 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="6.16.1@f1f5de594dc76faf8784e02d3dc4716c91c6f6ac">
+  <file src="src/CompressTask.php">
+    <UnusedClass>
+      <code><![CDATA[CompressTask]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Constants/SplitSmart/BankStatements.php">
+    <UnusedClass>
+      <code><![CDATA[BankStatements]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Constants/SplitSmart/Books.php">
+    <UnusedClass>
+      <code><![CDATA[Books]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Constants/SplitSmart/Contracts.php">
+    <UnusedClass>
+      <code><![CDATA[Contracts]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Constants/SplitSmart/Education.php">
+    <UnusedClass>
+      <code><![CDATA[Education]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Constants/SplitSmart/Government.php">
+    <UnusedClass>
+      <code><![CDATA[Government]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Constants/SplitSmart/Hr.php">
+    <UnusedClass>
+      <code><![CDATA[Hr]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Constants/SplitSmart/Insurance.php">
+    <UnusedClass>
+      <code><![CDATA[Insurance]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Constants/SplitSmart/Invoices.php">
+    <UnusedClass>
+      <code><![CDATA[Invoices]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Constants/SplitSmart/Logistics.php">
+    <UnusedClass>
+      <code><![CDATA[Logistics]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Constants/SplitSmart/Marketing.php">
+    <UnusedClass>
+      <code><![CDATA[Marketing]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Constants/SplitSmart/Medical.php">
+    <UnusedClass>
+      <code><![CDATA[Medical]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Constants/SplitSmart/ScannedBatches.php">
+    <UnusedClass>
+      <code><![CDATA[ScannedBatches]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Editpdf/Element.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[createImage]]></code>
+      <code><![CDATA[createSvg]]></code>
+      <code><![CDATA[createText]]></code>
+      <code><![CDATA[getCoordinates]]></code>
+      <code><![CDATA[getOpacity]]></code>
+      <code><![CDATA[getPages]]></code>
+      <code><![CDATA[getRotation]]></code>
+      <code><![CDATA[getType]]></code>
+      <code><![CDATA[setCoordinates]]></code>
+      <code><![CDATA[setOpacity]]></code>
+      <code><![CDATA[setPages]]></code>
+      <code><![CDATA[setRotation]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Editpdf/ImageElement.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function __toArray()]]></code>
+      <code><![CDATA[public function validate()]]></code>
+    </MissingOverrideAttribute>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[setFile]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Editpdf/SvgElement.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function __toArray()]]></code>
+      <code><![CDATA[public function validate()]]></code>
+    </MissingOverrideAttribute>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[setFile]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Editpdf/TextElement.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function __toArray()]]></code>
+      <code><![CDATA[public function validate()]]></code>
+    </MissingOverrideAttribute>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getFontColor]]></code>
+      <code><![CDATA[getFontFamily]]></code>
+      <code><![CDATA[getFontSize]]></code>
+      <code><![CDATA[getLetterSpacing]]></code>
+      <code><![CDATA[getText]]></code>
+      <code><![CDATA[getTextAlign]]></code>
+      <code><![CDATA[isBold]]></code>
+      <code><![CDATA[isItalic]]></code>
+      <code><![CDATA[isUnderline]]></code>
+      <code><![CDATA[setBold]]></code>
+      <code><![CDATA[setFontColor]]></code>
+      <code><![CDATA[setFontFamily]]></code>
+      <code><![CDATA[setFontSize]]></code>
+      <code><![CDATA[setItalic]]></code>
+      <code><![CDATA[setLetterSpacing]]></code>
+      <code><![CDATA[setText]]></code>
+      <code><![CDATA[setTextAlign]]></code>
+      <code><![CDATA[setUnderline]]></code>
+      <code><![CDATA[unsetBold]]></code>
+      <code><![CDATA[unsetItalic]]></code>
+      <code><![CDATA[unsetUnderline]]></code>
+    </PossiblyUnusedMethod>
+    <UnusedVariable>
+      <code><![CDATA[$parentIsValid]]></code>
+    </UnusedVariable>
+  </file>
+  <file src="src/Editpdf/Traits/DimensionableTrait.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getDimensions]]></code>
+      <code><![CDATA[getDimensions]]></code>
+      <code><![CDATA[setDimensions]]></code>
+      <code><![CDATA[setDimensions]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/EditpdfTask.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function __toArray()]]></code>
+    </MissingOverrideAttribute>
+    <UnusedClass>
+      <code><![CDATA[EditpdfTask]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Element.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[setFile]]></code>
+      <code><![CDATA[setFontColor]]></code>
+      <code><![CDATA[setFontFamily]]></code>
+      <code><![CDATA[setFontSize]]></code>
+      <code><![CDATA[setFontStyle]]></code>
+      <code><![CDATA[setHorizontalPosition]]></code>
+      <code><![CDATA[setHorizontalPositionAdjustment]]></code>
+      <code><![CDATA[setImage]]></code>
+      <code><![CDATA[setRotation]]></code>
+      <code><![CDATA[setServerFilename]]></code>
+      <code><![CDATA[setText]]></code>
+      <code><![CDATA[setTransparency]]></code>
+      <code><![CDATA[setType]]></code>
+      <code><![CDATA[setVerticalPosition]]></code>
+      <code><![CDATA[setVerticalPositionAdjustment]]></code>
+    </PossiblyUnusedMethod>
+    <PossiblyUnusedProperty>
+      <code><![CDATA[$bold]]></code>
+      <code><![CDATA[$border]]></code>
+      <code><![CDATA[$font_color]]></code>
+      <code><![CDATA[$font_family]]></code>
+      <code><![CDATA[$font_size]]></code>
+      <code><![CDATA[$font_style]]></code>
+      <code><![CDATA[$gravity]]></code>
+      <code><![CDATA[$horizontal_position]]></code>
+      <code><![CDATA[$horizontal_position_adjustment]]></code>
+      <code><![CDATA[$image]]></code>
+      <code><![CDATA[$image_resize]]></code>
+      <code><![CDATA[$layer]]></code>
+      <code><![CDATA[$mode]]></code>
+      <code><![CDATA[$mosaic]]></code>
+      <code><![CDATA[$opacity]]></code>
+      <code><![CDATA[$pages]]></code>
+      <code><![CDATA[$rotation]]></code>
+      <code><![CDATA[$server_filename]]></code>
+      <code><![CDATA[$text]]></code>
+      <code><![CDATA[$transparency]]></code>
+      <code><![CDATA[$type]]></code>
+      <code><![CDATA[$vertical_position]]></code>
+      <code><![CDATA[$vertical_position_adjustment]]></code>
+      <code><![CDATA[$zoom]]></code>
+    </PossiblyUnusedProperty>
+    <PossiblyUnusedReturnValue>
+      <code><![CDATA[bool]]></code>
+    </PossiblyUnusedReturnValue>
+    <UnusedDocblockParam>
+      <code><![CDATA[$mode]]></code>
+    </UnusedDocblockParam>
+  </file>
+  <file src="src/Exceptions/ExtendedException.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getErrors]]></code>
+      <code><![CDATA[getType]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/ExtractTask.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[__construct]]></code>
+      <code><![CDATA[setByWord]]></code>
+      <code><![CDATA[setDetailed]]></code>
+    </PossiblyUnusedMethod>
+    <PossiblyUnusedProperty>
+      <code><![CDATA[$by_word]]></code>
+      <code><![CDATA[$detailed]]></code>
+    </PossiblyUnusedProperty>
+  </file>
+  <file src="src/File.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[eachPdfFormElement]]></code>
+      <code><![CDATA[getFileOptions]]></code>
+      <code><![CDATA[getLastPage]]></code>
+      <code><![CDATA[setPassword]]></code>
+      <code><![CDATA[setRotation]]></code>
+    </PossiblyUnusedMethod>
+    <PossiblyUnusedReturnValue>
+      <code><![CDATA[bool]]></code>
+      <code><![CDATA[bool]]></code>
+    </PossiblyUnusedReturnValue>
+  </file>
+  <file src="src/FormsDetectTask.php">
+    <UnusedClass>
+      <code><![CDATA[FormsDetectTask]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/HtmlpdfTask.php">
+    <UnusedClass>
+      <code><![CDATA[HtmlpdfTask]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Http/ClientException.php">
+    <UnusedClass>
+      <code><![CDATA[ClientException]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Ilovepdf.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[followLocation]]></code>
+      <code><![CDATA[getApiVersion]]></code>
+      <code><![CDATA[getInfo]]></code>
+      <code><![CDATA[getRemainingCredits]]></code>
+      <code><![CDATA[getRemainingFiles]]></code>
+      <code><![CDATA[setApiVersion]]></code>
+      <code><![CDATA[setStartServer]]></code>
+      <code><![CDATA[verifySsl]]></code>
+    </PossiblyUnusedMethod>
+    <UnusedVariable>
+      <code><![CDATA[$error]]></code>
+      <code><![CDATA[$error]]></code>
+    </UnusedVariable>
+  </file>
+  <file src="src/IlovepdfTool.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[rand_md5]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/ImagepdfTask.php">
+    <UnusedClass>
+      <code><![CDATA[ImagepdfTask]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Lib/BaseExtraUploadParams.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[setValue]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Lib/SignExtraUploadParams.php">
+    <UnusedClass>
+      <code><![CDATA[SignExtraUploadParams]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/MergeTask.php">
+    <UnusedClass>
+      <code><![CDATA[MergeTask]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/OfficepdfTask.php">
+    <UnusedClass>
+      <code><![CDATA[OfficepdfTask]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/PagenumberTask.php">
+    <UnusedClass>
+      <code><![CDATA[PagenumberTask]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/PdfExtractTask.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function validate(): void]]></code>
+    </MissingOverrideAttribute>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[__construct]]></code>
+      <code><![CDATA[addItem]]></code>
+      <code><![CDATA[setCategory]]></code>
+    </PossiblyUnusedMethod>
+    <PossiblyUnusedProperty>
+      <code><![CDATA[$export_to]]></code>
+    </PossiblyUnusedProperty>
+    <UnusedDocblockParam>
+      <code><![CDATA[$format]]></code>
+    </UnusedDocblockParam>
+    <UnusedProperty>
+      <code><![CDATA[$exportToValues]]></code>
+    </UnusedProperty>
+  </file>
+  <file src="src/PdfaTask.php">
+    <UnusedClass>
+      <code><![CDATA[PdfaTask]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/PdfjpgTask.php">
+    <UnusedClass>
+      <code><![CDATA[PdfjpgTask]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/PdfocrTask.php">
+    <UnusedClass>
+      <code><![CDATA[PdfocrTask]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/ProtectTask.php">
+    <UnusedClass>
+      <code><![CDATA[ProtectTask]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/RepairTask.php">
+    <UnusedClass>
+      <code><![CDATA[RepairTask]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/RotateTask.php">
+    <UnusedClass>
+      <code><![CDATA[RotateTask]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Sign/Elements/ElementAbstract.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[__toArray]]></code>
+      <code><![CDATA[setGravityPosition]]></code>
+      <code><![CDATA[setPages]]></code>
+      <code><![CDATA[setPosition]]></code>
+      <code><![CDATA[setSize]]></code>
+    </PossiblyUnusedMethod>
+    <UnusedDocblockParam>
+      <code><![CDATA[$position]]></code>
+    </UnusedDocblockParam>
+  </file>
+  <file src="src/Sign/Elements/ElementDate.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function setContent(string $content)]]></code>
+    </MissingOverrideAttribute>
+    <UnusedClass>
+      <code><![CDATA[ElementDate]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Sign/Elements/ElementInitials.php">
+    <UnusedClass>
+      <code><![CDATA[ElementInitials]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Sign/Elements/ElementInput.php">
+    <UnusedClass>
+      <code><![CDATA[ElementInput]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Sign/Elements/ElementName.php">
+    <UnusedClass>
+      <code><![CDATA[ElementName]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Sign/Elements/ElementSignature.php">
+    <UnusedClass>
+      <code><![CDATA[ElementSignature]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Sign/Elements/ElementText.php">
+    <UnusedClass>
+      <code><![CDATA[ElementText]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Sign/Receivers/ReceiverAbstract.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[setAccessCode]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Sign/Receivers/Signer.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function __toArray()]]></code>
+    </MissingOverrideAttribute>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[__construct]]></code>
+      <code><![CDATA[addElements]]></code>
+      <code><![CDATA[setForceSignatureType]]></code>
+      <code><![CDATA[setPhone]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Sign/Receivers/Validator.php">
+    <UnusedClass>
+      <code><![CDATA[Validator]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Sign/Receivers/Witness.php">
+    <UnusedClass>
+      <code><![CDATA[Witness]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/SignTask.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function __toArray()]]></code>
+      <code><![CDATA[public function download($path = null){]]></code>
+      <code><![CDATA[public function enableEncryption(bool $enable)]]></code>
+      <code><![CDATA[public function execute()]]></code>
+      <code><![CDATA[public function setFileEncryption(?string $encryptKey = null): Task]]></code>
+    </MissingOverrideAttribute>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[__construct]]></code>
+      <code><![CDATA[addReceiver]]></code>
+      <code><![CDATA[getExpirationDays]]></code>
+      <code><![CDATA[getLanguage]]></code>
+      <code><![CDATA[getLockOrder]]></code>
+      <code><![CDATA[getMessage]]></code>
+      <code><![CDATA[getReminders]]></code>
+      <code><![CDATA[getSubject]]></code>
+      <code><![CDATA[getUuidVisible]]></code>
+      <code><![CDATA[getVerifySignatureVerification]]></code>
+      <code><![CDATA[setBrand]]></code>
+      <code><![CDATA[setExpirationDays]]></code>
+      <code><![CDATA[setLanguage]]></code>
+      <code><![CDATA[setLockOrder]]></code>
+      <code><![CDATA[setMessage]]></code>
+      <code><![CDATA[setReminders]]></code>
+      <code><![CDATA[setSigners]]></code>
+      <code><![CDATA[setSubject]]></code>
+      <code><![CDATA[setUuidVisible]]></code>
+      <code><![CDATA[setVerifySignatureVerification]]></code>
+      <code><![CDATA[uploadBrandLogo]]></code>
+      <code><![CDATA[uploadBrandLogoFromUrl]]></code>
+    </PossiblyUnusedMethod>
+    <PossiblyUnusedProperty>
+      <code><![CDATA[$brand_logo]]></code>
+      <code><![CDATA[$brand_name]]></code>
+    </PossiblyUnusedProperty>
+    <UnusedDocblockParam>
+      <code><![CDATA[$brandLogo]]></code>
+      <code><![CDATA[$brandName]]></code>
+      <code><![CDATA[$expiration_date]]></code>
+      <code><![CDATA[$file]]></code>
+      <code><![CDATA[$subject]]></code>
+    </UnusedDocblockParam>
+  </file>
+  <file src="src/SignatureManagement.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function newTask($tool = '', $makeStart = true)]]></code>
+    </MissingOverrideAttribute>
+    <UnusedClass>
+      <code><![CDATA[SignatureManagement]]></code>
+    </UnusedClass>
+    <UnusedVariable>
+      <code><![CDATA[$response]]></code>
+    </UnusedVariable>
+  </file>
+  <file src="src/SplitSmartTask.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[function validate(): void]]></code>
+    </MissingOverrideAttribute>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[__construct]]></code>
+      <code><![CDATA[setPrompt]]></code>
+    </PossiblyUnusedMethod>
+    <PossiblyUnusedProperty>
+      <code><![CDATA[$split_mode]]></code>
+    </PossiblyUnusedProperty>
+  </file>
+  <file src="src/SplitTask.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[__construct]]></code>
+      <code><![CDATA[setFixedRange]]></code>
+      <code><![CDATA[setMergeAfter]]></code>
+      <code><![CDATA[setRanges]]></code>
+      <code><![CDATA[setRemovePages]]></code>
+    </PossiblyUnusedMethod>
+    <PossiblyUnusedProperty>
+      <code><![CDATA[$fixed_range]]></code>
+      <code><![CDATA[$merge_after]]></code>
+      <code><![CDATA[$ranges]]></code>
+      <code><![CDATA[$remove_pages]]></code>
+      <code><![CDATA[$split_mode]]></code>
+    </PossiblyUnusedProperty>
+  </file>
+  <file src="src/SummarizeTask.php">
+    <UnusedClass>
+      <code><![CDATA[SummarizeTask]]></code>
+    </UnusedClass>
+    <UnusedDocblockParam>
+      <code><![CDATA[$format]]></code>
+    </UnusedDocblockParam>
+  </file>
+  <file src="src/Task.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function getStatus(?string $server = null, ?string $taskId = null)]]></code>
+      <code><![CDATA[public function setFileEncryption(?string $encryptKey = null): self]]></code>
+    </MissingOverrideAttribute>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[blob]]></code>
+      <code><![CDATA[delete]]></code>
+      <code><![CDATA[deleteFile]]></code>
+      <code><![CDATA[download]]></code>
+      <code><![CDATA[downloadStream]]></code>
+      <code><![CDATA[execute]]></code>
+      <code><![CDATA[getEncrypted]]></code>
+      <code><![CDATA[getFiles]]></code>
+      <code><![CDATA[getFilesArray]]></code>
+      <code><![CDATA[ignoreErrors]]></code>
+      <code><![CDATA[ignorePassword]]></code>
+      <code><![CDATA[listTasks]]></code>
+      <code><![CDATA[next]]></code>
+      <code><![CDATA[sendEncryptedFiles]]></code>
+      <code><![CDATA[setCustomInt]]></code>
+      <code><![CDATA[setCustomString]]></code>
+      <code><![CDATA[setFiles]]></code>
+      <code><![CDATA[setIgnoreErrors]]></code>
+      <code><![CDATA[setIgnorePassword]]></code>
+      <code><![CDATA[setMeta]]></code>
+      <code><![CDATA[setOutputFilename]]></code>
+      <code><![CDATA[setPackagedFilename]]></code>
+      <code><![CDATA[setTryPdfRepair]]></code>
+      <code><![CDATA[setWebhook]]></code>
+      <code><![CDATA[toBrowser]]></code>
+    </PossiblyUnusedMethod>
+    <PossiblyUnusedProperty>
+      <code><![CDATA[$custom_int]]></code>
+      <code><![CDATA[$custom_string]]></code>
+      <code><![CDATA[$ignore_errors]]></code>
+      <code><![CDATA[$ignore_password]]></code>
+      <code><![CDATA[$output_filename]]></code>
+      <code><![CDATA[$packaged_filename]]></code>
+      <code><![CDATA[$remainingCredits]]></code>
+      <code><![CDATA[$remainingFiles]]></code>
+      <code><![CDATA[$remainingPages]]></code>
+      <code><![CDATA[$try_pdf_repair]]></code>
+      <code><![CDATA[$webhook]]></code>
+    </PossiblyUnusedProperty>
+    <PossiblyUnusedReturnValue>
+      <code><![CDATA[bool]]></code>
+    </PossiblyUnusedReturnValue>
+    <UnusedDocblockParam>
+      <code><![CDATA[$custom_int]]></code>
+      <code><![CDATA[$custom_string]]></code>
+      <code><![CDATA[$filepath]]></code>
+      <code><![CDATA[$path]]></code>
+      <code><![CDATA[$task]]></code>
+      <code><![CDATA[$task]]></code>
+    </UnusedDocblockParam>
+  </file>
+  <file src="src/TranslateTask.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[__construct]]></code>
+      <code><![CDATA[setILanguageInput]]></code>
+      <code><![CDATA[setLanguageOutput]]></code>
+      <code><![CDATA[setOutputFormat]]></code>
+    </PossiblyUnusedMethod>
+    <PossiblyUnusedProperty>
+      <code><![CDATA[$language_input]]></code>
+      <code><![CDATA[$language_output]]></code>
+      <code><![CDATA[$output_format]]></code>
+    </PossiblyUnusedProperty>
+    <UnusedDocblockParam>
+      <code><![CDATA[$format]]></code>
+      <code><![CDATA[$format]]></code>
+    </UnusedDocblockParam>
+  </file>
+  <file src="src/UnlockTask.php">
+    <UnusedClass>
+      <code><![CDATA[UnlockTask]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/ValidatepdfaTask.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function blob(){]]></code>
+      <code><![CDATA[public function download($path = null)]]></code>
+      <code><![CDATA[public function toBrowser(){]]></code>
+    </MissingOverrideAttribute>
+    <UnusedClass>
+      <code><![CDATA[ValidatepdfaTask]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/WatermarkTask.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[__construct]]></code>
+      <code><![CDATA[addElement]]></code>
+      <code><![CDATA[setFontColor]]></code>
+      <code><![CDATA[setFontFamily]]></code>
+      <code><![CDATA[setFontSize]]></code>
+      <code><![CDATA[setFontStyle]]></code>
+      <code><![CDATA[setHorizontalPosition]]></code>
+      <code><![CDATA[setHorizontalPositionAdjustment]]></code>
+      <code><![CDATA[setImage]]></code>
+      <code><![CDATA[setImageFile]]></code>
+      <code><![CDATA[setLayer]]></code>
+      <code><![CDATA[setMode]]></code>
+      <code><![CDATA[setMosaic]]></code>
+      <code><![CDATA[setPages]]></code>
+      <code><![CDATA[setRotation]]></code>
+      <code><![CDATA[setText]]></code>
+      <code><![CDATA[setTransparency]]></code>
+      <code><![CDATA[setVerticalPosition]]></code>
+      <code><![CDATA[setVerticalPositionAdjustment]]></code>
+    </PossiblyUnusedMethod>
+    <PossiblyUnusedProperty>
+      <code><![CDATA[$font_color]]></code>
+      <code><![CDATA[$font_family]]></code>
+      <code><![CDATA[$font_size]]></code>
+      <code><![CDATA[$font_style]]></code>
+      <code><![CDATA[$horizontal_position]]></code>
+      <code><![CDATA[$horizontal_position_adjustment]]></code>
+      <code><![CDATA[$image]]></code>
+      <code><![CDATA[$layer]]></code>
+      <code><![CDATA[$mode]]></code>
+      <code><![CDATA[$mosaic]]></code>
+      <code><![CDATA[$pages]]></code>
+      <code><![CDATA[$rotation]]></code>
+      <code><![CDATA[$text]]></code>
+      <code><![CDATA[$transparency]]></code>
+      <code><![CDATA[$vertical_position]]></code>
+      <code><![CDATA[$vertical_position_adjustment]]></code>
+    </PossiblyUnusedProperty>
+    <UnusedDocblockParam>
+      <code><![CDATA[$image]]></code>
+    </UnusedDocblockParam>
+    <UnusedProperty>
+      <code><![CDATA[$modeValues]]></code>
+    </UnusedProperty>
+  </file>
+</files>

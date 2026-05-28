@@ -85,15 +85,12 @@ class SignTask extends Task
         parent::__construct($publicKey, $secretKey, $makeStart);
     }
 
-    function addReceiver(ReceiverAbstract $signer)
+    function addReceiver(ReceiverAbstract $signer): static
     {
         $this->signers[] = $signer;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getVerifySignatureVerification(): bool
     {
         return $this->verify_enabled;
@@ -117,7 +114,7 @@ class SignTask extends Task
     }
 
     /**
-     * @param string $subject
+     * @param string $message
      */
     public function setMessage(string $message): SignTask
     {
@@ -165,7 +162,8 @@ class SignTask extends Task
     }
 
     /**
-     * @param int $lock_order
+     * @param bool $lock_order
+     *
      * @return SignTask
      */
     public function setLockOrder(bool $lock_order): SignTask
@@ -183,7 +181,7 @@ class SignTask extends Task
     }
 
     /**
-     * @param int $expiration_date
+     * @param int $expiration_days
      * @return SignTask
      */
     public function setExpirationDays(int $expiration_days): SignTask
@@ -193,8 +191,8 @@ class SignTask extends Task
     }
     
     /**
-     * @param  string $brandName
-     * @param  string $brandLogo
+     * @param string $brand_name
+     * @param File $brand_logo
      * @return SignTask
      */
     function setBrand(string $brand_name, File $brand_logo){
@@ -266,6 +264,7 @@ class SignTask extends Task
         return $this;
     }
 
+    #[\Override]
     public function __toArray()
     {
         $signTaskData = parent::__toArray();
@@ -313,6 +312,7 @@ class SignTask extends Task
      * @throws Exceptions\ProcessException
      * @throws Exceptions\UploadException
      */
+    #[\Override]
     public function execute()
     {
         if($this->task===null){
@@ -341,8 +341,8 @@ class SignTask extends Task
 
     /**
      * @param null|string $path
-     * @param null|string $file
      */
+    #[\Override]
     public function download($path = null){
         throw new NotImplementedException("This API call is not available for a SignTask");
     }
@@ -352,6 +352,7 @@ class SignTask extends Task
      * @param bool $enable
      * @return void
      */
+    #[\Override]
     public function enableEncryption(bool $enable)
     {
         throw new NotImplementedException("This method is not available for a SignTask");
@@ -361,6 +362,7 @@ class SignTask extends Task
      * @param string|null $encryptKey
      * @return Task
      */
+    #[\Override]
     public function setFileEncryption(?string $encryptKey = null): Task
     {
         throw new NotImplementedException("This method is not available for a SignTask");

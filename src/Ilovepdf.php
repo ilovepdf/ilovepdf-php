@@ -225,14 +225,12 @@ class Ilovepdf
         }
 
         $client = new Client($params);
-        $error = null;
 
         try {
             /** @psalm-suppress PossiblyNullOperand */
             $response = $client->request($method, $to_server . '/v1/' . $endpoint, $requestParams);
         } catch (ClientException $e) {
             $response = $e->getResponse();
-            $error = $e;
         }
         $responseCode = $response->getStatusCode();
         if ($responseCode != 200 && $responseCode != 201) {

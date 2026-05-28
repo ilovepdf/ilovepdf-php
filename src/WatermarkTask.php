@@ -164,7 +164,7 @@ class WatermarkTask extends Task
     }
 
     /**
-     * @param File $image
+     * @param File $imageFile
      */
     public function setImageFile(File $imageFile): self
     {
