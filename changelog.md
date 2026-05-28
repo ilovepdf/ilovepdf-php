@@ -2,7 +2,7 @@ Changelog
 ---------
 
 
-v1.3
+v1.4
 
 * Added new tools
     * Summarize PDF
