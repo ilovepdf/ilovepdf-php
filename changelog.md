@@ -2,6 +2,14 @@ Changelog
 ---------
 
 
+v1.3
+
+* Added new tools
+    * Summarize PDF
+    * Split Smart
+    * Translate PDF
+    * Forms Detection
+
 v1.2.2
 
 * Compatibility with php 8.1
