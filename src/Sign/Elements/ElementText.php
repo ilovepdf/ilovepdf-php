@@ -11,7 +11,7 @@ class ElementText extends ElementAbstract
         $this->setText("text");
     }
 
-    public function setText(string $text){
+    public function setText(string $text): static{
         $this->setContent($text);
         return $this;
     }

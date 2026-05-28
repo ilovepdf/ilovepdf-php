@@ -54,10 +54,8 @@ class SignatureManagement extends Ilovepdf
      * @param string $signatureId
      * @param string $pathToSave
      * @param string $filename
-     * 
-     * @return bool
      */
-    public function downloadAuditFile(string $signatureId, string $pathToSave, string $filename): bool
+    public function downloadAuditFile(string $signatureId, string $pathToSave, string $filename): string
     {
         $response = parent::sendRequest("get", "signature/{$signatureId}/download-audit");
         return $this->downloadResponseToFile($response, $pathToSave, $filename);
@@ -116,7 +114,7 @@ class SignatureManagement extends Ilovepdf
         $body = ['form_params' => [
             "phone" => $newPhone
         ]];
-        $response = parent::sendRequest("put", "signature/signer/fix-phone/{$signerTokenRequester}", $body, false, true);
+        parent::sendRequest("put", "signature/signer/fix-phone/{$signerTokenRequester}", $body, false, true);
         //if above fails, it throws an exception
         return true;
     }
@@ -184,12 +182,13 @@ class SignatureManagement extends Ilovepdf
      *
      * @throws \Exception
      */
+    #[\Override]
     public function newTask($tool = '', $makeStart = true)
     {
         throw new \Exception("This class is not meant to create a new task; but to manage an existing SignTask");
     }
 
-    private function getExtensionFromMime(string $mime_type)
+    private function getExtensionFromMime(string $mime_type): string
     {
         return explode("/", $mime_type)[1];
     }

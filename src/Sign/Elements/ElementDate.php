@@ -13,6 +13,7 @@ class ElementDate extends ElementAbstract
         $this->setContent("Y-m-d");
     }
 
+    #[\Override]
     public function setContent(string $content)
     {
         if (!in_array($content, $this->dateFormats)) {

@@ -81,6 +81,7 @@ class Signer extends ReceiverAbstract
         return $this;
     }
 
+    #[\Override]
     public function __toArray()
     {
         $array = parent::__toArray();
@@ -91,7 +92,12 @@ class Signer extends ReceiverAbstract
         return $array;
     }
 
-    private function getFilesData(){
+    /**
+     * @return (array|mixed)[][]
+     *
+     * @psalm-return list<array{elements: list<mixed>, server_filename: mixed}>
+     */
+    private function getFilesData(): array{
         $output = [];
         foreach($this->_elements as $serverFilename => $item){
             $elementsData = [];

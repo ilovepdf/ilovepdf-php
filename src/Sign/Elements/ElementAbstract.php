@@ -120,7 +120,8 @@ abstract class ElementAbstract
     }
 
     /**
-     * @param string $position
+     * @param float $x
+     * @param float $y
      * @return ElementAbstract
      */
     public function setPosition(float $x, float $y)

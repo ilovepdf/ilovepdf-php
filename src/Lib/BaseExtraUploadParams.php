@@ -6,7 +6,7 @@ abstract class BaseExtraUploadParams
 {
     protected $extraParams = [];
 
-    protected function setValue(string $key, string $value){
+    protected function setValue(string $key, string $value): void{
         $this->extraParams[$key] = $value;
     }
 

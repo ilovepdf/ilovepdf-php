@@ -55,6 +55,7 @@ class EditpdfTask extends Task
         }, $this->elements);
     }
 
+    #[\Override]
     public function __toArray()
     {
         $data = array_merge(

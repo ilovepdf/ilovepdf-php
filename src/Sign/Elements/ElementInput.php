@@ -15,12 +15,12 @@ class ElementInput extends ElementAbstract
         $this->setType("input");
     }
 
-    public function setLabel(string $text){
+    public function setLabel(string $text): static{
         $this->info["label"] = $text;
         return $this;
     }
 
-    public function setText(string $text){
+    public function setText(string $text): static{
         $this->info["description"] = $text;
         return $this;
     }

@@ -155,7 +155,7 @@ class Element
     }
 
     /**
-     * @param string $mode
+     * @param string $type
      * @return Element
      */
     public function setType(string $type): self
