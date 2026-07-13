@@ -9,14 +9,14 @@ use Ilovepdf\PdfocrTask;
 
 // you can call task class directly
 // to get your key pair, please visit https://developer.ilovepdf.com/user/projects
-$myTask = new PdfocrTask('project_public_id','project_secret_key');
+$myTask = new PdfocrTask('project_public_id','project_secret_key', true);
 
 // file var keeps info about server file id, name...
 // it can be used latter to cancel file
 $file = $myTask->addFile('/path/to/file/document.pdf');
 
 // we can set conformance level
-$file->addLanguage('fra');
+$myTask->addLanguage('fra');
 
 // and set name for output file.
 // the task will set the correct file extension for you.
