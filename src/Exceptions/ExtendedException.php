@@ -25,7 +25,7 @@ class ExtendedException extends Exception
      * @param int $code
      * @param \Throwable $previous
      */
-    public function __construct($message,  $responseBody = null, $code = 0, $previous = null)
+    public function __construct($message, $responseBody = null, $code = 0, $previous = null)
     {
         if (!$code) {
             $code = 0;
@@ -50,13 +50,15 @@ class ExtendedException extends Exception
             parent::__construct($message . ' (' . $firstError . ')', $code, $previous);
         } else {
             if ($responseBody) {
-                $message .= ' (' . $responseBody->error->message . ')';
+                //if isset message return it
+                $message = trim(isset($responseBody->message) ? $responseBody->message : $responseBody->error->message);
             }
             parent::__construct($message, $code, $previous);
         }
     }
 
-    private function getFirstErrorString($error){
+    private function getFirstErrorString($error)
+    {
         if (is_array($error)) {
             return $this->getFirstErrorString(array_values($error)[0]);
         }

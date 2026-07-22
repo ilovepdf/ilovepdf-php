@@ -242,8 +242,10 @@ class Ilovepdf
                 if (is_string($responseBody)) {
                     throw new UploadException("Upload error", $responseBody, $responseCode);
                 }
+                if(!$responseBody) throw new UploadException('Unknown error');
                 throw new UploadException($responseBody->error->message, $responseBody, $responseCode);
             } elseif ($endpoint == 'process') {
+                if(!$responseBody) throw new ProcessException('Unknown error');
                 throw new ProcessException($responseBody->error->message, $responseBody, $responseCode);
             } elseif (strpos($endpoint, 'download') === 0) {
                 throw new DownloadException($responseBody->error->message, $responseBody, $responseCode);

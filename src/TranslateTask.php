@@ -12,12 +12,12 @@ class TranslateTask extends Task
     /**
      * @var string Output format of the translation. PDF tries to keeps the format as the original.
      */
-    public $output_format = 'pdf';
+    public $translate_mode = 'layout';
 
     /**
      * @var string[]
      */
-    private $outputFormatValues = ["pdf", "txt"];
+    private $translateModeValues = ["layout", "text"];
 
     /**
      * @var null Language of the input document.
@@ -83,10 +83,10 @@ class TranslateTask extends Task
      *
      * @return $this
      */
-    function setOutputFormat(string $format): self
+    public function setTranslateMode(string $mode): self
     {
-        $this->checkValues($format, $this->outputFormatValues);
-        $this->output_format = $format;
+        $this->checkValues($mode, $this->translateModeValues);
+        $this->translate_mode = $mode;
         return $this;
     }
 
@@ -117,7 +117,7 @@ class TranslateTask extends Task
         return $this;
     }
 
-    function setILanguageInput(string $language): self
+    function setLanguageInput(string $language): self
     {
         return $this->setInputLanguage($language);
     }
