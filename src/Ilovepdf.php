@@ -42,6 +42,13 @@ class Ilovepdf
     private $workerServer;
 
     /**
+     * @var string|null
+     */
+    private $region;
+
+    private $allowedRegions = ['eu', 'us', 'fr', 'de', 'pl', 'in', 'sg'];
+
+    /**
      * @var string|null The version of the Ilovepdf API to use for requests.
      */
     public static $apiVersion = 'v1';
@@ -80,6 +87,7 @@ class Ilovepdf
      */
     public $timeoutLarge;
 
+    private $makeStart = true;
 
     /**
      * @var mixed|null
@@ -90,11 +98,12 @@ class Ilovepdf
      * @param string|null $publicKey
      * @param string|null $secretKey
      */
-    public function __construct(?string $publicKey = null, ?string $secretKey = null)
+    public function __construct(?string $publicKey = null, ?string $secretKey = null, ?string $region = null)
     {
         if ($publicKey && $secretKey) {
             $this->setApiKeys($publicKey, $secretKey);
         }
+        $this->setRegion($region);
     }
 
     /**
@@ -261,7 +270,7 @@ class Ilovepdf
                 if ($response->getStatusCode() == 400) {
                     //common process exception
                     if (strpos($endpoint, 'task') !== false) {
-                        throw new TaskException('Invalid task id');
+                        throw new TaskException('Invalid task id '.$endpoint);
                     }
                     //signature exception
                     if(strpos($endpoint, 'signature') !== false){
@@ -285,25 +294,53 @@ class Ilovepdf
 
     /**
      * @param string $tool Api tool to use
-     * @param bool $makeStart Set to false for chained tasks, because we don't need the start
+     * @param string|null $region API region
      *
      * @return mixed Return implemented Task class for specified tool
      *
      * @throws \Exception
      */
-    public function newTask(string $tool = '', ?bool $makeStart = true)
+    public function newTask(string $tool = '', ?string $region = null)
+    {
+        return $this->buildTask($tool, $region);
+    }
+
+    /**
+     * Create a task instance for chained-task flows without performing a fresh start request.
+     *
+     * @param string $tool Api tool to use
+     * @param string|null $region API region
+     *
+     * @return mixed Return implemented Task class for specified tool
+     *
+     * @throws \Exception
+     */
+    protected function newChainedTask(string $tool, ?string $region = null)
+    {
+        return $this->buildTask($tool, $region, false);
+    }
+
+    /**
+     * @param string $tool Api tool to use
+     * @param string|null $region API region
+     * @param bool $autoStart Whether the created task should perform its start request in the constructor
+     *
+     * @return mixed Return implemented Task class for specified tool
+     *
+     * @throws \Exception
+     */
+    private function buildTask(string $tool, ?string $region = null, bool $autoStart = true)
     {
         $classname = '\\Ilovepdf\\' . ucwords(strtolower($tool)) . 'Task';
         if (!class_exists($classname)) {
             throw new \InvalidArgumentException('Invalid tool');
         }
 
-        if ($tool == '') {
-            $makeStart = false;
+        if ($autoStart) {
+            return new $classname($this->getPublicKey(), $this->getSecretKey(), $region);
         }
 
-        $task = new $classname($this->getPublicKey(), $this->getSecretKey(), $makeStart);
-        return $task;
+        return new $classname($this->getPublicKey(), $this->getSecretKey(), $region, false);
     }
 
     /**
@@ -482,5 +519,25 @@ class Ilovepdf
     {
         $info = $this->getUpdatedInfo();
         return $info->remaining_credits;
+    }
+
+    public function setRegion(?string $region) {
+        if ($region !== null && !in_array($region, $this->allowedRegions, true)) {
+            throw new \InvalidArgumentException('Invalid region');
+        }
+        $this->region = $region;
+    }
+
+    protected function getRegion(): ?string
+    {
+        return $this->region;
+    }
+
+    public function setStart(bool $makeStart) {
+        $this->makeStart = $makeStart;
+    }
+
+    public function needsStart(): bool {
+        return $this->makeStart;
     }
 }

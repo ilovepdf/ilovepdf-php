@@ -176,14 +176,14 @@ class SignatureManagement extends Ilovepdf
 
     /**
      * @param string $tool Api tool to use
-     * @param bool $makeStart Set to false for chained tasks, because we don't need the start
+     * @param string|null $region API region
      *
      * @return mixed Return implemented Task class for specified tool
      *
      * @throws \Exception
      */
     #[\Override]
-    public function newTask($tool = '', $makeStart = true)
+    public function newTask(string $tool = '', ?string $region = null)
     {
         throw new \Exception("This class is not meant to create a new task; but to manage an existing SignTask");
     }

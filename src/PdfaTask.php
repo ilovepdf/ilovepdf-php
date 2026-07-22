@@ -28,12 +28,12 @@ class PdfaTask extends Task
      *
      * @param null|string $publicKey    Your public key
      * @param null|string $secretKey    Your secret key
-     * @param bool $makeStart           Set to false for chained tasks, because we don't need the start
+     * @param null|string $region       API region
      */
-    function __construct($publicKey, $secretKey, $makeStart = true)
+    function __construct($publicKey, $secretKey, ?string $region = null, bool $makeStart = true)
     {
         $this->tool = 'pdfa';
-        parent::__construct($publicKey, $secretKey, $makeStart);
+        parent::__construct($publicKey, $secretKey, $region, $makeStart);
     }
 
     /**

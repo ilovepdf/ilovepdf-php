@@ -137,14 +137,12 @@ class Task extends Ilovepdf
      * Task constructor.
      * @param string|null $publicKey
      * @param string|null $secretKey
+     * @param string|null $region
      */
-    function __construct(?string $publicKey, ?string $secretKey, bool $makeStart = false)
+    public function __construct(?string $publicKey, ?string $secretKey, ?string $region = null, bool $makeStart = true)
     {
-        parent::__construct($publicKey, $secretKey);
-
-        if ($makeStart) {
-            $this->start();
-        }
+        parent::__construct($publicKey, $secretKey, $region);
+        $makeStart && $this->start();
     }
 
     /**
@@ -161,7 +159,11 @@ class Task extends Ilovepdf
         }
         $data = ['v' => self::VERSION];
         $body = ['form_params' => $data];
-        $response = parent::sendRequest('get', 'start/' . $this->tool, $body);
+        $startPath = 'start/' . $this->tool;
+        if ($this->getRegion()) {
+            $startPath .= '/' . $this->getRegion();
+        }
+        $response = parent::sendRequest('get', $startPath, $body);
         try {
             $responseBody = json_decode($response->getBody());
         } catch (\Exception $e) {
@@ -200,8 +202,7 @@ class Task extends Ilovepdf
         } catch (\Exception $e) {
             throw new StartException('Error on start chained task');
         }
-
-        $next = $this->newTask($nextTool);
+        $next = $this->newChainedTask($nextTool);
         $next->setWorkerServer($this->getWorkerServer());
 
         $next->setTask($responseBody->task);

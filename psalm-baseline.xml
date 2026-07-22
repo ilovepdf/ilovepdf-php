@@ -460,7 +460,7 @@
   </file>
   <file src="src/SignatureManagement.php">
     <MissingOverrideAttribute>
-      <code><![CDATA[public function newTask($tool = '', $makeStart = true)]]></code>
+      <code><![CDATA[public function newTask(string $tool = '', ?string $region = null)]]></code>
     </MissingOverrideAttribute>
     <UnusedClass>
       <code><![CDATA[SignatureManagement]]></code>
