@@ -432,7 +432,7 @@ class Task extends Ilovepdf
     {
         $body = [
             'multipart' => [
-                $this->getMultipartFileParam('cloud_file', $url),
+                $this->getMultipartContentParam('cloud_file', $url),
                 $this->getMultipartContentParam('task', $task),
                 $this->getMultipartContentParam('v', self::VERSION)
             ],
